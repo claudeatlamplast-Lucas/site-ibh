@@ -108,6 +108,12 @@ if(window.gsap && window.ScrollTrigger){
   revealEls.forEach(el=>revealIO.observe(el));
 }
 
+/* ---------- Proteção contra cópia — documentos pessoais escaneados (Credenciais) ---------- */
+document.querySelectorAll('.no-copy').forEach(el=>{
+  el.addEventListener('contextmenu', e=>e.preventDefault());
+  el.addEventListener('dragstart', e=>e.preventDefault());
+});
+
 /* ---------- Parallax das camadas de fumaça (equivalente ao data-ratio do izanami) ---------- */
 if(window.gsap && window.ScrollTrigger && !prefersReducedMotion){
   document.querySelectorAll('.smoke-wrap').forEach(wrap=>{

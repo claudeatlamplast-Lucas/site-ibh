@@ -322,28 +322,76 @@ blockquote cite{
 
 /* ---------- Mestres ---------- */
 .masters{display:flex;flex-direction:column;gap:5rem;}
-.master-row{display:grid;grid-template-columns:280px 1fr;gap:3rem;align-items:center;}
-@media (max-width:800px){.master-row{grid-template-columns:1fr;}}
-.master-portrait{
-  aspect-ratio:3/4;background:
-    linear-gradient(200deg,#161616,#050505 70%),
-    radial-gradient(circle at 30% 20%, rgba(232,185,35,0.1), transparent 55%);
-  border:1px solid rgba(232,185,35,0.18);
-  display:flex;align-items:center;justify-content:center;overflow:hidden;
+.master-row{position:relative;overflow:hidden;padding:2.5rem 0;}
+@media (max-width:800px){.master-row{padding:0;}}
+.master-bg{position:absolute;inset:0;z-index:0;}
+.master-bg img{
+  position:absolute;top:0;left:0;height:100%;width:54%;
+  object-fit:cover;object-position:50% 16%;
+  filter:grayscale(0.3) contrast(1.05) brightness(0.68);
+  -webkit-mask-image:linear-gradient(to right, black 45%, transparent 92%);
+  mask-image:linear-gradient(to right, black 45%, transparent 92%);
 }
-.master-portrait img{width:100%;height:100%;object-fit:cover;}
-.master-portrait span{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(242,240,234,0.35);text-align:center;padding:1rem;}
+.master-bg-overlay{position:absolute;inset:0;background:rgba(10,10,10,0.32);}
+@media (max-width:800px){
+  .master-bg img{
+    width:100%;left:0;
+    object-position:50% 14%;
+    -webkit-mask-image:linear-gradient(180deg, black 0%, black 40%, transparent 88%);
+    mask-image:linear-gradient(180deg, black 0%, black 40%, transparent 88%);
+    filter:grayscale(0.35) contrast(1.05) brightness(0.48);
+  }
+  .master-bg-overlay{background:rgba(10,10,10,0.58);}
+}
+.master-info{position:relative;z-index:2;padding-left:34%;}
+@media (max-width:800px){.master-info{padding-left:0;padding-top:1.8rem;}}
 .master-info .role{color:var(--gold);}
 .master-info h3{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:500;margin:0.4rem 0 1rem;}
 .master-info p{color:rgba(242,240,234,0.8);line-height:1.85;font-size:0.95rem;max-width:52ch;}
 .master-info .tag{display:inline-block;margin-top:1rem;font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--terracotta);border:1px solid rgba(110,42,32,0.5);padding:0.4rem 0.8rem;}
 
-/* ---------- Credenciais (carteirinhas do Mestre) ---------- */
-.credentials{margin-top:5rem;padding-top:4rem;border-top:1px solid rgba(232,185,35,0.15);}
-.credentials-gallery{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.4rem;
-  max-width:1040px;margin:0 auto;
+/* ---------- Foto de família (homenagem, no bio do Mestre) ---------- */
+.family-photo{float:right;width:38%;max-width:220px;margin:0.3rem 0 1.4rem 1.8rem;}
+@media (max-width:800px){.family-photo{float:none;width:100%;max-width:240px;margin:1.6rem auto;}}
+.family-photo img{
+  width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 15%;display:block;
+  border:1px solid rgba(232,185,35,0.25);
+  filter:grayscale(0.15) contrast(1.03) saturate(0.95);
+  box-shadow:inset 0 0 0 300px rgba(0,0,0,0.16);
 }
+.family-photo figcaption{
+  font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.06em;text-transform:uppercase;
+  color:rgba(242,240,234,0.45);text-align:left;margin-top:0.6rem;
+}
+
+/* ---------- Credenciais (carteirinhas do Mestre) ---------- */
+.credentials{margin-top:5rem;padding-top:4rem;border-top:1px solid rgba(232,185,35,0.15);position:relative;overflow:hidden;}
+.credentials-bg{position:absolute;inset:0;z-index:0;}
+.credentials-bg img{
+  position:absolute;top:0;right:0;height:100%;width:42%;
+  object-fit:cover;object-position:50% 22%;
+  filter:grayscale(0.3) contrast(1.05) brightness(0.72);
+  -webkit-mask-image:linear-gradient(to left, black 45%, transparent 92%);
+  mask-image:linear-gradient(to left, black 45%, transparent 92%);
+}
+.credentials-bg-overlay{position:absolute;inset:0;background:rgba(10,10,10,0.3);}
+@media (max-width:900px){
+  .credentials-bg img{
+    width:100%;right:0;
+    object-position:50% 18%;
+    -webkit-mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
+    mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
+    filter:grayscale(0.35) contrast(1.05) brightness(0.5);
+  }
+  .credentials-bg-overlay{background:rgba(10,10,10,0.55);}
+}
+.credentials>.label{position:relative;z-index:2;}
+.credentials-gallery{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:repeat(2,1fr);gap:0.7rem 0.9rem;
+  max-width:380px;margin:0 auto;transform:translateX(-9%);
+}
+@media (max-width:900px){.credentials-gallery{transform:none;}}
 .credentials-gallery figure{margin:0;}
 .credentials-gallery img{
   width:100%;aspect-ratio:3/2;object-fit:cover;display:block;
@@ -356,9 +404,43 @@ blockquote cite{
   border-color:rgba(232,185,35,0.5);
 }
 .credentials-gallery figcaption{
-  font-family:'Cinzel',serif;font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;
-  color:rgba(242,240,234,0.5);text-align:center;margin-top:0.7rem;
+  font-family:'Cinzel',serif;font-size:0.56rem;letter-spacing:0.08em;text-transform:uppercase;
+  color:rgba(242,240,234,0.5);text-align:center;margin-top:0.55rem;
 }
+@media (min-width:640px){
+  .credentials-gallery{max-width:420px;gap:0.8rem 1rem;}
+}
+/* ---------- Proteção contra cópia — documentos pessoais escaneados ---------- */
+.no-copy img{
+  -webkit-user-select:none;-moz-user-select:none;user-select:none;
+  -webkit-user-drag:none;user-drag:none;
+  pointer-events:auto;
+}
+.no-copy{-webkit-touch-callout:none;}
+
+/* ---------- Rede de Filiadas — fundo fotográfico ---------- */
+#escolas{overflow:hidden;}
+.escolas-bg{position:absolute;inset:0;z-index:0;}
+.escolas-bg img{
+  position:absolute;top:0;right:0;height:100%;width:42%;
+  object-fit:cover;object-position:50% 30%;
+  filter:grayscale(0.3) contrast(1.05) brightness(0.72);
+  -webkit-mask-image:linear-gradient(to left, black 45%, transparent 92%);
+  mask-image:linear-gradient(to left, black 45%, transparent 92%);
+}
+.escolas-bg-overlay{position:absolute;inset:0;background:rgba(10,10,10,0.3);}
+@media (max-width:900px){
+  .escolas-bg img{
+    width:100%;right:0;
+    object-position:50% 22%;
+    -webkit-mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
+    mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
+    filter:grayscale(0.35) contrast(1.05) brightness(0.5);
+  }
+  .escolas-bg-overlay{background:rgba(10,10,10,0.55);}
+}
+.escolas-content{position:relative;z-index:2;transform:translateX(-9%);}
+@media (max-width:900px){.escolas-content{transform:none;}}
 
 /* ---------- Rede — cards de escolas filiadas ---------- */
 .escolas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1px;background:rgba(232,185,35,0.15);max-width:1100px;margin:0 auto 3.5rem;}
@@ -436,6 +518,31 @@ body.intro-active{overflow:hidden;height:100vh;}
 .stat span{font-size:0.72rem;letter-spacing:0.08em;color:rgba(242,240,234,0.6);}
 .trajectory-lead{max-width:70ch;line-height:1.9;color:rgba(242,240,234,0.85);font-size:0.98rem;margin-bottom:1rem;}
 .trajectory-highlight{max-width:70ch;line-height:1.9;font-size:1rem;border-left:2px solid var(--gold);padding-left:1.3rem;color:var(--bone);}
+
+/* ---------- Em números — fundo fotográfico ---------- */
+#trajetoria{overflow:hidden;}
+.trajetoria-bg{position:absolute;inset:0;z-index:0;}
+.trajetoria-bg img{
+  position:absolute;top:0;right:0;height:100%;width:42%;
+  object-fit:cover;object-position:50% 32%;
+  filter:grayscale(0.3) contrast(1.05) brightness(0.72);
+  -webkit-mask-image:linear-gradient(to left, black 45%, transparent 92%);
+  mask-image:linear-gradient(to left, black 45%, transparent 92%);
+}
+.trajetoria-bg-overlay{position:absolute;inset:0;background:rgba(10,10,10,0.3);}
+@media (max-width:900px){
+  .trajetoria-bg img{
+    width:100%;right:0;
+    object-position:50% 25%;
+    -webkit-mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
+    mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
+    filter:grayscale(0.35) contrast(1.05) brightness(0.5);
+  }
+  .trajetoria-bg-overlay{background:rgba(10,10,10,0.55);}
+}
+#trajetoria .section-heading,.trajetoria-content{position:relative;z-index:2;}
+.trajetoria-content{max-width:720px;margin:0 auto;transform:translateX(-9%);}
+@media (max-width:900px){.trajetoria-content{transform:none;max-width:100%;}}
 
 /* ---------- Campeonatos ---------- */
 .champ-table{max-width:900px;margin:0 auto 2.5rem;border-top:1px solid rgba(232,185,35,0.15);}
