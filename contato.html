@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Matrícula e Contato — Instituto Brasileiro de Hapkido</title>
-<meta name="description" content="Fale com o Instituto Brasileiro de Hapkido em Piracaia-SP e matricule-se.">
+<meta name="description" content="Fale com o Instituto Brasileiro de Hapkido em Piracaia-SP e matricule-se. Aula experimental gratuita.">
 <link rel="icon" href="assets/ibh-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,20 +41,119 @@
   </div>
 </div>
 
-<!-- ============ CTA ============ -->
-<section class="cta" style="min-height:100vh;display:flex;align-items:center;padding-top:8rem;">
+<!-- ============ HERO ============ -->
+<section class="page-hero" data-nav="Matrícula">
   <div class="smoke-wrap"><div class="smoke s1"></div><div class="smoke s2"></div><div class="smoke s3"></div></div>
-  <div class="cta-inner reveal">
-    <span class="label">Junte-se ao Instituto</span>
-    <h2 style="margin-top:1rem;">Matricule-se no Instituto Brasileiro de Hapkido</h2>
-    <p>Av. Dr. Valentin Del Nero, 412 — Piracaia-SP</p>
-    <a href="https://instagram.com/hapkidobrasil" class="btn-gold" target="_blank" rel="noopener">Fale conosco</a>
-    <div class="cta-meta">
-      <a href="https://instagram.com/hapkidobrasil" target="_blank" rel="noopener">Instagram @hapkidobrasil</a>
-      &nbsp;·&nbsp;
-      <a href="https://www.facebook.com/p/Instituto-Brasileiro-de-Hapkido-100062145890610/" target="_blank" rel="noopener">Facebook</a>
+  <span class="label">Junte-se ao Instituto</span>
+  <div class="hero-eagle hero-eagle--float">
+    <img src="assets/ibh-logo.png" alt="Brasão do Instituto Brasileiro de Hapkido">
+  </div>
+  <h1>Matrícula e Contato</h1>
+  <p class="page-lede">Aula experimental gratuita, em qualquer dia e horário. Idade mínima indicada: 4 anos —
+    mas já recebemos alunos ainda mais novos.</p>
+</section>
+
+<!-- ============ HORÁRIOS ============ -->
+<section id="horarios" data-nav="Horários">
+  <div class="section-heading reveal"><span class="num">01</span><span class="line"></span><span class="label">Horários — IBH Piracaia</span></div>
+  <div class="schedule-grid reveal">
+    <div class="schedule-card">
+      <span class="days">Segunda · Quarta · Sexta</span>
+      <ul>
+        <li><b>18:30 às 19:30</b> — turma com crianças menores (mista)</li>
+        <li><b>19:30 às 20:30</b> — turma mista, maioria adultos</li>
+      </ul>
     </div>
-    <div class="cta-seal"></div>
+    <div class="schedule-card">
+      <span class="days">Terça · Quinta</span>
+      <ul><li><b>19:00 às 20:00</b> — Adulto</li></ul>
+    </div>
+  </div>
+  <p class="network-note reveal">Equipe Alfa Atibaia — horários combinados diretamente com o professor Junior pelo WhatsApp.</p>
+</section>
+
+<!-- ============ SIMULADOR DE MATRÍCULA ============ -->
+<section id="simulador" data-nav="Simulador">
+  <div class="section-heading reveal"><span class="num">02</span><span class="line"></span><span class="label">Monte sua aula experimental</span></div>
+  <form class="enroll-form reveal" id="enrollForm">
+    <div class="field">
+      <label for="nome">Seu nome</label>
+      <input type="text" id="nome" placeholder="Como podemos te chamar?" autocomplete="name">
+    </div>
+
+    <div class="field-group">
+      <span class="field-label">Unidade</span>
+      <div class="radio-row">
+        <label><input type="radio" name="unidade" value="piracaia" checked> IBH Piracaia</label>
+        <label><input type="radio" name="unidade" value="atibaia"> Equipe Alfa Atibaia</label>
+      </div>
+    </div>
+
+    <div class="field-group" id="perfilGroup">
+      <span class="field-label">Perfil</span>
+      <div class="radio-row">
+        <label><input type="radio" name="perfil" value="crianca" checked> Criança</label>
+        <label><input type="radio" name="perfil" value="adulto"> Adulto</label>
+      </div>
+    </div>
+
+    <div class="field" id="horarioField">
+      <label for="horario">Horário de preferência</label>
+      <select id="horario">
+        <option value="1">Seg · Qua · Sex — 18:30 às 19:30</option>
+        <option value="2">Seg · Qua · Sex — 19:30 às 20:30</option>
+        <option value="3">Ter · Qui — 19:00 às 20:00 (Adulto)</option>
+      </select>
+    </div>
+
+    <p class="enroll-hint" id="enrollHint">Preencha seu nome e perfil para liberar os valores e enviar sua mensagem.</p>
+    <a href="#" class="btn-gold disabled" id="whatsappBtn" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+  </form>
+</section>
+
+<!-- ============ VALORES ============ -->
+<section id="valores" data-nav="Valores">
+  <div class="section-heading reveal"><span class="num">03</span><span class="line"></span><span class="label">Valores</span></div>
+  <div class="price-panel locked reveal" id="pricePanel">
+    <div class="price-lock">
+      <span>&#128274;</span>
+      <p>Preencha seus dados no formulário acima para ver os valores.</p>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <span class="label">3x por semana</span>
+        <b>R$ 110<small>/mês</small></b>
+        <span class="fee">+ matrícula R$ 30</span>
+      </div>
+      <div class="price-card">
+        <span class="label">5x por semana</span>
+        <b>R$ 150<small>/mês</small></b>
+        <span class="fee">+ matrícula R$ 30</span>
+      </div>
+    </div>
+    <p class="price-note">Aula experimental gratuita, em qualquer dia e horário. Idade mínima indicada: 4 anos.</p>
+  </div>
+</section>
+
+<!-- ============ CONTATO / UNIDADES ============ -->
+<section id="contato" data-nav="Contato">
+  <div class="section-heading reveal"><span class="num">04</span><span class="line"></span><span class="label">Fale com a gente</span></div>
+  <div class="units-grid reveal">
+    <div class="unit-card">
+      <h3>IBH Piracaia</h3>
+      <span class="city">Piracaia — SP</span>
+      <p>Av. Dr. Valentin Del Nero, 412 — Centro<br>CEP 12970-000</p>
+      <a class="btn-gold" href="https://wa.me/5511971347259" target="_blank" rel="noopener">WhatsApp — Renata</a>
+      <div class="unit-map">
+        <iframe src="https://www.google.com/maps?q=Av.+Dr.+Valentin+Del+Nero,+412,+Piracaia+-+SP,+12970-000&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa — IBH Piracaia"></iframe>
+      </div>
+    </div>
+    <div class="unit-card">
+      <h3>Equipe Alfa Atibaia</h3>
+      <span class="city">Atibaia — SP</span>
+      <p>Endereço e horários combinados diretamente pelo WhatsApp com o professor Junior.</p>
+      <a class="btn-gold" href="https://wa.me/5511964158211" target="_blank" rel="noopener">WhatsApp — Junior</a>
+    </div>
   </div>
 </section>
 
@@ -74,5 +173,69 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="assets/js/site.js"></script>
+<script>
+(function(){
+  const form = document.getElementById('enrollForm');
+  if(!form) return;
+
+  const nomeInput = document.getElementById('nome');
+  const perfilGroup = document.getElementById('perfilGroup');
+  const horarioField = document.getElementById('horarioField');
+  const horarioSelect = document.getElementById('horario');
+  const hint = document.getElementById('enrollHint');
+  const waBtn = document.getElementById('whatsappBtn');
+  const pricePanel = document.getElementById('pricePanel');
+
+  const NUM_PIRACAIA = '5511971347259';
+  const NUM_ATIBAIA = '5511964158211';
+
+  function unidadeAtual(){
+    return form.querySelector('input[name="unidade"]:checked').value;
+  }
+  function perfilAtual(){
+    const el = form.querySelector('input[name="perfil"]:checked');
+    return el ? el.value : '';
+  }
+
+  function atualizar(){
+    const isPiracaia = unidadeAtual() === 'piracaia';
+    perfilGroup.style.display = isPiracaia ? '' : 'none';
+    horarioField.style.display = isPiracaia ? '' : 'none';
+
+    const nome = nomeInput.value.trim();
+    const perfil = perfilAtual();
+    const valido = isPiracaia ? Boolean(nome && perfil) : Boolean(nome);
+
+    pricePanel.classList.toggle('locked', !valido);
+    waBtn.classList.toggle('disabled', !valido);
+    hint.textContent = valido
+      ? 'Tudo pronto! Envie sua mensagem pelo WhatsApp.'
+      : 'Preencha seu nome' + (isPiracaia ? ' e perfil' : '') + ' para liberar os valores e enviar sua mensagem.';
+
+    if(valido){
+      let numero, texto;
+      if(isPiracaia){
+        const perfilTexto = perfil === 'crianca' ? 'Criança' : 'Adulto';
+        const horarioTexto = horarioSelect.options[horarioSelect.selectedIndex].text;
+        numero = NUM_PIRACAIA;
+        texto = 'Olá Renata! Me chamo ' + nome + ' e tenho interesse em uma aula experimental de Hapkido no IBH Piracaia.\n'
+              + 'Perfil: ' + perfilTexto + '\n'
+              + 'Horário de preferência: ' + horarioTexto;
+      } else {
+        numero = NUM_ATIBAIA;
+        texto = 'Olá Junior! Me chamo ' + nome + ' e tenho interesse em treinar Hapkido na Equipe Alfa Atibaia.';
+      }
+      waBtn.href = 'https://wa.me/' + numero + '?text=' + encodeURIComponent(texto);
+    } else {
+      waBtn.href = '#';
+    }
+  }
+
+  form.addEventListener('input', atualizar);
+  form.addEventListener('change', atualizar);
+  waBtn.addEventListener('click', function(e){ if(waBtn.classList.contains('disabled')) e.preventDefault(); });
+  atualizar();
+})();
+</script>
 </body>
 </html>
