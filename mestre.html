@@ -210,6 +210,18 @@
   const closeBtn = document.getElementById('lightboxClose');
   let lastFocused = null;
 
+  function onScrollClose(){ closeLightbox(); }
+  function armScrollClose(){
+    window.addEventListener('wheel', onScrollClose, {passive:true});
+    window.addEventListener('touchmove', onScrollClose, {passive:true});
+    window.addEventListener('scroll', onScrollClose, {passive:true});
+  }
+  function disarmScrollClose(){
+    window.removeEventListener('wheel', onScrollClose);
+    window.removeEventListener('touchmove', onScrollClose);
+    window.removeEventListener('scroll', onScrollClose);
+  }
+
   function openLightbox(fig){
     const img = fig.querySelector('img');
     const caption = fig.querySelector('figcaption');
@@ -220,12 +232,14 @@
     lightbox.setAttribute('aria-hidden', 'false');
     lastFocused = document.activeElement;
     closeBtn.focus();
+    armScrollClose();
   }
   function closeLightbox(){
     lightbox.classList.remove('open');
     lightbox.setAttribute('aria-hidden', 'true');
     lbImg.src = '';
     if(lastFocused) lastFocused.focus();
+    disarmScrollClose();
   }
 
   gallery.querySelectorAll('figure').forEach(fig=>{
