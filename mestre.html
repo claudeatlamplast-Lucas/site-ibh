@@ -21,7 +21,10 @@
     <img src="assets/ibh-logo.png" alt="Instituto Brasileiro de Hapkido">
     <span>IBH</span>
   </a>
-  <button class="menu-btn" id="menuOpenBtn">Menu</button>
+  <div class="topbar-actions">
+    <button class="back-btn" id="backBtn" aria-label="Voltar"><span class="back-arrow">&larr;</span><span class="back-label">Voltar</span></button>
+    <button class="menu-btn" id="menuOpenBtn">Menu</button>
+  </div>
 </header>
 
 <div class="menu-overlay" id="menuOverlay">
@@ -183,9 +186,64 @@
   </div>
 </footer>
 
+<!-- ============ LIGHTBOX — CREDENCIAIS ============ -->
+<div class="lightbox" id="credLightbox" aria-hidden="true">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Fechar">&times;</button>
+    <img id="lightboxImg" src="" alt="" draggable="false">
+    <span class="lightbox-caption" id="lightboxCaption"></span>
+  </div>
+</div>
+
 <script src="https://unpkg.com/lenis@1/dist/lenis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="assets/js/site.js"></script>
+<script>
+(function(){
+  const gallery = document.querySelector('.credentials-gallery');
+  const lightbox = document.getElementById('credLightbox');
+  if(!gallery || !lightbox) return;
+
+  const lbImg = document.getElementById('lightboxImg');
+  const lbCaption = document.getElementById('lightboxCaption');
+  const closeBtn = document.getElementById('lightboxClose');
+  let lastFocused = null;
+
+  function openLightbox(fig){
+    const img = fig.querySelector('img');
+    const caption = fig.querySelector('figcaption');
+    lbImg.src = img.src;
+    lbImg.alt = img.alt;
+    lbCaption.textContent = caption ? caption.textContent : '';
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    lastFocused = document.activeElement;
+    closeBtn.focus();
+  }
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    lbImg.src = '';
+    if(lastFocused) lastFocused.focus();
+  }
+
+  gallery.querySelectorAll('figure').forEach(fig=>{
+    fig.setAttribute('role', 'button');
+    fig.setAttribute('tabindex', '0');
+    fig.addEventListener('click', ()=>openLightbox(fig));
+    fig.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openLightbox(fig); }
+    });
+  });
+
+  closeBtn.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e)=>{ if(e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox(); });
+
+  lbImg.addEventListener('contextmenu', e=>e.preventDefault());
+  lbImg.addEventListener('dragstart', e=>e.preventDefault());
+})();
+</script>
 </body>
 </html>

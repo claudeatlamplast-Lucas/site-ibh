@@ -28,6 +28,15 @@ if(dot){
   });
 }
 
+/* ---------- Botão Voltar ---------- */
+const backBtn = document.getElementById('backBtn');
+if(backBtn){
+  backBtn.addEventListener('click', ()=>{
+    if(history.length > 1){ history.back(); }
+    else { window.location.href = 'index.html'; }
+  });
+}
+
 /* ---------- Fullscreen menu ---------- */
 const overlay = document.getElementById('menuOverlay');
 const menuOpenBtn = document.getElementById('menuOpenBtn');
