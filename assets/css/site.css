@@ -85,8 +85,11 @@ img{max-width:100%;}
   transition:color .3s ease;
 }
 .back-btn:hover{color:var(--gold);}
-.back-btn .back-arrow{display:inline-block;transition:transform .3s ease;}
-.back-btn:hover .back-arrow{transform:translateX(-4px);}
+.back-btn .back-arrow{display:inline-block;}
+@media (hover:hover){
+  .back-btn .back-arrow{transition:transform .3s ease;}
+  .back-btn:hover .back-arrow{transform:translateX(-4px);}
+}
 @media (max-width:520px){.back-btn .back-label{display:none;}}
 
 /* ---------- Fullscreen menu overlay ---------- */
@@ -136,7 +139,7 @@ img{max-width:100%;}
 }
 .hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden;}
 .hero-bg img{
-  width:100%;height:100%;object-fit:cover;object-position:50% 100%;
+  width:100%;height:100%;object-fit:cover;object-position:100% 50%;
   filter:brightness(0.86) contrast(1.03);
 }
 .hero-bg-overlay{
@@ -330,9 +333,12 @@ blockquote cite{
   width:fit-content;padding:0.75rem 1.2rem;border:1px solid rgba(232,185,35,0.4);
   transition:background .35s ease, color .35s ease, border-color .35s ease;
 }
-.pillar-card .view-link .arrow{display:inline-block;transition:transform .35s ease;}
+.pillar-card .view-link .arrow{display:inline-block;}
 .pillar-card:hover .view-link{background:var(--gold);color:var(--black);border-color:var(--gold);}
-.pillar-card:hover .view-link .arrow{transform:translateX(6px);}
+@media (hover:hover){
+  .pillar-card .view-link .arrow{transition:transform .35s ease;}
+  .pillar-card:hover .view-link .arrow{transform:translateX(6px);}
+}
 
 /* Badge de canto — sinaliza que o card inteiro é clicável */
 .pillar-card-arrow{
@@ -342,9 +348,11 @@ blockquote cite{
   display:flex;align-items:center;justify-content:center;
   color:var(--gold);font-size:1.1rem;line-height:1;
   backdrop-filter:blur(2px);
-  transition:background .35s ease, color .35s ease, transform .35s ease, border-color .35s ease;
 }
-.pillar-card:hover .pillar-card-arrow{background:var(--gold);color:var(--black);border-color:var(--gold);transform:rotate(45deg);}
+@media (hover:hover){
+  .pillar-card-arrow{transition:background .35s ease, color .35s ease, transform .35s ease, border-color .35s ease;}
+  .pillar-card:hover .pillar-card-arrow{background:var(--gold);color:var(--black);border-color:var(--gold);transform:rotate(45deg);}
+}
 
 /* ---------- Programas ---------- */
 .programs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:rgba(232,185,35,0.15);}
@@ -537,8 +545,11 @@ blockquote cite{
 .escola-card h3{font-family:'Playfair Display',serif;font-size:1.12rem;font-weight:500;margin-bottom:0.4rem;}
 .escola-card .city{display:block;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(242,240,234,0.5);margin-bottom:1rem;}
 .escola-card .ig-link{font-family:'Cinzel',serif;font-size:0.64rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:0.4rem;}
-.escola-card .ig-link .arrow{display:inline-block;transition:transform .3s ease;}
-.escola-card:hover .ig-link .arrow{transform:translateX(4px);}
+.escola-card .ig-link .arrow{display:inline-block;}
+@media (hover:hover){
+  .escola-card .ig-link .arrow{transition:transform .3s ease;}
+  .escola-card:hover .ig-link .arrow{transform:translateX(4px);}
+}
 
 /* ---------- Rede ---------- */
 .network-list{max-width:780px;margin:0 auto;border-top:1px solid rgba(232,185,35,0.15);}
@@ -707,8 +718,10 @@ body.intro-active{overflow:hidden;height:100vh;}
 .evento-card-body{padding:1.2rem 1.3rem 1.4rem;}
 .evento-card h4{font-family:'Playfair Display',serif;font-weight:500;font-size:1rem;line-height:1.35;margin-bottom:0.6rem;}
 .evento-card .evento-link{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:0.4rem;}
-.evento-card .evento-link .arrow{transition:transform .3s ease;}
-.evento-card:hover .evento-link .arrow{transform:translateX(4px);}
+@media (hover:hover){
+  .evento-card .evento-link .arrow{transition:transform .3s ease;}
+  .evento-card:hover .evento-link .arrow{transform:translateX(4px);}
+}
 
 /* ---------- Novidades ---------- */
 .news-card{
