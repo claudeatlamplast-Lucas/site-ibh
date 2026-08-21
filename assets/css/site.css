@@ -136,7 +136,7 @@ img{max-width:100%;}
 }
 .hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden;}
 .hero-bg img{
-  width:100%;height:100%;object-fit:cover;object-position:50% 50%;
+  width:100%;height:100%;object-fit:cover;object-position:50% 100%;
   filter:brightness(0.86) contrast(1.03);
 }
 .hero-bg-overlay{
@@ -166,30 +166,6 @@ img{max-width:100%;}
 }
 @keyframes heroTitleFade{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
 
-/* ---------- Fumaça do hero (fluxo contínuo, de um lado ao outro) ---------- */
-.hero-smoke{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;}
-.hero-smoke span{
-  position:absolute;left:0;border-radius:50%;
-  background:radial-gradient(ellipse, rgba(232,230,225,0.4) 0%, rgba(205,203,198,0.16) 45%, transparent 72%);
-  mix-blend-mode:screen;
-  will-change:transform,opacity;
-  animation-name:heroSmokeFlow;
-  animation-timing-function:linear;
-  animation-iteration-count:infinite;
-  opacity:0;
-}
-.hero-smoke span:nth-child(1){width:46vw;height:24vw;top:10%;filter:blur(52px);animation-duration:36s;animation-delay:-3s;}
-.hero-smoke span:nth-child(2){width:58vw;height:30vw;top:34%;filter:blur(66px);animation-duration:44s;animation-delay:-17s;}
-.hero-smoke span:nth-child(3){width:40vw;height:21vw;top:56%;filter:blur(46px);animation-duration:31s;animation-delay:-9s;}
-.hero-smoke span:nth-child(4){width:53vw;height:27vw;top:76%;filter:blur(60px);animation-duration:40s;animation-delay:-26s;}
-@keyframes heroSmokeFlow{
-  0%{transform:translate(-38vw,0) scale(0.92);opacity:0;}
-  14%{opacity:0.1;}
-  32%{transform:translate(8vw,-2.5vh) scale(1.04);opacity:0.34;}
-  58%{transform:translate(55vw,2.5vh) scale(1.1);opacity:0.4;}
-  82%{transform:translate(102vw,-1.5vh) scale(1.02);opacity:0.14;}
-  100%{transform:translate(140vw,0) scale(0.94);opacity:0;}
-}
 .hero .label{position:relative;z-index:2;margin-bottom:1.4rem;opacity:0;animation:fadeInUp 1s ease forwards;animation-delay:0.2s;}
 @keyframes fadeInUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 .scroll-hint{
