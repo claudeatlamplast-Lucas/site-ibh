@@ -174,26 +174,48 @@ if(window.gsap && window.ScrollTrigger && !prefersReducedMotion){
 const FACTS = [
   {
     title: 'Contando em coreano',
-    text: 'No dojang, as repetições dos exercícios são contadas em coreano:\nhana (1) · dul (2) · set (3) · net (4) · daseot (5)\nyeoseot (6) · ilgop (7) · yeodeol (8) · ahop (9) · yeol (10)'
+    text: 'No dojang, as repetições dos exercícios são contadas em coreano:\nhana (1) · dul (2) · set (3) · net (4) · daseot (5)\nyeoseot (6) · ilgop (7) · yeodeol (8) · ahop (9) · yeol (10)',
+    photo: 'assets/ig/dojang-treino.jpg',
+    link: 'sobre.html', linkLabel: 'Sobre o Instituto'
   },
   {
     title: 'Como amarrar a faixa',
-    text: 'Dobre a faixa ao meio para achar o centro. Envolva a cintura com o centro nas costas e cruze uma ponta sob a outra na frente. Passe a ponta de cima por dentro da volta, puxe e ajuste as duas pontas do mesmo tamanho. Cada escola pode ensinar uma variação — vale sempre seguir o jeito do seu instrutor.'
+    text: 'Dobre a faixa ao meio para achar o centro. Envolva a cintura com o centro nas costas e cruze uma ponta sob a outra na frente. Passe a ponta de cima por dentro da volta, puxe e ajuste as duas pontas do mesmo tamanho. Cada escola pode ensinar uma variação — vale sempre seguir o jeito do seu instrutor.',
+    photo: 'assets/ig/novidade-faixa-preta.jpg',
+    link: 'formacao.html', linkLabel: 'Ver Formação'
   },
   {
     title: 'Por que "dojang"?',
-    text: '"Do" significa caminho e "jang" significa lugar — "dojang" é, literalmente, o "lugar do caminho". É o equivalente coreano ao "dojo" japonês: o espaço onde a técnica e a disciplina são praticadas.'
+    text: '"Do" significa caminho e "jang" significa lugar — "dojang" é, literalmente, o "lugar do caminho". É o equivalente coreano ao "dojo" japonês: o espaço onde a técnica e a disciplina são praticadas.',
+    photo: 'assets/ig/dojang-grupo-2023.jpg',
+    link: 'sobre.html', linkLabel: 'Sobre o Instituto'
   },
   {
     title: 'Etiqueta no dojang coreano',
-    text: 'Reverência ao entrar e sair do tatame, alunos se posicionam por graduação nas filas, e o instrutor é sempre tratado pelo título — nunca pelo primeiro nome, dentro do dobok.'
+    text: 'Reverência ao entrar e sair do tatame, alunos se posicionam por graduação nas filas, e o instrutor é sempre tratado pelo título — nunca pelo primeiro nome, dentro do dobok.',
+    photo: 'assets/ig/criancas-reverencia.jpg',
+    link: 'sobre.html', linkLabel: 'Sobre o Instituto'
+  },
+  {
+    title: 'A hierarquia das faixas',
+    text: 'Cada cor de faixa marca uma etapa de evolução técnica e pessoal no Hapkido, da branca até a preta — e, a partir dela, os graus de Dan. A progressão é acompanhada de perto pelos instrutores do Instituto.',
+    photo: 'assets/ig/autodefesa-graduacao.jpg',
+    link: 'formacao.html', linkLabel: 'Ver Formação'
+  },
+  {
+    title: 'Três gerações até o Brasil',
+    text: 'A linhagem do Instituto Brasileiro de Hapkido atravessou três gerações de mestres até chegar ao Chong Kwanjangnim Raul Braga Freire, que hoje segue transmitindo a arte ao lado dos filhos em Piracaia-SP.',
+    photo: 'assets/ig/mestre-raul-1.jpg',
+    link: 'mestre.html', linkLabel: 'Conhecer o Mestre'
   }
 ];
 
 const factCard = document.getElementById('factCard');
 const factBody = document.getElementById('factCardBody');
+const factPhoto = document.getElementById('factPhoto');
 const factTitle = document.getElementById('factTitle');
 const factText = document.getElementById('factText');
+const factLink = document.getElementById('factLink');
 const factDotsEl = document.getElementById('factDots');
 
 if(factCard && factBody && FACTS.length){
@@ -208,8 +230,23 @@ if(factCard && factBody && FACTS.length){
   const dots = factDotsEl.querySelectorAll('span');
 
   const renderFact = (i)=>{
-    factTitle.textContent = FACTS[i].title;
-    factText.textContent = FACTS[i].text;
+    const fact = FACTS[i];
+    factTitle.textContent = fact.title;
+    factText.textContent = fact.text;
+    if(fact.photo){
+      factPhoto.src = fact.photo;
+      factPhoto.alt = fact.title;
+      factPhoto.hidden = false;
+    } else {
+      factPhoto.hidden = true;
+    }
+    if(fact.link){
+      factLink.href = fact.link;
+      factLink.querySelector('span').textContent = fact.linkLabel || 'Saiba mais';
+      factLink.hidden = false;
+    } else {
+      factLink.hidden = true;
+    }
     dots.forEach((d, di)=>d.classList.toggle('active', di === i));
   };
   renderFact(0);
@@ -225,6 +262,13 @@ if(factCard && factBody && FACTS.length){
 
   const startFactTimer = ()=>{ factTimer = setInterval(showNextFact, 7000); };
   const stopFactTimer = ()=>{ clearInterval(factTimer); factTimer = null; };
+
+  factCard.addEventListener('click', (e)=>{
+    if(e.target.closest('a')) return;
+    stopFactTimer();
+    showNextFact();
+    if(!prefersReducedMotion) startFactTimer();
+  });
 
   if(!prefersReducedMotion){
     startFactTimer();

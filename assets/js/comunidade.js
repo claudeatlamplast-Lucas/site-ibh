@@ -356,7 +356,7 @@
   function carregarFeed(){
     return Promise.all([
       client.from('posts').select('id, autor_id, foto_url, legenda, criado_em, profiles!posts_autor_id_fkey(nome_exibicao, foto_url, faixa)').order('criado_em', { ascending: false }),
-      client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url)').order('criado_em', { ascending: true }),
+      client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa)').order('criado_em', { ascending: true }),
       client.from('curtidas').select('post_id, autor_id')
     ]).then(function(results){
       var postsRes = results[0], comentariosRes = results[1], curtidasRes = results[2];
@@ -386,11 +386,13 @@
 
       var card = document.createElement('article');
       card.className = 'post-card';
+      var autorAttrs = 'data-user-nome="' + escapeHtml(autorNome) + '" data-user-foto="' + escapeHtml(autorFoto) + '" data-user-faixa="' + escapeHtml(autorFaixa || '') + '"';
+
       card.innerHTML =
         '<div class="post-header">' +
-          '<img class="post-avatar" src="' + escapeHtml(autorFoto) + '" alt="">' +
+          '<img class="post-avatar user-trigger" ' + autorAttrs + ' src="' + escapeHtml(autorFoto) + '" alt="">' +
           '<div class="post-author">' +
-            '<span class="post-author-nome">' + escapeHtml(autorNome) + '</span>' +
+            '<span class="post-author-nome user-trigger" ' + autorAttrs + '>' + escapeHtml(autorNome) + '</span>' +
             (autorFaixa ? '<span class="post-author-faixa">' + escapeHtml(autorFaixa) + '</span>' : '') +
           '</div>' +
           (podeApagarPost ? '<button type="button" class="delete-btn" data-post-id="' + post.id + '" title="Apagar publicação">&times;</button>' : '') +
@@ -405,10 +407,12 @@
             var podeApagarComentario = isAdmin || c.autor_id === currentUser.id;
             var comentarioNome = (c.profiles && c.profiles.nome_exibicao) || 'Aluno';
             var comentarioFoto = (c.profiles && c.profiles.foto_url) || 'assets/ibh-logo.png';
+            var comentarioFaixa = (c.profiles && c.profiles.faixa) || '';
+            var comentarioAttrs = 'data-user-nome="' + escapeHtml(comentarioNome) + '" data-user-foto="' + escapeHtml(comentarioFoto) + '" data-user-faixa="' + escapeHtml(comentarioFaixa) + '"';
             return '<div class="comment">' +
-              '<img class="comment-avatar" src="' + escapeHtml(comentarioFoto) + '" alt="">' +
+              '<img class="comment-avatar user-trigger" ' + comentarioAttrs + ' src="' + escapeHtml(comentarioFoto) + '" alt="">' +
               '<div class="comment-body">' +
-                '<span class="comment-autor">' + escapeHtml(comentarioNome) + '</span>' +
+                '<span class="comment-autor user-trigger" ' + comentarioAttrs + '>' + escapeHtml(comentarioNome) + '</span>' +
                 '<span class="comment-texto">' + escapeHtml(c.texto) + '</span>' +
               '</div>' +
               (podeApagarComentario ? '<button type="button" class="comment-delete" data-comment-id="' + c.id + '">&times;</button>' : '') +
@@ -425,7 +429,30 @@
     });
   }
 
+  var userModal = document.getElementById('userModal');
+  var userModalPhoto = document.getElementById('userModalPhoto');
+  var userModalNome = document.getElementById('userModalNome');
+  var userModalFaixa = document.getElementById('userModalFaixa');
+  var userModalClose = document.getElementById('userModalClose');
+
+  function openUserModal(trigger){
+    userModalPhoto.src = trigger.dataset.userFoto || 'assets/ibh-logo.png';
+    userModalNome.textContent = trigger.dataset.userNome || 'Aluno';
+    var faixa = trigger.dataset.userFaixa;
+    userModalFaixa.textContent = faixa || '';
+    userModalFaixa.hidden = !faixa;
+    userModal.hidden = false;
+  }
+  function closeUserModal(){ userModal.hidden = true; }
+  if(userModal){
+    userModalClose.addEventListener('click', closeUserModal);
+    userModal.addEventListener('click', function(e){ if(e.target === userModal) closeUserModal(); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !userModal.hidden) closeUserModal(); });
+  }
+
   feedList.addEventListener('click', function(e){
+    var userTrigger = e.target.closest('.user-trigger');
+    if(userTrigger){ openUserModal(userTrigger); return; }
     var likeBtn = e.target.closest('.like-btn');
     if(likeBtn){
       var postId = likeBtn.dataset.postId;
