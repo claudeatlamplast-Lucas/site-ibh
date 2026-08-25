@@ -37,15 +37,26 @@
 
   var feedLogoutBtn = document.getElementById('feedLogoutBtn');
   var meNome = document.getElementById('meNome');
+  var meAvatar = document.getElementById('meAvatar');
   var postForm = document.getElementById('postForm');
   var postFotoInput = document.getElementById('postFoto');
   var postLegendaInput = document.getElementById('postLegenda');
   var postError = document.getElementById('postError');
   var feedList = document.getElementById('feedList');
   var feedEmpty = document.getElementById('feedEmpty');
+  var feedEnd = document.getElementById('feedEnd');
+
+  var postDropzone = document.getElementById('postDropzone');
+  var dzEmpty = document.getElementById('dzEmpty');
+  var dzPreview = document.getElementById('dzPreview');
+  var dzPreviewImg = document.getElementById('dzPreviewImg');
+  var dzRemoveBtn = document.getElementById('dzRemoveBtn');
 
   var meuPerfilBtn = document.getElementById('meuPerfilBtn');
   var profilePanel = document.getElementById('profilePanel');
+  var profileFotoInput = document.getElementById('profileFotoInput');
+  var profileFotoPreview = document.getElementById('profileFotoPreview');
+  var profileFotoStatus = document.getElementById('profileFotoStatus');
   var profileFaixaAtual = document.getElementById('profileFaixaAtual');
   var profilePendenteMsg = document.getElementById('profilePendenteMsg');
   var profileFaixaForm = document.getElementById('profileFaixaForm');
@@ -208,8 +219,32 @@
     if(!profilePanel.hidden) renderProfilePanel();
   });
 
+  profileFotoInput.addEventListener('change', function(){
+    var file = profileFotoInput.files[0];
+    if(!file) return;
+    var erro = validaFoto(file);
+    if(erro){ profileFotoStatus.textContent = erro; profileFotoInput.value = ''; return; }
+    profileFotoStatus.textContent = 'Enviando...';
+    uploadFoto(file, 'perfil').then(function(fotoUrl){
+      return client.from('profiles').update({ foto_url: fotoUrl }).eq('id', currentUser.id).then(function(res){
+        if(res.error) throw res.error;
+        currentProfile.foto_url = fotoUrl;
+        profileFotoPreview.src = fotoUrl;
+        meAvatar.src = fotoUrl;
+        profileFotoStatus.textContent = 'Foto atualizada!';
+        return carregarFeed();
+      });
+    }).catch(function(err){
+      profileFotoStatus.textContent = 'Erro ao enviar foto: ' + traduzErro(err.message);
+    }).finally(function(){
+      profileFotoInput.value = '';
+    });
+  });
+
   function renderProfilePanel(){
     profileError.textContent = '';
+    profileFotoStatus.textContent = '';
+    profileFotoPreview.src = currentProfile.foto_url || 'assets/ibh-logo.png';
     profileFaixaAtual.textContent = currentProfile.faixa || 'Não informada';
     if(currentProfile.faixa_pendente){
       profilePendenteMsg.hidden = false;
@@ -242,12 +277,58 @@
 
   /* ---------- Feed ---------- */
 
+  function setPostFotoPreview(file){
+    if(!file){
+      dzPreview.hidden = true; dzEmpty.hidden = false; dzPreviewImg.src = '';
+      return;
+    }
+    dzPreviewImg.src = URL.createObjectURL(file);
+    dzEmpty.hidden = true; dzPreview.hidden = false;
+  }
+
+  postFotoInput.addEventListener('change', function(){
+    var file = postFotoInput.files[0];
+    postError.textContent = '';
+    if(file){
+      var erro = validaFoto(file);
+      if(erro){ postError.textContent = erro; postFotoInput.value = ''; setPostFotoPreview(null); return; }
+    }
+    setPostFotoPreview(file);
+  });
+
+  dzRemoveBtn.addEventListener('click', function(e){
+    e.preventDefault(); e.stopPropagation();
+    postFotoInput.value = '';
+    setPostFotoPreview(null);
+  });
+
+  ['dragover','dragenter'].forEach(function(evt){
+    postDropzone.addEventListener(evt, function(e){ e.preventDefault(); postDropzone.classList.add('dz-drag'); });
+  });
+  ['dragleave','drop'].forEach(function(evt){
+    postDropzone.addEventListener(evt, function(e){ e.preventDefault(); postDropzone.classList.remove('dz-drag'); });
+  });
+  postDropzone.addEventListener('drop', function(e){
+    e.preventDefault();
+    var file = e.dataTransfer.files[0];
+    if(!file) return;
+    var erro = validaFoto(file);
+    if(erro){ postError.textContent = erro; return; }
+    try{
+      var dt = new DataTransfer();
+      dt.items.add(file);
+      postFotoInput.files = dt.files;
+    }catch(err){}
+    postError.textContent = '';
+    setPostFotoPreview(file);
+  });
+
   postForm.addEventListener('submit', function(e){
     e.preventDefault();
     postError.textContent = '';
     var fotoFile = postFotoInput.files[0];
     var legenda = postLegendaInput.value.trim();
-    if(!fotoFile){ postError.textContent = 'Escolha uma foto do treino.'; return; }
+    if(!fotoFile){ postError.textContent = 'Escolha uma foto para publicar.'; return; }
     var erroFoto = validaFoto(fotoFile);
     if(erroFoto){ postError.textContent = erroFoto; return; }
 
@@ -263,6 +344,7 @@
     }).then(function(res){
       if(res.error) throw res.error;
       postForm.reset();
+      setPostFotoPreview(null);
       return carregarFeed();
     }).catch(function(err){
       postError.textContent = 'Erro ao publicar: ' + traduzErro(err.message);
@@ -274,7 +356,7 @@
   function carregarFeed(){
     return Promise.all([
       client.from('posts').select('id, autor_id, foto_url, legenda, criado_em, profiles!posts_autor_id_fkey(nome_exibicao, foto_url, faixa)').order('criado_em', { ascending: false }),
-      client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao)').order('criado_em', { ascending: true }),
+      client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url)').order('criado_em', { ascending: true }),
       client.from('curtidas').select('post_id, autor_id')
     ]).then(function(results){
       var postsRes = results[0], comentariosRes = results[1], curtidasRes = results[2];
@@ -289,7 +371,9 @@
   function renderFeed(posts, comentarios, curtidas){
     feedList.innerHTML = '';
     feedEmpty.hidden = posts.length > 0;
+    feedEnd.hidden = posts.length === 0;
     var isAdmin = currentProfile.role === 'admin';
+    var meFoto = currentProfile.foto_url || 'assets/ibh-logo.png';
 
     posts.forEach(function(post){
       var meusComentarios = comentarios.filter(function(c){ return c.post_id === post.id; });
@@ -311,7 +395,7 @@
           '</div>' +
           (podeApagarPost ? '<button type="button" class="delete-btn" data-post-id="' + post.id + '" title="Apagar publicação">&times;</button>' : '') +
         '</div>' +
-        '<img class="post-photo" src="' + escapeHtml(post.foto_url) + '" alt="Foto de treino" loading="lazy">' +
+        '<img class="post-photo" src="' + escapeHtml(post.foto_url) + '" alt="Foto da publicação" loading="lazy">' +
         (post.legenda ? '<p class="post-legenda">' + escapeHtml(post.legenda) + '</p>' : '') +
         '<div class="post-actions">' +
           '<button type="button" class="like-btn' + (jaCurti ? ' liked' : '') + '" data-post-id="' + post.id + '">&#9733; <span>' + minhasCurtidas.length + '</span></button>' +
@@ -320,14 +404,19 @@
           meusComentarios.map(function(c){
             var podeApagarComentario = isAdmin || c.autor_id === currentUser.id;
             var comentarioNome = (c.profiles && c.profiles.nome_exibicao) || 'Aluno';
+            var comentarioFoto = (c.profiles && c.profiles.foto_url) || 'assets/ibh-logo.png';
             return '<div class="comment">' +
-              '<span class="comment-autor">' + escapeHtml(comentarioNome) + '</span> ' +
-              '<span class="comment-texto">' + escapeHtml(c.texto) + '</span>' +
+              '<img class="comment-avatar" src="' + escapeHtml(comentarioFoto) + '" alt="">' +
+              '<div class="comment-body">' +
+                '<span class="comment-autor">' + escapeHtml(comentarioNome) + '</span>' +
+                '<span class="comment-texto">' + escapeHtml(c.texto) + '</span>' +
+              '</div>' +
               (podeApagarComentario ? '<button type="button" class="comment-delete" data-comment-id="' + c.id + '">&times;</button>' : '') +
             '</div>';
           }).join('') +
         '</div>' +
         '<form class="comment-form" data-post-id="' + post.id + '">' +
+          '<img class="comment-form-avatar" src="' + escapeHtml(meFoto) + '" alt="">' +
           '<input type="text" placeholder="Escreva um comentário..." maxlength="500" required>' +
           '<button type="submit" class="btn-gold">Enviar</button>' +
         '</form>';
@@ -390,6 +479,7 @@
         currentProfile = profileRes.data;
         if(currentProfile.status !== 'aprovado'){ renderPending(); return; }
         meNome.textContent = currentProfile.nome_exibicao;
+        meAvatar.src = currentProfile.foto_url || 'assets/ibh-logo.png';
         showOnly(secFeed);
         return carregarFeed();
       });
