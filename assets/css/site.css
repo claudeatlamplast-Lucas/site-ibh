@@ -39,15 +39,37 @@ a{color:inherit;text-decoration:none;}
 img{max-width:100%;}
 ::selection{background:var(--gold);color:var(--black);}
 
-/* ---------- Cursor ---------- */
+/* ---------- Cursor (ponto preciso + anel com leve atraso) ---------- */
 .cursor-dot{
   position:fixed;width:6px;height:6px;border-radius:50%;
   background:var(--gold);pointer-events:none;z-index:9999;
   transform:translate(-50%,-50%);
-  transition:transform 0.12s ease-out, opacity 0.3s;
+  transition:transform 0.12s ease-out, opacity 0.25s ease;
   mix-blend-mode:difference;
 }
+.cursor-dot.hover{opacity:0;}
 @media (max-width:768px){.cursor-dot{display:none;}}
+
+.cursor-ring{
+  position:fixed;width:32px;height:32px;border-radius:50%;
+  border:1px solid var(--gold);
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  opacity:0.55;
+  transition:
+    left .5s cubic-bezier(.16,1,.3,1),
+    top .5s cubic-bezier(.16,1,.3,1),
+    width .35s cubic-bezier(.16,1,.3,1),
+    height .35s cubic-bezier(.16,1,.3,1),
+    background .35s ease, opacity .3s ease;
+  mix-blend-mode:difference;
+}
+.cursor-ring.hover{
+  width:52px;height:52px;
+  background:var(--gold);
+  opacity:0.9;
+}
+@media (max-width:768px){.cursor-ring{display:none;}}
 
 /* ---------- Section index (lateral) ---------- */
 .section-nav{
@@ -226,6 +248,8 @@ img{max-width:100%;}
 section{position:relative;padding:8rem clamp(1.2rem,6vw,6rem);}
 .reveal{opacity:0;transform:translateY(24px);}
 .reveal.in{opacity:1;transform:translateY(0);}
+.reveal-stagger>*{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s cubic-bezier(.16,1,.3,1);}
+.reveal-stagger.in>*{opacity:1;transform:translateY(0);}
 
 .section-heading{display:flex;align-items:center;gap:1rem;margin-bottom:3rem;}
 .section-heading .num{color:var(--gold);font-family:'Playfair Display',serif;font-size:1rem;letter-spacing:0.1em;}
@@ -238,15 +262,17 @@ section{position:relative;padding:8rem clamp(1.2rem,6vw,6rem);}
   position:absolute;top:0;right:0;height:100%;width:45%;
   object-fit:cover;object-position:50% 22%;
   filter:grayscale(0.3) contrast(1.05) brightness(0.72);
-  -webkit-mask-image:linear-gradient(to left, black 45%, transparent 92%);
-  mask-image:linear-gradient(to left, black 45%, transparent 92%);
+  -webkit-mask-image:linear-gradient(to left, black 45%, transparent 92%), linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to left, black 45%, transparent 92%), linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  mask-composite:intersect;
 }
 @media (max-width:900px){
   .philosophy-bg img{
     width:100%;right:0;
     object-position:50% 18%;
-    -webkit-mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
-    mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
+    -webkit-mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%), linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%), linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
     filter:grayscale(0.35) contrast(1.05) brightness(0.5);
   }
 }
@@ -394,16 +420,18 @@ blockquote cite{
   position:absolute;top:0;left:0;height:100%;width:54%;
   object-fit:cover;object-position:50% 16%;
   filter:grayscale(0.3) contrast(1.05) brightness(0.68);
-  -webkit-mask-image:linear-gradient(to right, black 45%, transparent 92%);
-  mask-image:linear-gradient(to right, black 45%, transparent 92%);
+  -webkit-mask-image:linear-gradient(to right, black 45%, transparent 92%), linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to right, black 45%, transparent 92%), linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  mask-composite:intersect;
 }
 .master-bg-overlay{position:absolute;inset:0;background:rgba(10,10,10,0.32);}
 @media (max-width:800px){
   .master-bg img{
     width:100%;left:0;
     object-position:50% 14%;
-    -webkit-mask-image:linear-gradient(180deg, black 0%, black 40%, transparent 88%);
-    mask-image:linear-gradient(180deg, black 0%, black 40%, transparent 88%);
+    -webkit-mask-image:linear-gradient(180deg, black 0%, black 40%, transparent 88%), linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image:linear-gradient(180deg, black 0%, black 40%, transparent 88%), linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
     filter:grayscale(0.35) contrast(1.05) brightness(0.48);
   }
   .master-bg-overlay{background:rgba(10,10,10,0.58);}
@@ -436,16 +464,18 @@ blockquote cite{
   position:absolute;top:0;right:0;height:100%;width:42%;
   object-fit:cover;object-position:50% 22%;
   filter:grayscale(0.3) contrast(1.05) brightness(0.72);
-  -webkit-mask-image:linear-gradient(to left, black 45%, transparent 92%);
-  mask-image:linear-gradient(to left, black 45%, transparent 92%);
+  -webkit-mask-image:linear-gradient(to left, black 45%, transparent 92%), linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to left, black 45%, transparent 92%), linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  mask-composite:intersect;
 }
 .credentials-bg-overlay{position:absolute;inset:0;background:rgba(10,10,10,0.3);}
 @media (max-width:900px){
   .credentials-bg img{
     width:100%;right:0;
     object-position:50% 18%;
-    -webkit-mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
-    mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
+    -webkit-mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%), linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%), linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
     filter:grayscale(0.35) contrast(1.05) brightness(0.5);
   }
   .credentials-bg-overlay{background:rgba(10,10,10,0.55);}
@@ -620,16 +650,18 @@ blockquote cite{
   position:absolute;top:0;right:0;height:100%;width:42%;
   object-fit:cover;object-position:50% 30%;
   filter:grayscale(0.3) contrast(1.05) brightness(0.72);
-  -webkit-mask-image:linear-gradient(to left, black 45%, transparent 92%);
-  mask-image:linear-gradient(to left, black 45%, transparent 92%);
+  -webkit-mask-image:linear-gradient(to left, black 45%, transparent 92%), linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to left, black 45%, transparent 92%), linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  mask-composite:intersect;
 }
 .escolas-bg-overlay{position:absolute;inset:0;background:rgba(10,10,10,0.3);}
 @media (max-width:900px){
   .escolas-bg img{
     width:100%;right:0;
     object-position:50% 22%;
-    -webkit-mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
-    mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
+    -webkit-mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%), linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%), linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
     filter:grayscale(0.35) contrast(1.05) brightness(0.5);
   }
   .escolas-bg-overlay{background:rgba(10,10,10,0.55);}
@@ -810,16 +842,18 @@ body.intro-active{overflow:hidden;height:100vh;}
   position:absolute;top:0;right:0;height:100%;width:42%;
   object-fit:cover;object-position:50% 32%;
   filter:grayscale(0.3) contrast(1.05) brightness(0.72);
-  -webkit-mask-image:linear-gradient(to left, black 45%, transparent 92%);
-  mask-image:linear-gradient(to left, black 45%, transparent 92%);
+  -webkit-mask-image:linear-gradient(to left, black 45%, transparent 92%), linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to left, black 45%, transparent 92%), linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  mask-composite:intersect;
 }
 .trajetoria-bg-overlay{position:absolute;inset:0;background:rgba(10,10,10,0.3);}
 @media (max-width:900px){
   .trajetoria-bg img{
     width:100%;right:0;
     object-position:50% 25%;
-    -webkit-mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
-    mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%);
+    -webkit-mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%), linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image:linear-gradient(180deg, black 0%, black 45%, transparent 92%), linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
     filter:grayscale(0.35) contrast(1.05) brightness(0.5);
   }
   .trajetoria-bg-overlay{background:rgba(10,10,10,0.55);}

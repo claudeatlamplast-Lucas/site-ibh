@@ -19,12 +19,34 @@ if(introOverlay){
   }, 5000);
 }
 
-/* ---------- Cursor ---------- */
+/* ---------- Cursor (ponto preciso + anel com leve atraso) ---------- */
 const dot = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
 if(dot){
   window.addEventListener('mousemove', e=>{
     dot.style.left = e.clientX+'px';
     dot.style.top = e.clientY+'px';
+    if(cursorRing){
+      cursorRing.style.left = e.clientX+'px';
+      cursorRing.style.top = e.clientY+'px';
+    }
+  });
+}
+if(dot && cursorRing){
+  const CURSOR_HOVER_SELECTOR = 'a, button, [role="button"], input, textarea, select, label';
+  document.addEventListener('mouseover', e=>{
+    if(e.target.closest(CURSOR_HOVER_SELECTOR)){
+      dot.classList.add('hover');
+      cursorRing.classList.add('hover');
+    }
+  });
+  document.addEventListener('mouseout', e=>{
+    const leavingInteractive = e.target.closest(CURSOR_HOVER_SELECTOR);
+    const enteringInteractive = e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest(CURSOR_HOVER_SELECTOR);
+    if(leavingInteractive && !enteringInteractive){
+      dot.classList.remove('hover');
+      cursorRing.classList.remove('hover');
+    }
   });
 }
 
@@ -85,7 +107,12 @@ if(window.gsap && window.ScrollTrigger){
 
 let lenis;
 if(window.Lenis && !prefersReducedMotion){
-  lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+  lenis = new Lenis({
+    duration: 1.0,
+    easing: (t)=> 1 - Math.pow(1 - t, 4), // ease-out-quart — resposta mais imediata, chegada macia
+    smoothWheel: true,
+    wheelMultiplier: 1.05
+  });
   if(window.gsap && window.ScrollTrigger){
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time)=>{ lenis.raf(time * 1000); });
@@ -96,13 +123,20 @@ if(window.Lenis && !prefersReducedMotion){
   }
 }
 
-/* ---------- Reveal on scroll (fade + translateY) ---------- */
+/* ---------- Reveal on scroll (fade + translateY, com stagger em grids) ---------- */
 const revealEls = document.querySelectorAll('.reveal');
+const staggerEls = document.querySelectorAll('.reveal-stagger');
 if(window.gsap && window.ScrollTrigger){
   revealEls.forEach(el=>{
     gsap.fromTo(el, {opacity:0, y:24}, {
       opacity:1, y:0, duration:1.1, ease:'power2.out',
       scrollTrigger:{ trigger: el, start:'top 85%', once:true }
+    });
+  });
+  staggerEls.forEach(el=>{
+    gsap.fromTo(el.children, {opacity:0, y:22}, {
+      opacity:1, y:0, duration:0.85, ease:'power2.out', stagger:0.09,
+      scrollTrigger:{ trigger: el, start:'top 88%', once:true }
     });
   });
 } else {
@@ -115,6 +149,7 @@ if(window.gsap && window.ScrollTrigger){
     });
   },{threshold:0.15});
   revealEls.forEach(el=>revealIO.observe(el));
+  staggerEls.forEach(el=>revealIO.observe(el));
 }
 
 /* ---------- Proteção contra cópia — documentos pessoais escaneados (Credenciais) ---------- */
