@@ -1,0 +1,73 @@
+/* ======================================================================
+   Comunidade IBH — estilos específicos (feed, cadastro, posts)
+   Reaproveita as variáveis de cor e tipografia de site.css.
+   ====================================================================== */
+
+[hidden]{display:none !important;}
+
+.auth-card,.pending-card{max-width:440px;margin:0 auto;text-align:center;}
+.pending-card p{color:rgba(242,240,234,0.75);line-height:1.6;margin:1rem 0 1.8rem;}
+
+.auth-tabs{display:flex;gap:0.5rem;justify-content:center;margin-bottom:2rem;}
+.auth-tabs button{
+  background:none;border:1px solid var(--gold-dim);color:rgba(242,240,234,0.6);
+  font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;
+  padding:0.7rem 1.4rem;cursor:pointer;transition:color .2s ease,border-color .2s ease;
+}
+.auth-tabs button.active{color:var(--gold);border-color:var(--gold);}
+
+.comunidade-form{display:flex;flex-direction:column;gap:1.4rem;text-align:left;}
+.comunidade-form .field{display:flex;flex-direction:column;gap:0.5rem;}
+.comunidade-form label{font-family:'Cinzel',serif;font-size:0.66rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(242,240,234,0.6);}
+.comunidade-form input[type="text"],
+.comunidade-form input[type="email"],
+.comunidade-form input[type="password"]{
+  background:var(--black);border:1px solid var(--gold-dim);color:var(--bone);
+  padding:0.8rem 1rem;font-family:'Work Sans',sans-serif;font-size:0.92rem;
+}
+.comunidade-form input[type="file"]{color:rgba(242,240,234,0.75);font-size:0.85rem;}
+.comunidade-form input:focus{outline:none;border-color:var(--gold);}
+.comunidade-form .hint{font-size:0.76rem;color:rgba(242,240,234,0.45);}
+.form-error{color:#e07a5f;font-size:0.85rem;min-height:1.2em;}
+
+.feed-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:2.5rem;flex-wrap:wrap;}
+.feed-header .welcome{font-family:'Playfair Display',serif;font-size:1.1rem;}
+.feed-header .welcome b{color:var(--gold);font-weight:500;}
+.link-btn{background:none;border:none;color:rgba(242,240,234,0.55);font-size:0.78rem;cursor:pointer;text-decoration:underline;}
+.link-btn:hover{color:var(--gold);}
+
+.new-post-form{max-width:520px;margin:0 auto 4rem;display:flex;flex-direction:column;gap:1rem;background:var(--black);padding:1.8rem;border:1px solid rgba(232,185,35,0.15);}
+
+.feed-empty{text-align:center;color:rgba(242,240,234,0.5);font-size:0.9rem;}
+.feed-error{text-align:center;color:#e07a5f;}
+
+.feed-list{display:flex;flex-direction:column;gap:2.5rem;max-width:520px;margin:0 auto;}
+.post-card{background:var(--black);border:1px solid rgba(232,185,35,0.12);}
+.post-header{display:flex;align-items:center;gap:0.8rem;padding:1rem 1.2rem;}
+.post-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#1a1a1a;}
+.post-author{display:flex;flex-direction:column;flex:1;}
+.post-author-nome{font-size:0.88rem;color:var(--bone);}
+.post-author-faixa{font-size:0.7rem;color:var(--gold);}
+.delete-btn,.comment-delete{background:none;border:none;color:rgba(242,240,234,0.4);font-size:1.1rem;cursor:pointer;line-height:1;padding:0 0.2rem;}
+.delete-btn:hover,.comment-delete:hover{color:#e07a5f;}
+
+.post-photo{width:100%;display:block;max-height:560px;object-fit:cover;}
+.post-legenda{padding:1rem 1.2rem 0;font-size:0.9rem;color:rgba(242,240,234,0.85);line-height:1.5;}
+
+.post-actions{padding:0.9rem 1.2rem;}
+.like-btn{background:none;border:1px solid var(--gold-dim);color:rgba(242,240,234,0.7);padding:0.4rem 0.9rem;font-size:0.82rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.4rem;}
+.like-btn.liked{color:var(--gold);border-color:var(--gold);}
+
+.comment-list{display:flex;flex-direction:column;gap:0.5rem;padding:0 1.2rem;}
+.comment{font-size:0.85rem;color:rgba(242,240,234,0.8);display:flex;align-items:baseline;gap:0.4rem;flex-wrap:wrap;}
+.comment-autor{color:var(--gold);font-size:0.8rem;flex-shrink:0;}
+.comment-texto{flex:1;}
+
+.comment-form{display:flex;gap:0.6rem;padding:1rem 1.2rem 1.4rem;}
+.comment-form input{flex:1;background:var(--black-deep);border:1px solid rgba(232,185,35,0.15);color:var(--bone);padding:0.6rem 0.8rem;font-size:0.85rem;}
+.comment-form input:focus{outline:none;border-color:var(--gold);}
+.comment-form button{padding:0.6rem 1.1rem;font-size:0.7rem;}
+
+@media (max-width: 560px){
+  .new-post-form,.feed-list{max-width:100%;}
+}

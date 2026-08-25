@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comunidade — Instituto Brasileiro de Hapkido</title>
+<meta name="description" content="Espaço da comunidade de alunos do Instituto Brasileiro de Hapkido — compartilhe fotos do treino e interaja com outros alunos.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/comunidade.css">
+</head>
+<body>
+
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="section-nav" id="sectionNav"></div>
+
+<header class="topbar">
+  <a href="index.html" class="brand">
+    <img src="assets/ibh-logo.png" alt="Instituto Brasileiro de Hapkido">
+    <span>IBH</span>
+  </a>
+  <div class="topbar-actions">
+    <button class="back-btn" id="backBtn" aria-label="Voltar"><span class="back-arrow">&larr;&#xFE0E;</span><span class="back-label">Voltar</span></button>
+    <button class="menu-btn" id="menuOpenBtn">Menu</button>
+  </div>
+</header>
+
+<div class="menu-overlay" id="menuOverlay">
+  <button class="menu-close" id="menuCloseBtn">&times;</button>
+  <nav>
+    <a href="index.html">Início</a>
+    <a href="sobre.html">Sobre</a>
+    <a href="formacao.html">Formação</a>
+    <a href="mestre.html">Mestre</a>
+    <a href="campeonatos.html">Campeonatos</a>
+    <a href="rede.html">Rede</a>
+    <a href="comunidade.html">Comunidade</a>
+    <a href="contato.html">Matrícula</a>
+  </nav>
+  <div class="menu-social">
+    <a href="https://instagram.com/hapkidobrasil" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.facebook.com/p/Instituto-Brasileiro-de-Hapkido-100062145890610/" target="_blank" rel="noopener">Facebook</a>
+  </div>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="page-hero">
+  <span class="label">Espaço dos alunos</span>
+  <h1>Comunidade</h1>
+  <p class="page-lede">Compartilhe fotos do seu treino, comente e interaja com os outros alunos do Instituto.</p>
+</section>
+
+<!-- ============ AUTENTICAÇÃO ============ -->
+<section id="authSection">
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button type="button" id="tabLogin" class="active">Entrar</button>
+      <button type="button" id="tabCadastro">Cadastrar</button>
+    </div>
+
+    <form class="comunidade-form" id="loginForm">
+      <div class="field">
+        <label for="loginEmail">E-mail</label>
+        <input type="email" id="loginEmail" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="loginSenha">Senha</label>
+        <input type="password" id="loginSenha" required autocomplete="current-password">
+      </div>
+      <p class="form-error" id="authError"></p>
+      <button type="submit" class="btn-gold">Entrar</button>
+    </form>
+
+    <form class="comunidade-form" id="cadastroForm" hidden>
+      <div class="field">
+        <label for="cadNome">Seu nome</label>
+        <input type="text" id="cadNome" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="cadFaixa">Faixa / graduação</label>
+        <input type="text" id="cadFaixa" placeholder="Ex.: Faixa azul, 2º gup">
+      </div>
+      <div class="field">
+        <label for="cadFoto">Foto de perfil (opcional)</label>
+        <input type="file" id="cadFoto" accept="image/jpeg,image/png,image/webp">
+      </div>
+      <div class="field">
+        <label for="cadEmail">E-mail</label>
+        <input type="email" id="cadEmail" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="cadSenha">Senha</label>
+        <input type="password" id="cadSenha" required autocomplete="new-password" minlength="6">
+        <span class="hint">Mínimo de 6 caracteres.</span>
+      </div>
+      <p class="hint">Seu cadastro passa por uma aprovação antes de liberar o acesso ao feed.</p>
+      <button type="submit" class="btn-gold">Cadastrar</button>
+    </form>
+  </div>
+</section>
+
+<!-- ============ AGUARDANDO APROVAÇÃO ============ -->
+<section id="pendingSection" hidden>
+  <div class="pending-card">
+    <h2 id="pendingTitle">Cadastro em análise</h2>
+    <p id="pendingText"></p>
+    <button type="button" class="link-btn" id="pendingLogoutBtn">Sair</button>
+  </div>
+</section>
+
+<!-- ============ FEED ============ -->
+<section id="feedSection" hidden>
+  <div class="feed-header">
+    <span class="welcome">Olá, <b id="meNome"></b></span>
+    <button type="button" class="link-btn" id="feedLogoutBtn">Sair</button>
+  </div>
+
+  <form class="new-post-form" id="postForm">
+    <div class="field">
+      <label for="postFoto">Foto do treino</label>
+      <input type="file" id="postFoto" accept="image/jpeg,image/png,image/webp" required>
+    </div>
+    <div class="field">
+      <label for="postLegenda">Legenda (opcional)</label>
+      <input type="text" id="postLegenda" maxlength="280" placeholder="Como foi o treino de hoje?">
+    </div>
+    <p class="form-error" id="postError"></p>
+    <button type="submit" class="btn-gold">Publicar</button>
+  </form>
+
+  <p class="feed-empty" id="feedEmpty" hidden>Ainda não há publicações. Seja o primeiro a postar!</p>
+  <div class="feed-list" id="feedList"></div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="fbrand">
+    <img src="assets/ibh-logo.png" alt="IBH">
+    <small>&copy; <span id="year"></span> Instituto Brasileiro de Hapkido — Piracaia-SP</small>
+  </div>
+  <div style="display:flex;gap:1.2rem;">
+    <a href="https://instagram.com/hapkidobrasil" class="fsocial" target="_blank" rel="noopener">@hapkidobrasil</a>
+    <a href="https://www.facebook.com/p/Instituto-Brasileiro-de-Hapkido-100062145890610/" class="fsocial" target="_blank" rel="noopener">Facebook</a>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/lenis@1/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="assets/js/site.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/comunidade.js"></script>
+</body>
+</html>
