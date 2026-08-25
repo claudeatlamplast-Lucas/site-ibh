@@ -113,10 +113,33 @@
       <img src="assets/ig/mestre-projecao-tatame.jpg" alt="Chong Kwanjangnim Raul Braga Freire aplicando projeção em aluno no tatame, diante do mural da águia do Instituto">
       <div class="credentials-bg-overlay"></div>
     </div>
-    <div class="docs-columns">
-      <div class="docs-col">
-        <span class="label docs-col-title">Credenciais</span>
-        <div class="credentials-gallery no-copy" id="credGallery">
+    <span class="label" style="display:block;text-align:center;margin-bottom:2rem;">Documentação</span>
+    <div class="docs-teasers">
+      <button class="docs-teaser" id="teaserCred" type="button">
+        <span class="docs-teaser-media no-copy">
+          <img src="assets/ig/carteirinha-honoris-causa-2015.jpg" alt="Diploma de Mestre Honoris Causa em Artes Marciais, FACEI, 2015" draggable="false">
+        </span>
+        <span class="docs-teaser-title">Credenciais</span>
+        <span class="docs-teaser-count" id="credCount"></span>
+      </button>
+      <button class="docs-teaser" id="teaserCert" type="button">
+        <span class="docs-teaser-media docs-teaser-media--portrait no-copy">
+          <img src="assets/ig/certificados/reconhecimento-especial.jpg" alt="Reconhecimento Especial, International Hap Ki Do Federation, 2013" draggable="false">
+        </span>
+        <span class="docs-teaser-title">Certificados</span>
+        <span class="docs-teaser-count" id="certCount"></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAINEL — TODAS AS CREDENCIAIS E CERTIFICADOS ============ -->
+<div class="docs-panel" id="docsPanel" aria-hidden="true">
+  <div class="docs-panel-inner">
+    <button class="docs-panel-close" id="docsPanelClose" aria-label="Fechar">&times;</button>
+    <div class="docs-panel-section">
+      <span class="label docs-col-title">Credenciais</span>
+      <div class="credentials-gallery no-copy" id="credGallery">
           <figure>
             <img src="assets/ig/membro-ihf-1990.jpg" alt="Carteira de membro, International Hapkido Federation, 1990" draggable="false">
             <figcaption>1990 · Membro — IHF</figcaption>
@@ -167,7 +190,7 @@
           </figure>
         </div>
       </div>
-      <div class="docs-col">
+      <div class="docs-panel-section">
         <span class="label docs-col-title">Certificados</span>
         <div class="credentials-gallery no-copy" id="certGallery">
           <figure>
@@ -226,7 +249,7 @@
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- ============ CTA ============ -->
 <section class="cta">
@@ -234,6 +257,48 @@
     <span class="label">Treine com o Instituto</span>
     <h2 style="margin-top:1rem;">Conheça a escola de Piracaia</h2>
     <a href="contato.html" class="btn-gold">Fale conosco</a>
+  </div>
+</section>
+
+<!-- ============ EXPLORAR O SITE ============ -->
+<section class="explore-pages">
+  <span class="label">Explorar o site</span>
+  <div class="explore-grid">
+    <a href="index.html" class="explore-card">
+      <span class="explore-card-index">01</span>
+      <span class="explore-card-title">Início<span class="arrow" aria-hidden="true">↗︎</span></span>
+      <span class="explore-card-desc">A porta de entrada do Instituto</span>
+    </a>
+    <a href="sobre.html" class="explore-card">
+      <span class="explore-card-index">02</span>
+      <span class="explore-card-title">Sobre<span class="arrow" aria-hidden="true">↗︎</span></span>
+      <span class="explore-card-desc">História, valores e a linhagem do IBH</span>
+    </a>
+    <a href="formacao.html" class="explore-card">
+      <span class="explore-card-index">03</span>
+      <span class="explore-card-title">Formação<span class="arrow" aria-hidden="true">↗︎</span></span>
+      <span class="explore-card-desc">Graduações, faixas e o caminho do aluno</span>
+    </a>
+    <span class="explore-card is-current">
+      <span class="explore-card-index">04</span>
+      <span class="explore-card-title">Mestre</span>
+      <span class="explore-card-desc">Você está aqui</span>
+    </span>
+    <a href="campeonatos.html" class="explore-card">
+      <span class="explore-card-index">05</span>
+      <span class="explore-card-title">Campeonatos<span class="arrow" aria-hidden="true">↗︎</span></span>
+      <span class="explore-card-desc">Resultados e histórico competitivo</span>
+    </a>
+    <a href="rede.html" class="explore-card">
+      <span class="explore-card-index">06</span>
+      <span class="explore-card-title">Rede<span class="arrow" aria-hidden="true">↗︎</span></span>
+      <span class="explore-card-desc">Escolas filiadas ao Instituto</span>
+    </a>
+    <a href="contato.html" class="explore-card">
+      <span class="explore-card-index">07</span>
+      <span class="explore-card-title">Matrícula<span class="arrow" aria-hidden="true">↗︎</span></span>
+      <span class="explore-card-desc">Fale com a equipe e comece a treinar</span>
+    </a>
   </div>
 </section>
 
@@ -266,9 +331,9 @@
 <script src="assets/js/site.js"></script>
 <script>
 (function(){
-  const gallery = document.querySelector('.credentials-gallery');
+  const galleries = document.querySelectorAll('.credentials-gallery');
   const lightbox = document.getElementById('credLightbox');
-  if(!gallery || !lightbox) return;
+  if(!galleries.length || !lightbox) return;
 
   const lbImg = document.getElementById('lightboxImg');
   const lbCaption = document.getElementById('lightboxCaption');
@@ -307,21 +372,60 @@
     disarmScrollClose();
   }
 
-  gallery.querySelectorAll('figure').forEach(fig=>{
-    fig.setAttribute('role', 'button');
-    fig.setAttribute('tabindex', '0');
-    fig.addEventListener('click', ()=>openLightbox(fig));
-    fig.addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openLightbox(fig); }
+  galleries.forEach(gallery=>{
+    gallery.querySelectorAll('figure').forEach(fig=>{
+      fig.setAttribute('role', 'button');
+      fig.setAttribute('tabindex', '0');
+      fig.addEventListener('click', ()=>openLightbox(fig));
+      fig.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openLightbox(fig); }
+      });
     });
   });
 
   closeBtn.addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', (e)=>{ if(e.target === lightbox) closeLightbox(); });
-  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox(); });
 
   lbImg.addEventListener('contextmenu', e=>e.preventDefault());
   lbImg.addEventListener('dragstart', e=>e.preventDefault());
+
+  /* ---------- Painel — todas as credenciais e certificados ---------- */
+  const panel = document.getElementById('docsPanel');
+  const panelClose = document.getElementById('docsPanelClose');
+  const teaserCred = document.getElementById('teaserCred');
+  const teaserCert = document.getElementById('teaserCert');
+  const credCount = document.getElementById('credCount');
+  const certCount = document.getElementById('certCount');
+
+  if(credCount) credCount.textContent = document.querySelectorAll('#credGallery figure').length + ' documentos';
+  if(certCount) certCount.textContent = document.querySelectorAll('#certGallery figure').length + ' documentos';
+
+  let panelLastFocused = null;
+  function openPanel(){
+    panel.classList.add('open');
+    panel.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    panelLastFocused = document.activeElement;
+    panelClose.focus();
+  }
+  function closePanel(){
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if(panelLastFocused) panelLastFocused.focus();
+  }
+  if(panel && panelClose && teaserCred && teaserCert){
+    teaserCred.addEventListener('click', openPanel);
+    teaserCert.addEventListener('click', openPanel);
+    panelClose.addEventListener('click', closePanel);
+    panel.addEventListener('click', (e)=>{ if(e.target === panel) closePanel(); });
+  }
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.key !== 'Escape') return;
+    if(lightbox.classList.contains('open')){ closeLightbox(); return; }
+    if(panel && panel.classList.contains('open')){ closePanel(); }
+  });
 })();
 </script>
 </body>

@@ -451,14 +451,67 @@ blockquote cite{
   .credentials-bg-overlay{background:rgba(10,10,10,0.55);}
 }
 .credentials>.label{position:relative;z-index:2;}
-.docs-columns{
-  position:relative;z-index:2;
-  display:grid;grid-template-columns:1fr 1fr;gap:0 3rem;
-  max-width:900px;margin:0 auto;transform:translateX(-9%);
-}
 .docs-col-title{display:block;text-align:center;margin-bottom:1.1rem;}
-@media (max-width:900px){
-  .docs-columns{grid-template-columns:1fr;gap:3.5rem;transform:none;}
+
+/* ---------- Teasers — prévia de Credenciais/Certificados na página ---------- */
+.docs-teasers{
+  position:relative;z-index:2;
+  display:flex;justify-content:center;align-items:flex-end;gap:2.5rem;flex-wrap:wrap;
+  max-width:640px;margin:0 auto;transform:translateX(-9%);
+}
+@media (max-width:900px){.docs-teasers{transform:none;}}
+.docs-teaser{
+  background:none;border:none;padding:0;cursor:pointer;font-family:inherit;color:inherit;
+  display:flex;flex-direction:column;align-items:center;gap:0.8rem;width:220px;
+}
+.docs-teaser-media{
+  position:relative;overflow:hidden;display:block;width:100%;aspect-ratio:3/2;
+  border:1px solid rgba(232,185,35,0.25);
+  transition:transform .5s cubic-bezier(.16,1,.3,1), box-shadow .5s ease, border-color .5s ease;
+}
+.docs-teaser-media--portrait{aspect-ratio:3/4;}
+.docs-teaser-media img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}
+.docs-teaser:hover .docs-teaser-media{
+  transform:scale(1.035) rotate(-0.4deg);
+  box-shadow:0 14px 34px -10px rgba(232,185,35,0.32);
+  border-color:rgba(232,185,35,0.55);
+}
+.docs-teaser-title{
+  font-family:'Cinzel',serif;font-size:0.78rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);
+}
+.docs-teaser-count{
+  font-family:'Work Sans',sans-serif;font-weight:300;font-size:0.7rem;letter-spacing:0.03em;
+  color:rgba(242,240,234,0.5);margin-top:-0.5rem;
+}
+@media (max-width:520px){
+  .docs-teasers{gap:1.6rem;}
+  .docs-teaser{width:44%;}
+}
+
+/* ---------- Painel — todas as credenciais e certificados ---------- */
+.docs-panel{
+  position:fixed;inset:0;z-index:2500;
+  background:rgba(6,6,6,0.97);overflow-y:auto;
+  padding:5rem 1.5rem 4rem;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .35s ease, visibility .35s ease;
+}
+.docs-panel.open{opacity:1;visibility:visible;pointer-events:auto;}
+.docs-panel-inner{
+  position:relative;max-width:1100px;margin:0 auto;
+  display:flex;flex-direction:column;gap:4rem;
+}
+.docs-panel-close{
+  position:fixed;top:1.4rem;right:1.5rem;z-index:2;
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(10,10,10,0.8);border:1px solid rgba(232,185,35,0.4);color:var(--bone);
+  font-size:1.3rem;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .3s ease, color .3s ease, border-color .3s ease;
+}
+.docs-panel-close:hover{background:var(--gold);color:var(--black);border-color:var(--gold);}
+.docs-panel-section .credentials-gallery{
+  max-width:none;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1.1rem;
 }
 .credentials-gallery{
   display:grid;grid-template-columns:repeat(2,1fr);gap:0.7rem 0.9rem;
@@ -510,7 +563,7 @@ blockquote cite{
   background-image:url('../ibh-logo.png');
   background-repeat:repeat;
   background-size:70px 70px;
-  opacity:0.32;
+  opacity:0.16;
   transform:rotate(-24deg);
   pointer-events:none;
   animation:watermarkDrift 18s linear infinite;
@@ -539,13 +592,14 @@ blockquote cite{
   pointer-events:auto;
 }
 .no-copy{-webkit-touch-callout:none;}
-.no-copy figure::after{
+.no-copy figure::after,
+.docs-teaser-media::after{
   content:'';
   position:absolute;top:-35%;left:-35%;right:-35%;bottom:-35%;
   background-image:url('../ibh-logo.png');
   background-repeat:repeat;
   background-size:60px 60px;
-  opacity:0.34;
+  opacity:0.16;
   transform:rotate(-24deg);
   pointer-events:none;
   animation:watermarkDrift 18s linear infinite;
@@ -555,7 +609,8 @@ blockquote cite{
   100%{background-position:240px 240px;}
 }
 @media (prefers-reduced-motion:reduce){
-  .no-copy figure::after{animation:none;}
+  .no-copy figure::after,
+  .docs-teaser-media::after{animation:none;}
 }
 
 /* ---------- Rede de Filiadas — fundo fotográfico ---------- */
@@ -628,6 +683,37 @@ blockquote cite{
 .cta-meta{margin-top:2.4rem;font-size:0.82rem;color:rgba(242,240,234,0.5);}
 .cta-meta a{color:var(--gold);}
 .cta-seal{width:1px;height:40px;background:var(--terracotta);margin:2.4rem auto 0;}
+
+/* ---------- Explorar o site — card de navegação ao final de cada página ---------- */
+.explore-pages{
+  margin-top:5rem;padding:3.5rem clamp(1.2rem,6vw,3rem) 0;
+  border-top:1px solid rgba(232,185,35,0.15);
+}
+.explore-pages>.label{display:block;text-align:center;margin-bottom:2rem;}
+.explore-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:1px;max-width:1000px;margin:0 auto;
+  background:rgba(232,185,35,0.15);
+}
+.explore-card{
+  display:flex;flex-direction:column;gap:0.4rem;
+  background:var(--black);padding:1.5rem 1.6rem;
+  transition:background .3s ease;
+}
+.explore-card:hover{background:#141414;}
+.explore-card-index{
+  font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.14em;color:rgba(232,185,35,0.5);
+}
+.explore-card-title{
+  font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:500;color:var(--bone);
+  display:flex;align-items:center;justify-content:space-between;gap:0.5rem;
+}
+.explore-card-title .arrow{font-size:0.85rem;color:var(--gold);transition:transform .3s ease;}
+.explore-card:hover .explore-card-title .arrow{transform:translateX(4px);}
+.explore-card-desc{font-size:0.78rem;color:rgba(242,240,234,0.5);line-height:1.5;}
+.explore-card.is-current{background:#0f0f0f;cursor:default;}
+.explore-card.is-current .explore-card-title{color:var(--gold);}
+.explore-card.is-current .explore-card-desc{color:rgba(232,185,35,0.4);}
 
 /* ---------- Footer ---------- */
 footer{
