@@ -84,7 +84,7 @@
       </div>
       <div class="field">
         <label for="cadFaixa">Faixa / graduação</label>
-        <input type="text" id="cadFaixa" placeholder="Ex.: Faixa azul, 2º gup">
+        <select id="cadFaixa" required></select>
       </div>
       <div class="field">
         <label for="cadFoto">Foto de perfil (opcional)</label>
@@ -118,7 +118,24 @@
 <section id="feedSection" hidden>
   <div class="feed-header">
     <span class="welcome">Olá, <b id="meNome"></b></span>
-    <button type="button" class="link-btn" id="feedLogoutBtn">Sair</button>
+    <div class="feed-header-actions">
+      <button type="button" class="link-btn" id="meuPerfilBtn">Meu perfil</button>
+      <button type="button" class="link-btn" id="feedLogoutBtn">Sair</button>
+    </div>
+  </div>
+
+  <div class="profile-panel" id="profilePanel" hidden>
+    <h3>Meu perfil</h3>
+    <p class="profile-faixa-atual">Faixa atual: <b id="profileFaixaAtual"></b></p>
+    <p class="profile-pendente" id="profilePendenteMsg" hidden></p>
+    <form class="comunidade-form profile-faixa-form" id="profileFaixaForm">
+      <div class="field">
+        <label for="profileFaixaSelect">Solicitar troca para</label>
+        <select id="profileFaixaSelect"></select>
+      </div>
+      <p class="form-error" id="profileError"></p>
+      <button type="submit" class="btn-gold">Solicitar troca de faixa</button>
+    </form>
   </div>
 
   <form class="new-post-form" id="postForm">

@@ -10,6 +10,7 @@ create table public.profiles (
   nome_exibicao text not null,
   foto_url text,
   faixa text,
+  faixa_pendente text,
   role text not null default 'aluno' check (role in ('aluno','instrutor','admin')),
   status text not null default 'pendente' check (status in ('pendente','aprovado','rejeitado')),
   criado_em timestamptz not null default now()
@@ -45,15 +46,21 @@ alter table public.posts enable row level security;
 alter table public.comentarios enable row level security;
 alter table public.curtidas enable row level security;
 
--- Concede o básico (a RLS acima já restringe por linha; isso garante os grants de tabela)
+-- O Supabase concede, por padrão, UPDATE amplo em tabelas novas para
+-- authenticated/anon — precisamos revogar tudo em profiles antes de
+-- conceder só o que realmente deve ser permitido (senão um aluno logado
+-- conseguiria mudar role/status/faixa da própria linha direto pela API).
+revoke all on public.profiles from authenticated, anon;
+
 grant select, insert on public.profiles to authenticated;
 grant select, insert, delete on public.posts to authenticated;
 grant select, insert, delete on public.comentarios to authenticated;
 grant select, insert, delete on public.curtidas to authenticated;
 
--- Aluno só pode alterar os próprios dados de perfil — nunca role/status
--- (aprovação só acontece via Table Editor, com a service role, que ignora isso)
-grant update (nome_exibicao, foto_url, faixa) on public.profiles to authenticated;
+-- Aluno só pode alterar os próprios dados de perfil — nunca role/status/faixa direto
+-- (troca de faixa passa por faixa_pendente; aprovação só acontece via Table Editor,
+-- com a service role, que ignora essas restrições de coluna)
+grant update (nome_exibicao, foto_url, faixa_pendente) on public.profiles to authenticated;
 
 -- profiles: leitura de quem está aprovado, ou do próprio perfil (mesmo pendente); insert/update do próprio
 create policy "profiles_select" on public.profiles for select
@@ -143,4 +150,9 @@ create policy "comunidade_fotos_upload_proprio" on storage.objects for insert
 --
 -- 4. Para aprovar cada novo aluno depois: Table Editor > profiles >
 --    mude a coluna status de 'pendente' para 'aprovado' (ou 'rejeitado').
+--
+-- 5. Para aprovar uma troca de faixa: Table Editor > profiles > ache o aluno
+--    com faixa_pendente preenchida e faça manualmente:
+--      faixa          -> copie o valor que está em faixa_pendente
+--      faixa_pendente -> apague (deixe em branco/NULL)
 -- ============================================================

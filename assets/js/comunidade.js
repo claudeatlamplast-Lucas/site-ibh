@@ -5,6 +5,21 @@
   var BUCKET = 'comunidade-fotos';
   var MAX_FOTO_MB = 5;
   var TIPOS_ACEITOS = ['image/jpeg','image/png','image/webp'];
+  var FAIXAS = [
+    'Branca',
+    'Amarela',
+    'Amarela p/ Verde',
+    'Verde',
+    'Verde p/ Azul',
+    'Azul',
+    'Azul p/ Vermelha',
+    'Vermelha',
+    'Vermelha p/ Preta',
+    'Preta Honorário',
+    'Preta 1º Dan',
+    'Preta 2º Dan',
+    'Preta 3º Dan'
+  ];
 
   var secAuth = document.getElementById('authSection');
   var secPending = document.getElementById('pendingSection');
@@ -29,8 +44,28 @@
   var feedList = document.getElementById('feedList');
   var feedEmpty = document.getElementById('feedEmpty');
 
+  var meuPerfilBtn = document.getElementById('meuPerfilBtn');
+  var profilePanel = document.getElementById('profilePanel');
+  var profileFaixaAtual = document.getElementById('profileFaixaAtual');
+  var profilePendenteMsg = document.getElementById('profilePendenteMsg');
+  var profileFaixaForm = document.getElementById('profileFaixaForm');
+  var profileFaixaSelect = document.getElementById('profileFaixaSelect');
+  var profileError = document.getElementById('profileError');
+
   var currentUser = null;
   var currentProfile = null;
+
+  function populaSelectFaixas(select){
+    select.innerHTML = '';
+    FAIXAS.forEach(function(f){
+      var opt = document.createElement('option');
+      opt.value = f;
+      opt.textContent = f;
+      select.appendChild(opt);
+    });
+  }
+  populaSelectFaixas(document.getElementById('cadFaixa'));
+  populaSelectFaixas(profileFaixaSelect);
 
   function showOnly(section){
     [secAuth, secPending, secFeed].forEach(function(s){
@@ -148,6 +183,7 @@
     client.auth.signOut().then(function(){
       currentUser = null; currentProfile = null;
       formLogin.reset(); formCadastro.reset();
+      profilePanel.hidden = true;
       showOnly(secAuth);
     });
   }
@@ -164,6 +200,45 @@
     }
     showOnly(secPending);
   }
+
+  /* ---------- Meu perfil / troca de faixa ---------- */
+
+  meuPerfilBtn.addEventListener('click', function(){
+    profilePanel.hidden = !profilePanel.hidden;
+    if(!profilePanel.hidden) renderProfilePanel();
+  });
+
+  function renderProfilePanel(){
+    profileError.textContent = '';
+    profileFaixaAtual.textContent = currentProfile.faixa || 'Não informada';
+    if(currentProfile.faixa_pendente){
+      profilePendenteMsg.hidden = false;
+      profilePendenteMsg.textContent = 'Solicitação de troca para "' + currentProfile.faixa_pendente + '" aguardando aprovação.';
+      profileFaixaForm.hidden = true;
+    } else {
+      profilePendenteMsg.hidden = true;
+      profileFaixaForm.hidden = false;
+      profileFaixaSelect.value = currentProfile.faixa || 'Branca';
+    }
+  }
+
+  profileFaixaForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    profileError.textContent = '';
+    var novaFaixa = profileFaixaSelect.value;
+    if(novaFaixa === currentProfile.faixa){
+      profileError.textContent = 'Essa já é sua faixa atual.';
+      return;
+    }
+    var btn = profileFaixaForm.querySelector('button');
+    btn.disabled = true;
+    client.from('profiles').update({ faixa_pendente: novaFaixa }).eq('id', currentUser.id).then(function(res){
+      btn.disabled = false;
+      if(res.error){ profileError.textContent = 'Erro ao enviar solicitação: ' + traduzErro(res.error.message); return; }
+      currentProfile.faixa_pendente = novaFaixa;
+      renderProfilePanel();
+    });
+  });
 
   /* ---------- Feed ---------- */
 
