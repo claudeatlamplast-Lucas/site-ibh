@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Comunidade — Instituto Brasileiro de Hapkido</title>
-<meta name="description" content="Espaço da comunidade de alunos do Instituto Brasileiro de Hapkido — compartilhe fotos do treino e interaja com outros alunos.">
+<meta name="description" content="Espaço da comunidade de alunos do Instituto Brasileiro de Hapkido — compartilhe fotos do treino, de eventos e momentos com outros alunos.">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="assets/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -14,7 +14,9 @@
 <link rel="stylesheet" href="assets/css/site.css">
 <link rel="stylesheet" href="assets/css/comunidade.css">
 </head>
-<body>
+<body class="comunidade-page">
+
+<div class="comunidade-bg"></div>
 
 <div class="cursor-dot" id="cursorDot"></div>
 <div class="cursor-ring" id="cursorRing"></div>
@@ -26,6 +28,7 @@
     <span>IBH</span>
   </a>
   <div class="topbar-actions">
+    <a href="comunidade.html" class="comunidade-badge"><span class="dot"></span><span>Comunidade</span></a>
     <button class="back-btn" id="backBtn" aria-label="Voltar"><span class="back-arrow">&larr;&#xFE0E;</span><span class="back-label">Voltar</span></button>
     <button class="menu-btn" id="menuOpenBtn">Menu</button>
   </div>
@@ -53,7 +56,7 @@
 <section class="page-hero">
   <span class="label">Espaço dos alunos</span>
   <h1>Comunidade</h1>
-  <p class="page-lede">Compartilhe fotos do seu treino, comente e interaja com os outros alunos do Instituto.</p>
+  <p class="page-lede">Compartilhe fotos e momentos com a comunidade — do treino a seminários, campeonatos e viagens — comente e interaja com os outros alunos do Instituto.</p>
 </section>
 
 <!-- ============ AUTENTICAÇÃO ============ -->
@@ -117,7 +120,7 @@
 <!-- ============ FEED ============ -->
 <section id="feedSection" hidden>
   <div class="feed-header">
-    <span class="welcome">Olá, <b id="meNome"></b></span>
+    <span class="welcome"><img class="header-avatar" id="meAvatar" src="assets/ibh-logo.png" alt="">Olá, <b id="meNome"></b></span>
     <div class="feed-header-actions">
       <button type="button" class="link-btn" id="meuPerfilBtn">Meu perfil</button>
       <button type="button" class="link-btn" id="feedLogoutBtn">Sair</button>
@@ -126,6 +129,14 @@
 
   <div class="profile-panel" id="profilePanel" hidden>
     <h3>Meu perfil</h3>
+    <div class="profile-photo-row">
+      <img class="profile-photo-preview" id="profileFotoPreview" src="assets/ibh-logo.png" alt="">
+      <div class="profile-photo-actions">
+        <label class="upload-btn" for="profileFotoInput">Trocar foto</label>
+        <input type="file" id="profileFotoInput" accept="image/jpeg,image/png,image/webp" hidden>
+        <span class="hint" id="profileFotoStatus"></span>
+      </div>
+    </div>
     <p class="profile-faixa-atual">Faixa atual: <b id="profileFaixaAtual"></b></p>
     <p class="profile-pendente" id="profilePendenteMsg" hidden></p>
     <form class="comunidade-form profile-faixa-form" id="profileFaixaForm">
@@ -139,20 +150,32 @@
   </div>
 
   <form class="new-post-form" id="postForm">
-    <div class="field">
-      <label for="postFoto">Foto do treino</label>
-      <input type="file" id="postFoto" accept="image/jpeg,image/png,image/webp" required>
-    </div>
+    <p class="post-form-hint">Treino, seminário, campeonato, viagem ou qualquer momento com a comunidade — poste o que for interessante.</p>
+    <label class="post-dropzone" id="postDropzone" for="postFoto">
+      <input type="file" id="postFoto" accept="image/jpeg,image/png,image/webp" hidden>
+      <span class="dz-empty" id="dzEmpty">
+        <svg class="dz-icon" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 7h3l1.5-2h7L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        <span class="dz-text">Toque para adicionar uma foto</span>
+        <span class="dz-hint">ou arraste e solte aqui</span>
+      </span>
+      <span class="dz-preview" id="dzPreview" hidden>
+        <img id="dzPreviewImg" alt="Pré-visualização da foto">
+        <button type="button" class="dz-remove" id="dzRemoveBtn" title="Remover foto">&times;</button>
+      </span>
+    </label>
     <div class="field">
       <label for="postLegenda">Legenda (opcional)</label>
-      <input type="text" id="postLegenda" maxlength="280" placeholder="Como foi o treino de hoje?">
+      <input type="text" id="postLegenda" maxlength="280" placeholder="Conte um pouco sobre esse momento...">
     </div>
     <p class="form-error" id="postError"></p>
     <button type="submit" class="btn-gold">Publicar</button>
   </form>
 
-  <p class="feed-empty" id="feedEmpty" hidden>Ainda não há publicações. Seja o primeiro a postar!</p>
-  <div class="feed-list" id="feedList"></div>
+  <div class="feed-scroll" data-lenis-prevent>
+    <p class="feed-empty" id="feedEmpty" hidden>Ainda não há publicações. Seja o primeiro a postar!</p>
+    <div class="feed-list" id="feedList"></div>
+    <p class="feed-end" id="feedEnd" hidden>&mdash; fim das publicações &mdash;</p>
+  </div>
 </section>
 
 <!-- ============ FOOTER ============ -->
