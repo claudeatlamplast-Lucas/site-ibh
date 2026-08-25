@@ -121,16 +121,37 @@
 <!-- ============ NOVIDADE ============ -->
 <section id="novidade">
   <div class="section-heading reveal" style="padding:0 clamp(1.2rem,6vw,6rem);"><span class="num">—</span><span class="line"></span><span class="label">Novidade</span></div>
-  <div class="news-card reveal">
-    <img class="news-photo" src="assets/ig/novidade-faixa-preta.jpg" alt="Cartaz de divulgação das aulas de faixa-preta com o Chong Kwanjangnim Raul Braga Freire">
-    <span class="news-tag">Novidade</span>
-    <h3>Aula exclusiva para faixas-pretas com o Mestre Raul Braga</h3>
-    <p>O Instituto abriu uma turma especial, exclusiva para faixas-pretas, ministrada pessoalmente
-      pelo Chong Kwanjangnim Raul Braga Freire — com aulas quinzenais aos domingos, revezando entre a
-      sede do IBH em Piracaia e a escola do Sabonim Júnior Silva (Equipe Alfa), em Atibaia. O foco é o
-      aperfeiçoamento técnico, princípios avançados do Hapkido, defesa pessoal e a troca de
-      experiências entre praticantes graduados — com vagas limitadas por turma.</p>
-    <span class="news-date">Piracaia-SP e Atibaia-SP · desde janeiro de 2026</span>
+  <div class="novidade-grid">
+    <div class="news-card reveal">
+      <img class="news-photo" src="assets/ig/novidade-faixa-preta.jpg" alt="Cartaz de divulgação das aulas de faixa-preta com o Chong Kwanjangnim Raul Braga Freire">
+      <span class="news-tag">Novidade</span>
+      <h3>Aula exclusiva para faixas-pretas com o Mestre Raul Braga</h3>
+      <p>O Instituto abriu uma turma especial, exclusiva para faixas-pretas, ministrada pessoalmente
+        pelo Chong Kwanjangnim Raul Braga Freire — com aulas quinzenais aos domingos, revezando entre a
+        sede do IBH em Piracaia e a escola do Sabonim Júnior Silva (Equipe Alfa), em Atibaia. O foco é o
+        aperfeiçoamento técnico, princípios avançados do Hapkido, defesa pessoal e a troca de
+        experiências entre praticantes graduados — com vagas limitadas por turma.</p>
+      <span class="news-date">Piracaia-SP e Atibaia-SP · desde janeiro de 2026</span>
+
+      <div class="social-embed">
+        <span class="social-embed-label">No Instagram</span>
+        <!-- TROCAR pelo link de um post/reel específico (ex: https://www.instagram.com/p/XXXXXXXXXXX/) — o embed do Instagram não aceita link de perfil, só de post. -->
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/COLOQUE_O_ID_DO_POST_AQUI/" data-instgrm-version="14"></blockquote>
+      </div>
+      <div class="social-embed">
+        <span class="social-embed-label">No Facebook</span>
+        <iframe class="fb-embed" src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fp%2FInstituto-Brasileiro-de-Hapkido-100062145890610%2F&tabs=timeline&width=500&height=400&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=false" loading="lazy" title="Página do Instituto Brasileiro de Hapkido no Facebook"></iframe>
+      </div>
+    </div>
+
+    <div class="fact-card reveal" id="factCard">
+      <span class="news-tag">Você sabia?</span>
+      <div class="fact-card-body" id="factCardBody">
+        <h3 id="factTitle"></h3>
+        <p id="factText"></p>
+      </div>
+      <div class="fact-dots" id="factDots"></div>
+    </div>
   </div>
 </section>
 
@@ -215,6 +236,7 @@
 <script src="https://unpkg.com/lenis@1/dist/lenis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script async src="https://www.instagram.com/embed.js"></script>
 <script src="assets/js/site.js"></script>
 </body>
 </html>

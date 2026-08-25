@@ -169,3 +169,66 @@ if(window.gsap && window.ScrollTrigger && !prefersReducedMotion){
     });
   });
 }
+
+/* ---------- Card "Você sabia?" (curiosidades rotativas) ---------- */
+const FACTS = [
+  {
+    title: 'Contando em coreano',
+    text: 'No dojang, as repetições dos exercícios são contadas em coreano:\nhana (1) · dul (2) · set (3) · net (4) · daseot (5)\nyeoseot (6) · ilgop (7) · yeodeol (8) · ahop (9) · yeol (10)'
+  },
+  {
+    title: 'Como amarrar a faixa',
+    text: 'Dobre a faixa ao meio para achar o centro. Envolva a cintura com o centro nas costas e cruze uma ponta sob a outra na frente. Passe a ponta de cima por dentro da volta, puxe e ajuste as duas pontas do mesmo tamanho. Cada escola pode ensinar uma variação — vale sempre seguir o jeito do seu instrutor.'
+  },
+  {
+    title: 'Por que "dojang"?',
+    text: '"Do" significa caminho e "jang" significa lugar — "dojang" é, literalmente, o "lugar do caminho". É o equivalente coreano ao "dojo" japonês: o espaço onde a técnica e a disciplina são praticadas.'
+  },
+  {
+    title: 'Etiqueta no dojang coreano',
+    text: 'Reverência ao entrar e sair do tatame, alunos se posicionam por graduação nas filas, e o instrutor é sempre tratado pelo título — nunca pelo primeiro nome, dentro do dobok.'
+  }
+];
+
+const factCard = document.getElementById('factCard');
+const factBody = document.getElementById('factCardBody');
+const factTitle = document.getElementById('factTitle');
+const factText = document.getElementById('factText');
+const factDotsEl = document.getElementById('factDots');
+
+if(factCard && factBody && FACTS.length){
+  let factIndex = 0;
+  let factTimer = null;
+
+  FACTS.forEach((_, i)=>{
+    const dot = document.createElement('span');
+    if(i === 0) dot.classList.add('active');
+    factDotsEl.appendChild(dot);
+  });
+  const dots = factDotsEl.querySelectorAll('span');
+
+  const renderFact = (i)=>{
+    factTitle.textContent = FACTS[i].title;
+    factText.textContent = FACTS[i].text;
+    dots.forEach((d, di)=>d.classList.toggle('active', di === i));
+  };
+  renderFact(0);
+
+  const showNextFact = ()=>{
+    factIndex = (factIndex + 1) % FACTS.length;
+    factBody.classList.add('fading');
+    setTimeout(()=>{
+      renderFact(factIndex);
+      factBody.classList.remove('fading');
+    }, 500);
+  };
+
+  const startFactTimer = ()=>{ factTimer = setInterval(showNextFact, 7000); };
+  const stopFactTimer = ()=>{ clearInterval(factTimer); factTimer = null; };
+
+  if(!prefersReducedMotion){
+    startFactTimer();
+    factCard.addEventListener('mouseenter', stopFactTimer);
+    factCard.addEventListener('mouseleave', startFactTimer);
+  }
+}
