@@ -152,6 +152,18 @@ if(window.gsap && window.ScrollTrigger){
   staggerEls.forEach(el=>revealIO.observe(el));
 }
 
+/* ---------- Fade sutil entre seções da home (mobile) ---------- */
+if(document.querySelector('.hero') && window.matchMedia('(max-width:900px)').matches && !prefersReducedMotion){
+  const fadeSections = document.querySelectorAll('body > section:not(.hero)');
+  fadeSections.forEach(s=>{ s.style.transition = 'opacity 350ms ease'; s.style.opacity = '0.85'; });
+  const fadeIO = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      entry.target.style.opacity = entry.isIntersecting ? '1' : '0.85';
+    });
+  }, {threshold:0.35});
+  fadeSections.forEach(s=>fadeIO.observe(s));
+}
+
 /* ---------- Proteção contra cópia — documentos pessoais escaneados (Credenciais) ---------- */
 document.querySelectorAll('.no-copy').forEach(el=>{
   el.addEventListener('contextmenu', e=>e.preventDefault());

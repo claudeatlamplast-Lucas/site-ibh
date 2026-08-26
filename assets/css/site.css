@@ -958,3 +958,32 @@ body.intro-active{overflow:hidden;height:100vh;}
 .fact-dots{display:flex;gap:0.5rem;margin-top:1.6rem;}
 .fact-dots span{width:6px;height:6px;border-radius:50%;background:rgba(232,185,35,0.25);transition:background .3s ease;}
 .fact-dots span.active{background:var(--gold);}
+
+/* ======================================================================
+   Ajustes mobile — realces dourados, toque e hero em tela cheia
+   ====================================================================== */
+@media (max-width:900px){
+  /* separador dourado sutil entre seções empilhadas, pra não virar
+     uma sequência de blocos pretos sem transição */
+  section + section{border-top:1px solid rgba(232,185,35,0.12);}
+
+  /* reforça divisores dourados que hoje ficam quase invisíveis no mobile */
+  .explore-pages{border-top-color:rgba(232,185,35,0.22);}
+  .credentials{border-top-color:rgba(232,185,35,0.22);}
+  .network-list{border-top-color:rgba(232,185,35,0.22);}
+
+  /* hero da home ocupa a tela inteira no mobile */
+  .hero{height:100vh;max-height:none;aspect-ratio:auto;}
+}
+
+@media (max-width:520px){
+  /* área de toque confortável (>=44px) nos controles do topbar */
+  .menu-btn{min-height:44px;padding:0.7rem 1.1rem;}
+  .back-btn{min-height:44px;padding:0.7rem 0.3rem;}
+  .comunidade-badge{
+    min-width:44px;min-height:44px;
+    background:rgba(232,185,35,0.18);
+  }
+  .comunidade-badge .dot{width:11px;height:11px;}
+}
+

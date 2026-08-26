@@ -98,7 +98,7 @@ body.comunidade-page{background:var(--black-deep);}
 
 .feed-scroll{
   max-width:560px;margin:0 auto;padding:1.4rem 1rem 1.6rem;
-  max-height:min(72vh,720px);overflow-y:auto;overscroll-behavior:contain;
+  max-height:min(72vh,720px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
   background:rgba(6,6,6,0.4);border:1px solid rgba(232,185,35,0.18);border-radius:4px;
   box-shadow:0 20px 40px -16px rgba(0,0,0,0.7), inset 0 -24px 20px -24px rgba(0,0,0,0.6);
 }
@@ -116,21 +116,24 @@ body.comunidade-page{background:var(--black-deep);}
 }
 
 .feed-list{display:flex;flex-direction:column;gap:1.6rem;max-width:520px;margin:0 auto;padding:0 0.3rem;}
-.post-card{background:rgba(10,10,10,0.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(232,185,35,0.12);transition:transform .25s ease,box-shadow .25s ease;}
-.post-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px -16px rgba(0,0,0,0.55);}
+.post-card{background:rgba(10,10,10,0.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(232,185,35,0.12);transition:transform .25s ease,box-shadow .25s ease;touch-action:pan-y;}
+@media (hover:hover){
+  .post-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px -16px rgba(0,0,0,0.55);}
+}
 .post-header{display:flex;align-items:center;gap:0.8rem;padding:1rem 1.2rem;}
 .post-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#1a1a1a;border:1.5px solid rgba(232,185,35,0.3);}
 .post-author{display:flex;flex-direction:column;flex:1;}
 .post-author-nome{font-size:0.88rem;color:var(--bone);}
 .post-author-faixa{font-size:0.7rem;color:var(--gold);}
-.delete-btn,.comment-delete{background:none;border:none;color:rgba(242,240,234,0.4);font-size:1.1rem;cursor:pointer;line-height:1;padding:0 0.2rem;flex-shrink:0;}
+.post-author-escola{font-size:0.68rem;color:rgba(242,240,234,0.5);}
+.delete-btn,.comment-delete{background:none;border:none;color:rgba(242,240,234,0.4);font-size:1.1rem;cursor:pointer;line-height:1;padding:0 0.2rem;flex-shrink:0;touch-action:manipulation;}
 .delete-btn:hover,.comment-delete:hover{color:#e07a5f;}
 
 .post-photo{width:100%;display:block;max-height:560px;object-fit:cover;}
 .post-legenda{padding:1rem 1.2rem 0;font-size:0.9rem;color:rgba(242,240,234,0.85);line-height:1.5;}
 
 .post-actions{padding:0.9rem 1.2rem;}
-.like-btn{background:none;border:1px solid var(--gold-dim);color:rgba(242,240,234,0.7);padding:0.4rem 0.9rem;font-size:0.82rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.4rem;transition:color .2s ease,border-color .2s ease,transform .15s ease;}
+.like-btn{background:none;border:1px solid var(--gold-dim);color:rgba(242,240,234,0.7);padding:0.4rem 0.9rem;font-size:0.82rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.4rem;transition:color .2s ease,border-color .2s ease,transform .15s ease;touch-action:manipulation;}
 .like-btn.liked{color:var(--gold);border-color:var(--gold);}
 .like-btn:active{transform:scale(0.93);}
 
@@ -144,7 +147,7 @@ body.comunidade-page{background:var(--black-deep);}
 .comment-form-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;background:#1a1a1a;}
 .comment-form input{flex:1;background:var(--black-deep);border:1px solid rgba(232,185,35,0.15);color:var(--bone);padding:0.6rem 0.8rem;font-size:0.85rem;}
 .comment-form input:focus{outline:none;border-color:var(--gold);}
-.comment-form button{padding:0.6rem 1.1rem;font-size:0.7rem;}
+.comment-form button{padding:0.6rem 1.1rem;font-size:0.7rem;touch-action:manipulation;}
 
 @media (max-width: 560px){
   .new-post-form,.feed-list,.feed-scroll,.profile-panel,.auth-card,.pending-card{max-width:100%;}
@@ -153,7 +156,7 @@ body.comunidade-page{background:var(--black-deep);}
 }
 
 /* ---------- Modal de perfil (zoom ao clicar em foto/nome) ---------- */
-.user-trigger{cursor:pointer;}
+.user-trigger{cursor:pointer;touch-action:manipulation;}
 .post-author-nome.user-trigger,.comment-autor.user-trigger{transition:color .2s ease;}
 .post-author-nome.user-trigger:hover,.comment-autor.user-trigger:hover{color:var(--gold);}
 .post-avatar.user-trigger,.comment-avatar.user-trigger{transition:transform .2s ease;}
@@ -182,6 +185,9 @@ body.comunidade-page{background:var(--black-deep);}
   box-shadow:0 0 30px rgba(232,185,35,0.25);
 }
 .user-modal-card h3{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:500;}
+.user-modal-escola{
+  display:block;margin-top:0.4rem;font-size:0.8rem;color:rgba(242,240,234,0.6);
+}
 .user-modal-faixa{
   display:inline-block;margin-top:0.6rem;font-family:'Cinzel',serif;font-size:0.68rem;
   letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);
