@@ -194,7 +194,7 @@ const FACTS = [
   {
     title: 'Como amarrar a faixa',
     text: 'Dobre a faixa ao meio para achar o centro. Envolva a cintura com o centro nas costas e cruze uma ponta sob a outra na frente. Passe a ponta de cima por dentro da volta, puxe e ajuste as duas pontas do mesmo tamanho. Cada escola pode ensinar uma variação — vale sempre seguir o jeito do seu instrutor.',
-    photo: 'assets/ig/novidade-faixa-preta.jpg',
+    photo: 'assets/ig/como-amarrar-faixa.jpeg',
     link: 'formacao.html', linkLabel: 'Ver Formação'
   },
   {
@@ -212,7 +212,7 @@ const FACTS = [
   {
     title: 'A hierarquia das faixas',
     text: 'Cada cor de faixa marca uma etapa de evolução técnica e pessoal no Hapkido, da branca até a preta — e, a partir dela, os graus de Dan. A progressão é acompanhada de perto pelos instrutores do Instituto.',
-    photo: 'assets/ig/autodefesa-graduacao.jpg',
+    photo: 'assets/ig/hierarquia-faixas.jpeg',
     link: 'formacao.html', linkLabel: 'Ver Formação'
   },
   {
