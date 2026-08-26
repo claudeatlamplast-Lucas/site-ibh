@@ -78,6 +78,18 @@
   populaSelectFaixas(document.getElementById('cadFaixa'));
   populaSelectFaixas(profileFaixaSelect);
 
+  var cadEscolaSelect = document.getElementById('cadEscola');
+  client.from('escolas').select('id, nome, cidade, uf').order('nome').then(function(res){
+    if(res.error || !res.data) return;
+    cadEscolaSelect.innerHTML = '';
+    res.data.forEach(function(e){
+      var opt = document.createElement('option');
+      opt.value = e.id;
+      opt.textContent = e.nome + (e.cidade ? ' — ' + e.cidade + (e.uf ? '/' + e.uf : '') : '');
+      cadEscolaSelect.appendChild(opt);
+    });
+  });
+
   function showOnly(section){
     [secAuth, secPending, secFeed].forEach(function(s){
       if(s) s.hidden = (s !== section);
@@ -144,10 +156,12 @@
     var senha = document.getElementById('cadSenha').value;
     var nome = document.getElementById('cadNome').value.trim();
     var faixa = document.getElementById('cadFaixa').value.trim();
+    var escolaId = cadEscolaSelect.value;
     var fotoFile = document.getElementById('cadFoto').files[0];
 
     if(senha.length < 6){ authError.textContent = 'A senha precisa ter pelo menos 6 caracteres.'; return; }
     if(!nome){ authError.textContent = 'Informe seu nome.'; return; }
+    if(!escolaId){ authError.textContent = 'Selecione sua escola.'; return; }
     var erroFoto = fotoFile ? validaFoto(fotoFile) : null;
     if(erroFoto){ authError.textContent = erroFoto; return; }
 
@@ -174,7 +188,8 @@
           id: currentUser.id,
           nome_exibicao: nome,
           foto_url: fotoUrl,
-          faixa: faixa || null
+          faixa: faixa || null,
+          escola_id: escolaId
         });
       }).then(function(perfilRes){
         if(perfilRes.error){ throw perfilRes.error; }
@@ -355,8 +370,8 @@
 
   function carregarFeed(){
     return Promise.all([
-      client.from('posts').select('id, autor_id, foto_url, legenda, criado_em, profiles!posts_autor_id_fkey(nome_exibicao, foto_url, faixa)').order('criado_em', { ascending: false }),
-      client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa)').order('criado_em', { ascending: true }),
+      client.from('posts').select('id, autor_id, foto_url, legenda, criado_em, profiles!posts_autor_id_fkey(nome_exibicao, foto_url, faixa, escolas(nome))').order('criado_em', { ascending: false }),
+      client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, escolas(nome))').order('criado_em', { ascending: true }),
       client.from('curtidas').select('post_id, autor_id')
     ]).then(function(results){
       var postsRes = results[0], comentariosRes = results[1], curtidasRes = results[2];
@@ -383,16 +398,17 @@
       var autorFoto = (post.profiles && post.profiles.foto_url) || 'assets/ibh-logo.png';
       var autorNome = (post.profiles && post.profiles.nome_exibicao) || 'Aluno';
       var autorFaixa = post.profiles && post.profiles.faixa;
+      var autorEscola = post.profiles && post.profiles.escolas && post.profiles.escolas.nome;
 
       var card = document.createElement('article');
       card.className = 'post-card';
-      var autorAttrs = 'data-user-nome="' + escapeHtml(autorNome) + '" data-user-foto="' + escapeHtml(autorFoto) + '" data-user-faixa="' + escapeHtml(autorFaixa || '') + '"';
+      var autorAttrs = 'data-user-nome="' + escapeHtml(autorNome) + '" data-user-foto="' + escapeHtml(autorFoto) + '" data-user-faixa="' + escapeHtml(autorFaixa || '') + '" data-user-escola="' + escapeHtml(autorEscola || '') + '"';
 
       card.innerHTML =
         '<div class="post-header">' +
           '<img class="post-avatar user-trigger" ' + autorAttrs + ' src="' + escapeHtml(autorFoto) + '" alt="">' +
           '<div class="post-author">' +
-            '<span class="post-author-nome user-trigger" ' + autorAttrs + '>' + escapeHtml(autorNome) + '</span>' +
+            '<span class="post-author-nome user-trigger" ' + autorAttrs + '>' + escapeHtml(autorNome) + (autorEscola ? ' <span class="post-author-escola">· ' + escapeHtml(autorEscola) + '</span>' : '') + '</span>' +
             (autorFaixa ? '<span class="post-author-faixa">' + escapeHtml(autorFaixa) + '</span>' : '') +
           '</div>' +
           (podeApagarPost ? '<button type="button" class="delete-btn" data-post-id="' + post.id + '" title="Apagar publicação">&times;</button>' : '') +
@@ -408,7 +424,8 @@
             var comentarioNome = (c.profiles && c.profiles.nome_exibicao) || 'Aluno';
             var comentarioFoto = (c.profiles && c.profiles.foto_url) || 'assets/ibh-logo.png';
             var comentarioFaixa = (c.profiles && c.profiles.faixa) || '';
-            var comentarioAttrs = 'data-user-nome="' + escapeHtml(comentarioNome) + '" data-user-foto="' + escapeHtml(comentarioFoto) + '" data-user-faixa="' + escapeHtml(comentarioFaixa) + '"';
+            var comentarioEscola = (c.profiles && c.profiles.escolas && c.profiles.escolas.nome) || '';
+            var comentarioAttrs = 'data-user-nome="' + escapeHtml(comentarioNome) + '" data-user-foto="' + escapeHtml(comentarioFoto) + '" data-user-faixa="' + escapeHtml(comentarioFaixa) + '" data-user-escola="' + escapeHtml(comentarioEscola) + '"';
             return '<div class="comment">' +
               '<img class="comment-avatar user-trigger" ' + comentarioAttrs + ' src="' + escapeHtml(comentarioFoto) + '" alt="">' +
               '<div class="comment-body">' +
@@ -432,12 +449,16 @@
   var userModal = document.getElementById('userModal');
   var userModalPhoto = document.getElementById('userModalPhoto');
   var userModalNome = document.getElementById('userModalNome');
+  var userModalEscola = document.getElementById('userModalEscola');
   var userModalFaixa = document.getElementById('userModalFaixa');
   var userModalClose = document.getElementById('userModalClose');
 
   function openUserModal(trigger){
     userModalPhoto.src = trigger.dataset.userFoto || 'assets/ibh-logo.png';
     userModalNome.textContent = trigger.dataset.userNome || 'Aluno';
+    var escola = trigger.dataset.userEscola;
+    userModalEscola.textContent = escola || '';
+    userModalEscola.hidden = !escola;
     var faixa = trigger.dataset.userFaixa;
     userModalFaixa.textContent = faixa || '';
     userModalFaixa.hidden = !faixa;
