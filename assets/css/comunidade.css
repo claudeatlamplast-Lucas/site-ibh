@@ -141,6 +141,11 @@ body.comunidade-page{background:var(--black-deep);}
 .post-photo{width:100%;display:block;max-height:560px;object-fit:cover;}
 .post-legenda{padding:1rem 1.2rem 0;font-size:0.9rem;color:rgba(242,240,234,0.85);line-height:1.5;}
 
+/* ---------- Novidade fixada no topo do feed ---------- */
+.pinned-post{border-color:rgba(232,185,35,0.4);box-shadow:0 0 0 1px rgba(232,185,35,0.1) inset;margin-bottom:1.6rem;}
+.pin-badge{margin-left:auto;flex-shrink:0;font-size:0.95rem;opacity:0.85;}
+.pinned-meta{font-family:'Cinzel',serif;font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--terracotta);}
+
 .post-actions{padding:0.9rem 1.2rem;}
 .like-btn{background:none;border:1px solid var(--gold-dim);color:rgba(242,240,234,0.7);padding:0.4rem 0.9rem;font-size:0.82rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.4rem;transition:color .2s ease,border-color .2s ease,transform .15s ease;touch-action:manipulation;}
 .like-btn.liked{color:var(--gold);border-color:var(--gold);}
