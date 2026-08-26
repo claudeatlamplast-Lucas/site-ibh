@@ -100,13 +100,14 @@ if(nav && sections.length){
 
 /* ---------- Lenis smooth scroll + GSAP ScrollTrigger ---------- */
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
 
 if(window.gsap && window.ScrollTrigger){
   gsap.registerPlugin(ScrollTrigger);
 }
 
 let lenis;
-if(window.Lenis && !prefersReducedMotion){
+if(window.Lenis && !prefersReducedMotion && !isTouchDevice){
   lenis = new Lenis({
     duration: 1.0,
     easing: (t)=> 1 - Math.pow(1 - t, 4), // ease-out-quart — resposta mais imediata, chegada macia
@@ -171,7 +172,7 @@ document.querySelectorAll('.no-copy').forEach(el=>{
 });
 
 /* ---------- Parallax das camadas de fumaça (equivalente ao data-ratio do izanami) ---------- */
-if(window.gsap && window.ScrollTrigger && !prefersReducedMotion){
+if(window.gsap && window.ScrollTrigger && !prefersReducedMotion && !isTouchDevice){
   document.querySelectorAll('.smoke-wrap').forEach(wrap=>{
     const section = wrap.closest('section') || wrap.parentElement;
     gsap.to(wrap, {
