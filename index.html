@@ -17,13 +17,6 @@
 </head>
 <body class="intro-active">
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <filter id="eagleOutline" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
-    <feMorphology in="SourceAlpha" operator="erode" radius="2.2" result="eroded"/>
-    <feComposite in="SourceGraphic" in2="eroded" operator="out"/>
-  </filter>
-</svg>
-
 <div id="introOverlay"><p>A força que não resiste.<br>A energia que se transforma em técnica.</p></div>
 
 <div class="cursor-dot" id="cursorDot"></div>
@@ -33,7 +26,7 @@
 
 <header class="topbar">
   <a href="index.html" class="brand">
-    <img src="assets/ibh-logo.png" alt="Instituto Brasileiro de Hapkido">
+    <img src="assets/ibh-logo.png" width="900" height="900" alt="Instituto Brasileiro de Hapkido">
     <span>IBH</span>
   </a>
   <div class="topbar-actions">
@@ -64,12 +57,10 @@
 <!-- ============ HERO ============ -->
 <section class="hero" id="hero" data-nav="Início">
   <div class="hero-bg">
-    <img class="hero-bg-blur" src="assets/hero/bandeira-selo.jpg" alt="" aria-hidden="true">
-    <img class="hero-bg-photo" src="assets/hero/bandeira-selo.jpg" alt="Bandeirola do Instituto Brasileiro de Hapkido com o brasão em close, ao fundo desfocado do evento">
     <div class="hero-bg-overlay"></div>
   </div>
   <div class="hero-eagle hero-eagle--glow">
-    <img src="assets/ibh-logo.png" alt="Brasão do Instituto Brasileiro de Hapkido">
+    <img src="assets/ibh-logo.png" width="900" height="900" alt="Brasão do Instituto Brasileiro de Hapkido">
   </div>
   <h1 class="hero-title">Instituto Brasileiro de Hapkido</h1>
 
@@ -236,7 +227,7 @@
 <!-- ============ FOOTER ============ -->
 <footer>
   <div class="fbrand">
-    <img loading="lazy" src="assets/ibh-logo.png" alt="IBH">
+    <img loading="lazy" src="assets/ibh-logo.png" width="900" height="900" alt="IBH">
     <small>&copy; <span id="year"></span> Instituto Brasileiro de Hapkido — Piracaia-SP</small>
   </div>
   <div style="display:flex;gap:1.2rem;">
@@ -245,10 +236,10 @@
   </div>
 </footer>
 
-<script src="https://unpkg.com/lenis@1/dist/lenis.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="https://unpkg.com/lenis@1/dist/lenis.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script async src="https://www.instagram.com/embed.js"></script>
-<script src="assets/js/site.js"></script>
+<script defer src="assets/js/site.js"></script>
 </body>
 </html>

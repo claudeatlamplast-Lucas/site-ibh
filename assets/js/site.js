@@ -127,7 +127,7 @@ if(window.Lenis && !prefersReducedMotion && !isTouchDevice){
 /* ---------- Reveal on scroll (fade + translateY, com stagger em grids) ---------- */
 const revealEls = document.querySelectorAll('.reveal');
 const staggerEls = document.querySelectorAll('.reveal-stagger');
-if(window.gsap && window.ScrollTrigger){
+if(window.gsap && window.ScrollTrigger && !isTouchDevice){
   revealEls.forEach(el=>{
     gsap.fromTo(el, {opacity:0, y:24}, {
       opacity:1, y:0, duration:1.1, ease:'power2.out',
