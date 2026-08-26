@@ -45,6 +45,8 @@
   var feedList = document.getElementById('feedList');
   var feedEmpty = document.getElementById('feedEmpty');
   var feedEnd = document.getElementById('feedEnd');
+  var feedTabTodos = document.getElementById('feedTabTodos');
+  var feedTabMeus = document.getElementById('feedTabMeus');
 
   var postDropzone = document.getElementById('postDropzone');
   var dzEmpty = document.getElementById('dzEmpty');
@@ -65,6 +67,10 @@
 
   var currentUser = null;
   var currentProfile = null;
+  var feedMode = 'todos';
+  var ultimoPosts = [];
+  var ultimoComentarios = [];
+  var ultimasCurtidas = [];
 
   function populaSelectFaixas(select){
     select.innerHTML = '';
@@ -379,9 +385,31 @@
         feedList.innerHTML = '<p class="feed-error">Não foi possível carregar o feed.</p>';
         return;
       }
-      renderFeed(postsRes.data || [], comentariosRes.data || [], curtidasRes.data || []);
+      ultimoPosts = postsRes.data || [];
+      ultimoComentarios = comentariosRes.data || [];
+      ultimasCurtidas = curtidasRes.data || [];
+      aplicarFiltroFeed();
     });
   }
+
+  function aplicarFiltroFeed(){
+    var posts = feedMode === 'meus'
+      ? ultimoPosts.filter(function(p){ return p.autor_id === currentUser.id; })
+      : ultimoPosts;
+    feedEmpty.textContent = feedMode === 'meus'
+      ? 'Você ainda não publicou nada. Que tal compartilhar seu primeiro momento?'
+      : 'Ainda não há publicações. Seja o primeiro a postar!';
+    renderFeed(posts, ultimoComentarios, ultimasCurtidas);
+  }
+
+  function setFeedMode(mode){
+    feedMode = mode;
+    feedTabTodos.classList.toggle('active', mode === 'todos');
+    feedTabMeus.classList.toggle('active', mode === 'meus');
+    aplicarFiltroFeed();
+  }
+  feedTabTodos.addEventListener('click', function(){ setFeedMode('todos'); });
+  feedTabMeus.addEventListener('click', function(){ setFeedMode('meus'); });
 
   function renderFeed(posts, comentarios, curtidas){
     feedList.innerHTML = '';
