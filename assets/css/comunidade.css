@@ -162,6 +162,13 @@ body.comunidade-page{background:var(--black-deep);}
   .new-post-form,.feed-list,.feed-scroll,.profile-panel,.auth-card,.pending-card{max-width:100%;}
   .auth-card,.pending-card{padding:2rem 1.4rem;}
   .comunidade-bg{background-position:center 75%;}
+
+  /* feed vira parte normal da página no celular — sem caixa com rolagem própria */
+  .feed-scroll{
+    max-height:none;overflow-y:visible;overscroll-behavior:auto;
+    background:none;border:none;border-radius:0;box-shadow:none;
+    padding:0 0 1rem;
+  }
 }
 
 /* ---------- Modal de perfil (zoom ao clicar em foto/nome) ---------- */

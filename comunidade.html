@@ -10,6 +10,8 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://unpkg.com">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/site.css">
 <link rel="stylesheet" href="assets/css/comunidade.css">
@@ -124,7 +126,7 @@
 <!-- ============ FEED ============ -->
 <section id="feedSection" hidden>
   <div class="feed-header">
-    <span class="welcome"><img class="header-avatar" id="meAvatar" src="assets/ibh-logo.png" alt="">Olá, <b id="meNome"></b></span>
+    <span class="welcome"><img loading="lazy" class="header-avatar" id="meAvatar" src="assets/ibh-logo.png" alt="">Olá, <b id="meNome"></b></span>
     <div class="feed-header-actions">
       <button type="button" class="link-btn" id="meuPerfilBtn">Meu perfil</button>
       <button type="button" class="link-btn" id="feedLogoutBtn">Sair</button>
@@ -134,7 +136,7 @@
   <div class="profile-panel" id="profilePanel" hidden>
     <h3>Meu perfil</h3>
     <div class="profile-photo-row">
-      <img class="profile-photo-preview" id="profileFotoPreview" src="assets/ibh-logo.png" alt="">
+      <img loading="lazy" class="profile-photo-preview" id="profileFotoPreview" src="assets/ibh-logo.png" alt="">
       <div class="profile-photo-actions">
         <label class="upload-btn" for="profileFotoInput">Trocar foto</label>
         <input type="file" id="profileFotoInput" accept="image/jpeg,image/png,image/webp" hidden>
@@ -163,7 +165,7 @@
         <span class="dz-hint">ou arraste e solte aqui</span>
       </span>
       <span class="dz-preview" id="dzPreview" hidden>
-        <img id="dzPreviewImg" alt="Pré-visualização da foto">
+        <img loading="lazy" id="dzPreviewImg" alt="Pré-visualização da foto">
         <button type="button" class="dz-remove" id="dzRemoveBtn" title="Remover foto">&times;</button>
       </span>
     </label>
@@ -191,7 +193,7 @@
 <div class="user-modal" id="userModal" hidden>
   <div class="user-modal-card">
     <button type="button" class="user-modal-close" id="userModalClose" aria-label="Fechar">&times;</button>
-    <img class="user-modal-photo" id="userModalPhoto" src="" alt="">
+    <img loading="lazy" class="user-modal-photo" id="userModalPhoto" src="" alt="">
     <h3 id="userModalNome"></h3>
     <span class="user-modal-escola" id="userModalEscola"></span>
     <span class="user-modal-faixa" id="userModalFaixa"></span>
@@ -201,7 +203,7 @@
 <!-- ============ FOOTER ============ -->
 <footer>
   <div class="fbrand">
-    <img src="assets/ibh-logo.png" alt="IBH">
+    <img loading="lazy" src="assets/ibh-logo.png" alt="IBH">
     <small>&copy; <span id="year"></span> Instituto Brasileiro de Hapkido — Piracaia-SP</small>
   </div>
   <div style="display:flex;gap:1.2rem;">

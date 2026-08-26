@@ -120,7 +120,13 @@ img{max-width:100%;}
   0%,100%{box-shadow:0 0 0 0 rgba(232,185,35,0.55);}
   50%{box-shadow:0 0 0 6px rgba(232,185,35,0);}
 }
-@media (max-width:520px){.comunidade-badge span:last-child{display:none;}.comunidade-badge{padding:0.55rem;}}
+@media (max-width:520px){.comunidade-badge{padding:0.5rem 0.85rem 0.5rem 0.7rem;gap:0.4rem;font-size:0.6rem;letter-spacing:0.14em;}}
+@media (max-width:400px){
+  .topbar-actions{gap:0.6rem;}
+  .comunidade-badge{padding:0.45rem 0.6rem 0.45rem 0.55rem;gap:0.32rem;font-size:0.52rem;letter-spacing:0.08em;}
+  .menu-btn{padding:0.55rem 0.8rem;font-size:0.6rem;}
+  .back-btn{padding:0.55rem 0.15rem;}
+}
 
 .back-btn{
   background:none;border:none;color:var(--bone);cursor:pointer;
@@ -784,13 +790,13 @@ footer .fsocial{font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.15
 #introOverlay{
   position:fixed;inset:0;z-index:10000;background:#000;
   display:flex;align-items:center;justify-content:center;padding:2rem;
-  animation:introSequence 4.4s ease forwards;
+  animation:introSequence 2.4s ease forwards;
 }
 #introOverlay p{
   font-family:'Playfair Display',serif;font-weight:400;font-style:italic;color:#ffffff;
   font-size:clamp(1rem,2.2vw,1.5rem);letter-spacing:0.01em;
   text-align:center;max-width:22ch;line-height:1.7;
-  opacity:0;animation:introTextFade 4.4s ease forwards;
+  opacity:0;animation:introTextFade 2.4s ease forwards;
 }
 @keyframes introSequence{0%,92%{opacity:1;visibility:visible;}100%{opacity:0;visibility:hidden;}}
 @keyframes introTextFade{0%{opacity:0;}18%{opacity:1;}75%{opacity:1;}95%{opacity:0;}100%{opacity:0;}}

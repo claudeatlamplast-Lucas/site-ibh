@@ -16,7 +16,7 @@ if(introOverlay){
   setTimeout(()=>{
     document.body.classList.remove('intro-active');
     if(introOverlay.parentNode) introOverlay.remove();
-  }, 5000);
+  }, 2800);
 }
 
 /* ---------- Cursor (ponto preciso + anel com leve atraso) ---------- */
