@@ -220,6 +220,54 @@ const FACTS = [
     text: 'A linhagem do Instituto Brasileiro de Hapkido atravessou três gerações de mestres até chegar ao Chong Kwanjangnim Raul Braga Freire, que hoje segue transmitindo a arte ao lado dos filhos em Piracaia-SP.',
     photo: 'assets/ig/mestre-raul-1.jpg',
     link: 'mestre.html', linkLabel: 'Conhecer o Mestre'
+  },
+  {
+    title: 'O Instituto nasceu em 2007',
+    text: 'O IBH é uma associação sem fins lucrativos fundada pelo Chong Kwanjangnim Raul Braga Freire em Piracaia-SP, em 2007. Hoje reúne cerca de 200 atletas em 5 escolas filiadas — mais de 70% deles crianças e jovens.',
+    photo: 'assets/ig/dojang-alfa-atibaia.jpg',
+    link: 'sobre.html', linkLabel: 'Sobre o Instituto'
+  },
+  {
+    title: '116 medalhas em três mundiais',
+    text: 'Entre 2013 e 2017, o Instituto conquistou 2º lugar geral nos Mundiais da Coreia do Sul e da Tailândia, além de pódio no Mundial do México — 116 medalhas documentadas em competições internacionais.',
+    photo: 'assets/ig/trofeus-vitrine.jpg',
+    link: 'campeonatos.html#campeonatos', linkLabel: 'Ver Campeonatos'
+  },
+  {
+    title: 'As graduações do Mestre Raul Braga',
+    text: 'O Chong Kwanjangnim Raul Braga Freire é 9º DAN de Hapkido pelo IBH, 6º DAN de Hapkido no Brasil, 5º DAN pela TUKKONG, 4º DAN de Hangumdo e 1º DAN de Hankido — além de GHA Master Instructor desde 2013.',
+    photo: 'assets/ig/mestre-hangumdo-treino.jpg',
+    link: 'mestre.html#mestre-raul', linkLabel: 'Conhecer o Mestre'
+  },
+  {
+    title: 'Cidadão Honorário de Pattaya',
+    text: 'Em 2015, o Mestre recebeu no mesmo dia o Diploma da Assembleia Legislativa de SP, o Certificado da GHA e o título de Mestre Honoris Causa. No Mundial da Tailândia de 2016, foi declarado Cidadão Honorário de Pattaya pela prefeitura da cidade.',
+    photo: 'assets/ig/certificados/thailand-2016.jpg',
+    link: 'mestre.html#mestre-raul', linkLabel: 'Conhecer o Mestre'
+  },
+  {
+    title: 'Uma rede com 5 escolas filiadas',
+    text: 'Equipe Alfa (Atibaia-SP), Escola Paekho (Batatuba, Piracaia-SP), Associação Koga de Hapkido (Lavras-MG), Escola Hyonmu (Atibaia-SP) e Escola Calza (São Paulo-SP) formam a rede de escolas filiadas ao Instituto.',
+    photo: 'assets/ig/aula-filiada-flags.jpg',
+    link: 'rede.html#escolas', linkLabel: 'Ver a Rede'
+  },
+  {
+    title: 'Cinco linhas de formação',
+    text: 'A formação do Instituto é organizada em cinco linhas — Autodefesa, Tradicional, Infantil, Competição e Formação de Instrutores — cada uma com seu próprio foco dentro do Hapkido.',
+    photo: 'assets/ig/corpo-instrutores.jpg',
+    link: 'formacao.html#programas', linkLabel: 'Ver Formação'
+  },
+  {
+    title: 'Horários de aula em Piracaia',
+    text: 'Segunda, quarta e sexta há duas turmas — 18h30 às 19h30 e 19h30 às 20h30; terça e quinta, a turma adulta é das 19h às 20h. A Equipe Alfa Atibaia combina horários direto com o professor Junior pelo WhatsApp.',
+    photo: 'assets/ig/criancas-grupo-punhos.jpg',
+    link: 'contato.html#horarios', linkLabel: 'Ver Horários'
+  },
+  {
+    title: 'Como funciona a Comunidade',
+    text: 'O espaço da Comunidade é onde os alunos compartilham fotos de treinos, seminários, campeonatos e viagens. O cadastro passa por aprovação do Instituto, e depois é possível solicitar trocas de graduação direto pelo perfil.',
+    photo: 'assets/ig/seminario-treino-grupo.jpg',
+    link: 'comunidade.html', linkLabel: 'Ver a Comunidade'
   }
 ];
 
