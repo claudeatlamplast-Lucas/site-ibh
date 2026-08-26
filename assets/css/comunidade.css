@@ -146,6 +146,9 @@ body.comunidade-page{background:var(--black-deep);}
 .pin-badge{margin-left:auto;flex-shrink:0;font-size:0.95rem;opacity:0.85;}
 .pinned-meta{font-family:'Cinzel',serif;font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--terracotta);}
 
+.feed-fact-card{background:rgba(10,10,10,0.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);margin-bottom:1.6rem;min-height:0;}
+@media (max-width: 560px){.feed-fact-card{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(10,10,10,0.82);}}
+
 .post-actions{padding:0.9rem 1.2rem;}
 .like-btn{background:none;border:1px solid var(--gold-dim);color:rgba(242,240,234,0.7);padding:0.4rem 0.9rem;font-size:0.82rem;cursor:pointer;display:inline-flex;align-items:center;gap:0.4rem;transition:color .2s ease,border-color .2s ease,transform .15s ease;touch-action:manipulation;}
 .like-btn.liked{color:var(--gold);border-color:var(--gold);}
