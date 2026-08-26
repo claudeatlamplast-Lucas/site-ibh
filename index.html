@@ -17,6 +17,13 @@
 </head>
 <body class="intro-active">
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <filter id="eagleOutline" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+    <feMorphology in="SourceAlpha" operator="erode" radius="2.2" result="eroded"/>
+    <feComposite in="SourceGraphic" in2="eroded" operator="out"/>
+  </filter>
+</svg>
+
 <div id="introOverlay"><p>A força que não resiste.<br>A energia que se transforma em técnica.</p></div>
 
 <div class="cursor-dot" id="cursorDot"></div>
