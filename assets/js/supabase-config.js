@@ -9,5 +9,16 @@
     console.error('Biblioteca do Supabase não carregou.');
     return;
   }
-  window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  /* Mantém o aluno logado entre visitas: a sessão fica salva no localStorage
+     do navegador e é renovada sozinha em segundo plano. O tempo máximo real
+     da sessão (60-90 dias) é definido no painel do Supabase, em
+     Authentication > Sessions — ver README da comunidade. */
+  window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      storage: window.localStorage,
+      detectSessionInUrl: false
+    }
+  });
 })();

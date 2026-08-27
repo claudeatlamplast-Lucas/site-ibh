@@ -431,3 +431,9 @@ if(interviewsCard && interviewsBody && INTERVIEWS.length){
     interviewsCard.addEventListener('mouseleave', startInterviewTimer);
   }
 }
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('/service-worker.js').catch(function(){});
+  });
+}
