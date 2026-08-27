@@ -268,6 +268,18 @@ const FACTS = [
     text: 'O espaço da Comunidade é onde os alunos compartilham fotos de treinos, seminários, campeonatos e viagens. O cadastro passa por aprovação do Instituto, e depois é possível solicitar trocas de graduação direto pelo perfil.',
     photo: 'assets/ig/seminario-treino-grupo.jpg',
     link: 'comunidade.html', linkLabel: 'Ver a Comunidade'
+  },
+  {
+    title: 'Do arquivo pessoal',
+    text: 'Uma trajetória em imagens: fotos raras do arquivo pessoal do Mestre Raul Braga, da fase paulistana dos anos 1980 até os dias de hoje em Piracaia, contando a história por trás do Instituto.',
+    photo: 'assets/acervo/acervo-raul-kimjongman.jpg',
+    link: 'mestre.html#acervo', linkLabel: 'Ver o Acervo'
+  },
+  {
+    title: 'Entrevistas com o Mestre',
+    text: 'Reunimos as entrevistas em vídeo do Chong Kwanjangnim Raul Braga desde 2017 — da primeira matéria na TV local até os podcasts mais recentes sobre a trajetória do Instituto.',
+    photo: 'assets/entrevistas/gente-da-gente-2022.jpg',
+    link: 'mestre.html#entrevistas', linkLabel: 'Ver Entrevistas'
   }
 ];
 
@@ -430,6 +442,66 @@ if(interviewsCard && interviewsBody && INTERVIEWS.length){
     interviewsCard.addEventListener('mouseenter', stopInterviewTimer);
     interviewsCard.addEventListener('mouseleave', startInterviewTimer);
   }
+}
+
+/* ---------- Acervo (carrossel de fotos antigas) ---------- */
+const ACERVO = [
+  {
+    img: 'assets/acervo/acervo-raul-kimjongman.jpg',
+    alt: 'Jovem Raul Braga Freire ao lado do Grão-Mestre Kim Jong Man',
+    caption: 'Raul Braga com o Grão-Mestre Kim Jong Man, seu formador na fase paulistana'
+  },
+  {
+    img: 'assets/acervo/acervo-turma-faixas-pretas-sp.jpg',
+    alt: 'Turma de faixas-pretas da fase paulistana do Hapkido, por volta de 1988/89',
+    caption: 'Turma de faixas-pretas da fase paulistana, por volta de 1988/89'
+  },
+  {
+    img: 'assets/acervo/acervo-raul-alex.jpg',
+    alt: 'Raul Braga Freire com o filho Alex Santos Freire, ainda criança, no dojang de casa',
+    caption: 'Raul com o filho Alex, ainda criança, no dojang de casa'
+  },
+  {
+    img: 'assets/acervo/acervo-raul-igor-maruca.jpg',
+    alt: 'Mestre Raul Braga Freire aplicando uma técnica de defesa pessoal no Kyosanim Igor Maruca, em apresentação pública',
+    caption: 'Demonstração de defesa pessoal com o Kyosanim Igor Maruca'
+  },
+  {
+    img: 'assets/acervo/acervo-raul-pais.jpg',
+    alt: 'Mestre Raul Braga Freire ao lado de seus pais',
+    caption: 'O Mestre Raul Braga Freire ao lado dos pais'
+  }
+];
+
+const acervoImg = document.getElementById('acervoImg');
+const acervoCaption = document.getElementById('acervoCaption');
+const acervoDotsEl = document.getElementById('acervoDots');
+const acervoPrev = document.getElementById('acervoPrev');
+const acervoNext = document.getElementById('acervoNext');
+
+if(acervoImg && acervoCaption && ACERVO.length){
+  let acervoIndex = 0;
+
+  ACERVO.forEach((_, i)=>{
+    const dot = document.createElement('span');
+    if(i === 0) dot.classList.add('active');
+    dot.addEventListener('click', ()=>renderAcervo(i));
+    acervoDotsEl.appendChild(dot);
+  });
+  const acervoDots = acervoDotsEl.querySelectorAll('span');
+
+  function renderAcervo(i){
+    acervoIndex = (i + ACERVO.length) % ACERVO.length;
+    const item = ACERVO[acervoIndex];
+    acervoImg.src = item.img;
+    acervoImg.alt = item.alt;
+    acervoCaption.textContent = item.caption;
+    acervoDots.forEach((d, di)=>d.classList.toggle('active', di === acervoIndex));
+  }
+  renderAcervo(0);
+
+  if(acervoPrev) acervoPrev.addEventListener('click', ()=>renderAcervo(acervoIndex - 1));
+  if(acervoNext) acervoNext.addEventListener('click', ()=>renderAcervo(acervoIndex + 1));
 }
 
 if('serviceWorker' in navigator){

@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500&family=Work+Sans:wght@300;400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/site.css">
 </head>
 <body>
@@ -263,7 +263,7 @@
 </div>
 
 <!-- ============ ENTREVISTAS ============ -->
-<section class="interviews-section" data-nav="Entrevistas">
+<section class="interviews-section" id="entrevistas" data-nav="Entrevistas">
   <span class="label" style="display:block;text-align:center;margin-bottom:2rem;">Entrevistas</span>
   <div class="fact-card interviews-card reveal" id="interviewsCard">
     <span class="news-tag">Entrevista</span>
@@ -278,7 +278,7 @@
 </section>
 
 <!-- ============ ACERVO — FOTOS ANTIGAS ============ -->
-<section class="acervo" data-nav="Acervo">
+<section class="acervo" id="acervo" data-nav="Acervo">
   <div class="acervo-intro reveal">
     <span class="label">Do arquivo pessoal</span>
     <h3>Uma trajetória em imagens</h3>
@@ -286,29 +286,18 @@
       formação em São Paulo às apresentações públicas do IBH em Piracaia. Mais fotos e histórias como
       essas estão sendo reunidas para o livro e para a Comunidade do Instituto.</p>
   </div>
-  <div class="credentials-gallery acervo-board reveal" id="acervoGallery">
-    <figure class="acervo-item">
-      <img loading="lazy" src="assets/acervo/acervo-raul-kimjongman.jpg" alt="Jovem Raul Braga Freire ao lado do Grão-Mestre Kim Jong Man" draggable="false">
-      <figcaption>Raul Braga com o Grão-Mestre Kim Jong Man, seu formador na fase paulistana</figcaption>
-    </figure>
-    <figure class="acervo-item">
-      <img loading="lazy" src="assets/acervo/acervo-turma-faixas-pretas-sp.jpg" alt="Turma de faixas-pretas da fase paulistana do Hapkido, década de 1980" draggable="false">
-      <figcaption>Turma de faixas-pretas da fase paulistana, década de 1980</figcaption>
-    </figure>
-    <figure class="acervo-item">
-      <img loading="lazy" src="assets/acervo/acervo-raul-alex.jpg" alt="Raul Braga Freire com o filho Alex Santos Freire, ainda criança, no dojang de casa" draggable="false">
-      <figcaption>Raul com o filho Alex, ainda criança, no dojang de casa</figcaption>
-    </figure>
-    <figure class="acervo-item">
-      <img loading="lazy" src="assets/acervo/acervo-raul-igor-maruca.jpg" alt="Mestre Raul Braga Freire aplicando uma técnica de defesa pessoal no Kyosanim Igor Maruca, em apresentação pública" draggable="false">
-      <figcaption>Demonstração de defesa pessoal com o Kyosanim Igor Maruca</figcaption>
-    </figure>
-    <figure class="acervo-item">
-      <img loading="lazy" src="assets/acervo/acervo-raul-pais.jpg" alt="Mestre Raul Braga Freire ao lado de seus pais" draggable="false">
-      <figcaption>O Mestre Raul Braga Freire ao lado dos pais</figcaption>
-    </figure>
+  <div class="acervo-carousel reveal">
+    <button class="acervo-nav prev" id="acervoPrev" type="button" aria-label="Foto anterior">&#8249;</button>
+    <div class="credentials-gallery" id="acervoGallery">
+      <figure class="acervo-slide">
+        <img id="acervoImg" loading="lazy" src="" alt="" draggable="false">
+        <figcaption id="acervoCaption"></figcaption>
+      </figure>
+    </div>
+    <button class="acervo-nav next" id="acervoNext" type="button" aria-label="Próxima foto">&#8250;</button>
   </div>
-  <span class="acervo-hint">Toque numa foto para ampliar</span>
+  <div class="fact-dots" id="acervoDots"></div>
+  <span class="acervo-hint">Toque na foto para ampliar</span>
 </section>
 
 <!-- ============ CTA ============ -->
