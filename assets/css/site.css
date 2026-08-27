@@ -121,6 +121,45 @@ img{max-width:100%;}
   50%{box-shadow:0 0 0 6px rgba(232,185,35,0);}
 }
 @media (max-width:520px){.comunidade-badge{padding:0.5rem 0.85rem 0.5rem 0.7rem;gap:0.4rem;font-size:0.6rem;letter-spacing:0.14em;}}
+
+.instalar-badge{
+  display:flex;align-items:center;gap:0.6rem;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(16px) saturate(160%);
+  -webkit-backdrop-filter:blur(16px) saturate(160%);
+  border:1px solid rgba(255,255,255,0.22);
+  border-radius:999px;
+  padding:0.35rem 1.15rem 0.35rem 0.35rem;
+  font-family:'Cinzel',serif;font-size:0.66rem;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--bone);cursor:pointer;
+  box-shadow:0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.18);
+  transition:background .3s ease,border-color .3s ease,box-shadow .3s ease;
+}
+.instalar-badge img{
+  width:24px;height:24px;border-radius:7px;flex:none;display:block;
+  box-shadow:0 1px 5px rgba(0,0,0,0.5);
+}
+.instalar-badge:hover{
+  background:rgba(255,255,255,0.16);border-color:rgba(232,185,35,0.55);
+  box-shadow:0 4px 20px rgba(232,185,35,0.2), inset 0 1px 0 rgba(255,255,255,0.24);
+}
+@media (max-width:520px){
+  .instalar-badge{padding:0.3rem;}
+  .instalar-badge span{display:none;}
+}
+
+/* ---------- Cartão "Instale nosso app" (entre o hero e a próxima seção) ---------- */
+.instalar-callout{
+  padding:3.4rem clamp(1.2rem,6vw,3rem) 2.2rem;
+  display:flex;flex-direction:column;align-items:center;gap:1rem;
+  text-align:center;
+}
+.instalar-callout .instalar-badge{padding:0.4rem 1.3rem 0.4rem 0.4rem;}
+.instalar-callout .instalar-badge img{width:28px;height:28px;}
+@media (max-width:520px){
+  .instalar-callout .instalar-badge{padding:0.4rem 1.2rem 0.4rem 0.4rem;}
+  .instalar-callout .instalar-badge span{display:inline;}
+}
 @media (max-width:400px){
   .topbar-actions{gap:0.6rem;}
   .comunidade-badge{padding:0.45rem 0.6rem 0.45rem 0.55rem;gap:0.32rem;font-size:0.52rem;letter-spacing:0.08em;}
