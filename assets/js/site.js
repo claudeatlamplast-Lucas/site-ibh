@@ -337,3 +337,97 @@ if(factCard && factBody && FACTS.length){
     factCard.addEventListener('mouseleave', startFactTimer);
   }
 }
+
+/* ---------- Card "Entrevistas" (página do Mestre) ---------- */
+const INTERVIEWS = [
+  {
+    title: 'Piracaia na Rede — a entrevista mais antiga',
+    text: 'Em 02/08/2017, o Chong Kwanjangnim Raul Braga foi entrevistado pela página Piracaia na Rede, apresentado como presidente e fundador do Instituto Brasileiro de Hapkido — o registro em vídeo mais antigo já encontrado com o Mestre.',
+    photo: 'assets/ig/mestre-raul-perfil.jpg'
+  },
+  {
+    title: '"Matéria sobre Hapkido"',
+    text: 'A página Piracaia na Rede visita o dojang do IBH e mostra como funcionam as aulas de Hapkido em Piracaia, com o Mestre Raul Braga.',
+    photo: 'assets/ig/dojang-treino.jpg',
+    link: 'https://www.youtube.com/watch?v=u6g-bp2Hhi8', linkLabel: 'Assistir no YouTube'
+  },
+  {
+    title: 'Podcast Gente da Gente — Ep. 01',
+    text: 'Ao vivo pela Piracaia na Rede, o Mestre Raul Braga conversa por mais de uma hora sobre sua trajetória pessoal com o Hapkido, num dos registros mais longos e completos já feitos com ele.',
+    photo: 'assets/ig/mestre-raul-1.jpg',
+    link: 'https://www.youtube.com/watch?v=5Vw_UlDVCLw', linkLabel: 'Assistir no YouTube'
+  },
+  {
+    title: 'Podcast Entrelinhas #01',
+    text: 'O Mestre Raul Braga, ao lado de Kyosanim do Instituto, conta a jornada do IBH desde os primeiros passos na arte marcial até as competições mundiais, num bate-papo descontraído.',
+    photo: 'assets/ig/corpo-instrutores.jpg',
+    link: 'https://www.youtube.com/watch?v=4plqGpfXB7c', linkLabel: 'Assistir no YouTube'
+  }
+];
+
+const interviewsCard = document.getElementById('interviewsCard');
+const interviewsBody = document.getElementById('interviewsCardBody');
+const interviewsPhoto = document.getElementById('interviewsPhoto');
+const interviewsTitle = document.getElementById('interviewsTitle');
+const interviewsText = document.getElementById('interviewsText');
+const interviewsLink = document.getElementById('interviewsLink');
+const interviewsDotsEl = document.getElementById('interviewsDots');
+
+if(interviewsCard && interviewsBody && INTERVIEWS.length){
+  let interviewIndex = 0;
+  let interviewTimer = null;
+
+  INTERVIEWS.forEach((_, i)=>{
+    const dot = document.createElement('span');
+    if(i === 0) dot.classList.add('active');
+    interviewsDotsEl.appendChild(dot);
+  });
+  const interviewDots = interviewsDotsEl.querySelectorAll('span');
+
+  const renderInterview = (i)=>{
+    const item = INTERVIEWS[i];
+    interviewsTitle.textContent = item.title;
+    interviewsText.textContent = item.text;
+    if(item.photo){
+      interviewsPhoto.src = item.photo;
+      interviewsPhoto.alt = item.title;
+      interviewsPhoto.hidden = false;
+    } else {
+      interviewsPhoto.hidden = true;
+    }
+    if(item.link){
+      interviewsLink.href = item.link;
+      interviewsLink.querySelector('span').textContent = item.linkLabel || 'Assistir';
+      interviewsLink.hidden = false;
+    } else {
+      interviewsLink.hidden = true;
+    }
+    interviewDots.forEach((d, di)=>d.classList.toggle('active', di === i));
+  };
+  renderInterview(0);
+
+  const showNextInterview = ()=>{
+    interviewIndex = (interviewIndex + 1) % INTERVIEWS.length;
+    interviewsBody.classList.add('fading');
+    setTimeout(()=>{
+      renderInterview(interviewIndex);
+      interviewsBody.classList.remove('fading');
+    }, 500);
+  };
+
+  const startInterviewTimer = ()=>{ interviewTimer = setInterval(showNextInterview, 7000); };
+  const stopInterviewTimer = ()=>{ clearInterval(interviewTimer); interviewTimer = null; };
+
+  interviewsCard.addEventListener('click', (e)=>{
+    if(e.target.closest('a')) return;
+    stopInterviewTimer();
+    showNextInterview();
+    if(!prefersReducedMotion) startInterviewTimer();
+  });
+
+  if(!prefersReducedMotion){
+    startInterviewTimer();
+    interviewsCard.addEventListener('mouseenter', stopInterviewTimer);
+    interviewsCard.addEventListener('mouseleave', startInterviewTimer);
+  }
+}
