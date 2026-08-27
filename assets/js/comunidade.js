@@ -36,6 +36,7 @@
   var pendingLogoutBtn = document.getElementById('pendingLogoutBtn');
 
   var feedLogoutBtn = document.getElementById('feedLogoutBtn');
+  var notifBtn = document.getElementById('notifBtn');
   var meNome = document.getElementById('meNome');
   var meAvatar = document.getElementById('meAvatar');
   var postForm = document.getElementById('postForm');
@@ -232,6 +233,62 @@
     }
     showOnly(secPending);
   }
+
+  /* ---------- Notificações push ---------- */
+
+  function urlBase64ToUint8Array(base64String){
+    var padding = new Array((4 - base64String.length % 4) % 4 + 1).join('=');
+    var base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    var rawData = window.atob(base64);
+    var outputArray = new Uint8Array(rawData.length);
+    for(var i = 0; i < rawData.length; i++) outputArray[i] = rawData.charCodeAt(i);
+    return outputArray;
+  }
+
+  function atualizaNotifBtn(){
+    if(!notifBtn) return;
+    if(!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window) || !window.VAPID_PUBLIC_KEY){
+      notifBtn.hidden = true;
+      return;
+    }
+    notifBtn.hidden = false;
+    if(Notification.permission === 'denied'){
+      notifBtn.textContent = 'Notificações bloqueadas';
+      notifBtn.disabled = true;
+      return;
+    }
+    navigator.serviceWorker.ready.then(function(reg){
+      return reg.pushManager.getSubscription();
+    }).then(function(sub){
+      notifBtn.textContent = sub ? 'Notificações ativas' : 'Ativar notificações';
+      notifBtn.disabled = !!sub;
+    });
+  }
+
+  function ativarNotificacoes(){
+    Notification.requestPermission().then(function(permissao){
+      if(permissao !== 'granted'){ atualizaNotifBtn(); return; }
+      return navigator.serviceWorker.ready.then(function(reg){
+        return reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(window.VAPID_PUBLIC_KEY)
+        });
+      }).then(function(sub){
+        var json = sub.toJSON();
+        return client.from('push_subscriptions').upsert({
+          user_id: currentUser.id,
+          endpoint: json.endpoint,
+          p256dh: json.keys.p256dh,
+          auth: json.keys.auth
+        }, { onConflict: 'endpoint' });
+      }).then(function(res){
+        if(res && res.error){ console.error('Erro ao salvar inscrição de notificação:', res.error.message); }
+        atualizaNotifBtn();
+      });
+    });
+  }
+
+  if(notifBtn) notifBtn.addEventListener('click', ativarNotificacoes);
 
   /* ---------- Meu perfil / troca de faixa ---------- */
 
@@ -557,6 +614,7 @@
         meNome.textContent = currentProfile.nome_exibicao;
         meAvatar.src = currentProfile.foto_url || 'assets/ibh-logo.png';
         showOnly(secFeed);
+        atualizaNotifBtn();
         return carregarFeed();
       });
     });

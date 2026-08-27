@@ -1,3 +1,5 @@
 .git
 .git/**
 wrangler.toml
+supabase
+supabase/**
