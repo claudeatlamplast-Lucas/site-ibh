@@ -343,24 +343,24 @@ const INTERVIEWS = [
   {
     title: 'Piracaia na Rede — a entrevista mais antiga',
     text: 'Em 02/08/2017, o Chong Kwanjangnim Raul Braga foi entrevistado pela página Piracaia na Rede, apresentado como presidente e fundador do Instituto Brasileiro de Hapkido — o registro em vídeo mais antigo já encontrado com o Mestre.',
-    photo: 'assets/ig/mestre-raul-perfil.jpg'
+    photo: 'assets/entrevistas/piracaia-na-rede-2017.jpg'
   },
   {
     title: '"Matéria sobre Hapkido"',
     text: 'A página Piracaia na Rede visita o dojang do IBH e mostra como funcionam as aulas de Hapkido em Piracaia, com o Mestre Raul Braga.',
-    photo: 'assets/ig/dojang-treino.jpg',
+    photo: 'assets/entrevistas/materia-hapkido-2020.jpg',
     link: 'https://www.youtube.com/watch?v=u6g-bp2Hhi8', linkLabel: 'Assistir no YouTube'
   },
   {
     title: 'Podcast Gente da Gente — Ep. 01',
     text: 'Ao vivo pela Piracaia na Rede, o Mestre Raul Braga conversa por mais de uma hora sobre sua trajetória pessoal com o Hapkido, num dos registros mais longos e completos já feitos com ele.',
-    photo: 'assets/ig/mestre-raul-1.jpg',
+    photo: 'assets/entrevistas/gente-da-gente-2022.jpg',
     link: 'https://www.youtube.com/watch?v=5Vw_UlDVCLw', linkLabel: 'Assistir no YouTube'
   },
   {
     title: 'Podcast Entrelinhas #01',
     text: 'O Mestre Raul Braga, ao lado de Kyosanim do Instituto, conta a jornada do IBH desde os primeiros passos na arte marcial até as competições mundiais, num bate-papo descontraído.',
-    photo: 'assets/ig/corpo-instrutores.jpg',
+    photo: 'assets/entrevistas/entrelinhas-2023.jpg',
     link: 'https://www.youtube.com/watch?v=4plqGpfXB7c', linkLabel: 'Assistir no YouTube'
   }
 ];

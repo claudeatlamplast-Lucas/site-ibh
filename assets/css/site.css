@@ -979,6 +979,7 @@ body.intro-active{overflow:hidden;height:100vh;}
 .fact-card-body.fading{opacity:0;}
 .fact-photo{width:100%;aspect-ratio:16/9;object-fit:cover;margin-bottom:1.2rem;border:1px solid rgba(232,185,35,0.2);}
 .fact-photo[hidden]{display:none;}
+.interviews-card .fact-photo{object-fit:contain;background:var(--black-deep);}
 .fact-card-body h3{font-size:clamp(1.1rem,2.2vw,1.35rem);font-weight:500;margin-bottom:0.8rem;}
 .fact-card-body p{color:rgba(242,240,234,0.8);line-height:1.8;font-size:0.9rem;white-space:pre-line;}
 .fact-link{
