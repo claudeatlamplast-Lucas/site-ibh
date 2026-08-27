@@ -4,6 +4,8 @@
    quem tem pouca prática com celular.
    ====================================================================== */
 
+[hidden]{display:none !important;}
+
 body.instalar-page{background:var(--black-deep);}
 
 .instalar-wrap{

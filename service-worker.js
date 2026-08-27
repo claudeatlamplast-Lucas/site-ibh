@@ -5,12 +5,15 @@
 var CACHE_NAME = 'ibh-comunidade-v1';
 var APP_SHELL = [
   '/comunidade.html',
+  '/instalar.html',
   '/manifest.json',
   '/assets/css/site.css',
   '/assets/css/comunidade.css',
+  '/assets/css/instalar.css',
   '/assets/js/site.js',
   '/assets/icons/icon-192.png',
-  '/assets/icons/icon-512.png'
+  '/assets/icons/icon-512.png',
+  '/assets/icons/qr-instalar.svg'
 ];
 
 self.addEventListener('install', function(event){

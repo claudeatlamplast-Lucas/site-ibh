@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instalar o app da Comunidade — Instituto Brasileiro de Hapkido</title>
+<meta name="description" content="Passo a passo simples para instalar a Comunidade IBH na tela inicial do celular, no Android e no iPhone.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0b0b0c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Comunidade IBH">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/instalar.css">
+</head>
+<body class="instalar-page">
+
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<header class="topbar">
+  <a href="index.html" class="brand">
+    <img src="assets/ibh-logo.png" alt="Instituto Brasileiro de Hapkido">
+    <span>IBH</span>
+  </a>
+  <div class="topbar-actions">
+    <a href="comunidade.html" class="comunidade-badge"><span class="dot"></span><span>Comunidade</span></a>
+    <button class="back-btn" id="backBtn" aria-label="Voltar"><span class="back-arrow">&larr;&#xFE0E;</span><span class="back-label">Voltar</span></button>
+    <button class="menu-btn" id="menuOpenBtn">Menu</button>
+  </div>
+</header>
+
+<div class="menu-overlay" id="menuOverlay">
+  <button class="menu-close" id="menuCloseBtn">&times;</button>
+  <nav>
+    <a href="index.html">Início</a>
+    <a href="sobre.html">Sobre</a>
+    <a href="formacao.html">Formação</a>
+    <a href="mestre.html">Mestre</a>
+    <a href="campeonatos.html">Campeonatos</a>
+    <a href="rede.html">Rede</a>
+    <a href="comunidade.html">Comunidade</a>
+    <a href="contato.html">Matrícula</a>
+  </nav>
+  <div class="menu-social">
+    <a href="https://instagram.com/hapkidobrasil" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.facebook.com/p/Instituto-Brasileiro-de-Hapkido-100062145890610/" target="_blank" rel="noopener">Facebook</a>
+  </div>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="page-hero">
+  <span class="label">Espaço dos alunos</span>
+  <h1>Instale a Comunidade no seu celular</h1>
+  <p class="page-lede">Um ícone na tela do celular, igual a um aplicativo — sem precisar digitar o site nem lembrar senha toda vez.</p>
+</section>
+
+<main class="instalar-wrap">
+
+  <a class="instalar-cta" href="comunidade.html" id="ctaAbrir">
+    Toque aqui para abrir a Comunidade
+    <small>Depois de abrir, siga o passo a passo abaixo</small>
+  </a>
+
+  <div class="device-toggle" id="deviceToggle">
+    <button type="button" class="device-btn" id="btnIphone" data-device="ios">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="10.5" y1="18.5" x2="13.5" y2="18.5"/></svg>
+      Tenho iPhone
+    </button>
+    <button type="button" class="device-btn" id="btnAndroid" data-device="android">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="5" y="4" width="14" height="17" rx="2.5"/><line x1="9" y1="1.5" x2="9" y2="4"/><line x1="15" y1="1.5" x2="15" y2="4"/><line x1="9" y1="18.2" x2="15" y2="18.2"/></svg>
+      Tenho Android
+    </button>
+  </div>
+  <p class="device-note" id="deviceNote" hidden>Identificamos o seu aparelho automaticamente — pode trocar acima se preferir.</p>
+
+  <!-- ============ PASSOS — iPHONE ============ -->
+  <ol class="steps" id="stepsIos" hidden>
+    <li class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body"><p>Abra o botão dourado acima <strong>pelo aplicativo Safari</strong> (o do compasso azul). Não funciona pelo Chrome no iPhone.</p></div>
+    </li>
+    <li class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body"><p>Na parte de baixo da tela, toque no ícone de compartilhar:
+        <svg class="step-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><rect x="5" y="11" width="14" height="10" rx="2"/></svg>
+        (um quadrado com uma seta pra cima).</p></div>
+    </li>
+    <li class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body"><p>Deslize a lista pra cima e toque em <strong>"Adicionar à Tela de Início"</strong>.</p></div>
+    </li>
+    <li class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body"><p>Toque em <strong>"Adicionar"</strong> no canto de cima. Pronto — o ícone "Comunidade IBH" já está na tela do celular.</p></div>
+    </li>
+  </ol>
+
+  <!-- ============ PASSOS — ANDROID ============ -->
+  <ol class="steps" id="stepsAndroid" hidden>
+    <li class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-body"><p>Abra o botão dourado acima pelo <strong>Google Chrome</strong>.</p></div>
+    </li>
+    <li class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-body"><p>Toque nos três pontinhos no canto de cima da tela:
+        <svg class="step-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>
+      </p></div>
+    </li>
+    <li class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-body"><p>Toque em <strong>"Instalar aplicativo"</strong> (ou "Adicionar à tela inicial").</p></div>
+    </li>
+    <li class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-body"><p>Toque em <strong>"Instalar"</strong>. Pronto — o ícone "Comunidade IBH" já está na tela do celular.</p></div>
+    </li>
+  </ol>
+
+  <div class="qr-card">
+    <h3>Prefere escanear?</h3>
+    <p>Aponte a câmera do celular para este código — ele abre esta mesma página.</p>
+    <img src="assets/icons/qr-instalar.svg" alt="QR code para abrir esta página de instalação" width="180" height="180">
+    <br>
+    <button type="button" class="qr-print-btn" id="printBtn">Imprimir cartaz para o dojang</button>
+  </div>
+
+  <p class="instalar-help">Já instalou e mesmo assim pede senha toda vez? Fale com a secretaria do IBH.<br>
+    Prefere continuar pelo navegador normal? <a href="comunidade.html">Acesse a Comunidade aqui</a>.</p>
+
+</main>
+
+<!-- ============ PÔSTER DE IMPRESSÃO (só aparece ao imprimir) ============ -->
+<div class="print-poster">
+  <span class="print-brand">Instituto Brasileiro de Hapkido</span>
+  <h2>Instale a Comunidade IBH</h2>
+  <img src="assets/icons/qr-instalar.svg" alt="QR code de instalação">
+  <p>Aponte a câmera do celular para o código acima e siga o passo a passo da tela.</p>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="fbrand">
+    <img loading="lazy" src="assets/ibh-logo.png" alt="IBH">
+    <small>&copy; <span id="year"></span> Instituto Brasileiro de Hapkido — Piracaia-SP</small>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var btnIphone = document.getElementById('btnIphone');
+  var btnAndroid = document.getElementById('btnAndroid');
+  var stepsIos = document.getElementById('stepsIos');
+  var stepsAndroid = document.getElementById('stepsAndroid');
+  var deviceNote = document.getElementById('deviceNote');
+
+  function mostrar(device){
+    var isIos = device === 'ios';
+    stepsIos.hidden = !isIos;
+    stepsAndroid.hidden = isIos;
+    btnIphone.classList.toggle('active', isIos);
+    btnAndroid.classList.toggle('active', !isIos);
+  }
+
+  btnIphone.addEventListener('click', function(){ mostrar('ios'); });
+  btnAndroid.addEventListener('click', function(){ mostrar('android'); });
+
+  var ua = navigator.userAgent || '';
+  var detectado = /iPhone|iPad|iPod/i.test(ua) ? 'ios' : (/Android/i.test(ua) ? 'android' : null);
+  mostrar(detectado || 'android');
+  if(detectado) deviceNote.hidden = false;
+
+  document.getElementById('printBtn').addEventListener('click', function(){ window.print(); });
+})();
+</script>
+<script src="assets/js/site.js"></script>
+</body>
+</html>
