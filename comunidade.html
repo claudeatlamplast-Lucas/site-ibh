@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;500&family=Work+Sans:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,500;1,600&family=Marcellus+SC&family=Lora:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/site.css">
 <link rel="stylesheet" href="assets/css/comunidade.css">
 </head>
@@ -211,16 +211,25 @@
     <button type="button" id="feedTabMeus">Minhas publicações</button>
   </div>
 
-  <div class="feed-pinned-grid">
-    <!-- ============ MURAL DO DOJANG (fixado no topo do feed) ============ -->
+  <!-- ============ MURAL DO DOJANG (fixado no topo do feed, largura cheia) ============ -->
+  <div class="mural-section">
     <div class="mural-card">
       <span class="news-tag">Mural do Dojang</span>
       <h3>Avisos e próximos eventos</h3>
       <!-- Itens do mural: editar o array MURAL em assets/js/site.js -->
       <div class="mural-board" id="muralBoard"></div>
     </div>
+  </div>
 
-    <!-- ============ VOCÊ SABIA? (curiosidades rotativas) ============ -->
+  <div class="feed-scroll" data-lenis-prevent>
+    <p class="feed-empty" id="feedEmpty" hidden>Ainda não há publicações. Seja o primeiro a postar!</p>
+    <div class="feed-list" id="feedList"></div>
+    <button type="button" class="btn-gold feed-load-more" id="feedLoadMoreBtn" hidden>Carregar mais</button>
+    <p class="feed-end" id="feedEnd" hidden>&mdash; fim das publicações &mdash;</p>
+  </div>
+
+  <!-- ============ VOCÊ SABIA? (curiosidades rotativas — fecha a página, depois do feed) ============ -->
+  <div class="feed-fact-section">
     <div class="fact-card feed-fact-card" id="factCard">
       <span class="news-tag">Você sabia?</span>
       <div class="fact-card-body" id="factCardBody">
@@ -231,12 +240,6 @@
       </div>
       <div class="fact-dots" id="factDots"></div>
     </div>
-  </div>
-
-  <div class="feed-scroll" data-lenis-prevent>
-    <p class="feed-empty" id="feedEmpty" hidden>Ainda não há publicações. Seja o primeiro a postar!</p>
-    <div class="feed-list" id="feedList"></div>
-    <p class="feed-end" id="feedEnd" hidden>&mdash; fim das publicações &mdash;</p>
   </div>
 </section>
 

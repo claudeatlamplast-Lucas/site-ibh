@@ -73,6 +73,30 @@
   var ultimoComentarios = [];
   var ultimasCurtidas = [];
 
+  var FEED_PAGE_SIZE = 20;
+  var feedOffset = 0;
+  var feedTemMais = true;
+  var feedCarregando = false;
+  var feedLoadMoreBtn = document.getElementById('feedLoadMoreBtn');
+
+  /* Evita que a tela fique travada pra sempre se a conexão engasgar:
+     depois de "ms" sem resposta, rejeita e deixa a UI mostrar um erro. */
+  function comTimeout(promise, ms){
+    return new Promise(function(resolve, reject){
+      var expirou = false;
+      var timer = setTimeout(function(){ expirou = true; reject(new Error('timeout')); }, ms);
+      promise.then(function(res){
+        if(expirou) return;
+        clearTimeout(timer);
+        resolve(res);
+      }, function(err){
+        if(expirou) return;
+        clearTimeout(timer);
+        reject(err);
+      });
+    });
+  }
+
   function populaSelectFaixas(select){
     select.innerHTML = '';
     FAIXAS.forEach(function(f){
@@ -122,13 +146,45 @@
     return null;
   }
 
+  /* Redimensiona e recomprime a foto no celular antes de subir — mantém boa
+     aparência mas reduz muito o tamanho do arquivo, o que deixa o feed mais
+     rápido pra todo mundo (upload e download) em conexões fracas do dojang. */
+  function comprimirImagem(file, maxDim, qualidade){
+    maxDim = maxDim || 1600;
+    qualidade = qualidade || 0.75;
+    if(!window.createImageBitmap || !document.createElement('canvas').getContext){
+      return Promise.resolve(file);
+    }
+    return createImageBitmap(file).then(function(bitmap){
+      var largura = bitmap.width, altura = bitmap.height;
+      var maior = Math.max(largura, altura);
+      if(maior > maxDim){
+        var escala = maxDim / maior;
+        largura = Math.round(largura * escala);
+        altura = Math.round(altura * escala);
+      }
+      var canvas = document.createElement('canvas');
+      canvas.width = largura; canvas.height = altura;
+      canvas.getContext('2d').drawImage(bitmap, 0, 0, largura, altura);
+      return new Promise(function(resolve){
+        canvas.toBlob(function(blob){
+          if(!blob || blob.size >= file.size){ resolve(file); return; }
+          var novoNome = file.name.replace(/\.[^.]+$/, '') + '.jpg';
+          resolve(new File([blob], novoNome, { type: 'image/jpeg' }));
+        }, 'image/jpeg', qualidade);
+      });
+    }).catch(function(){ return file; });
+  }
+
   function uploadFoto(file, prefixo){
-    var ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
-    var path = currentUser.id + '/' + prefixo + '-' + Date.now() + '.' + ext;
-    return client.storage.from(BUCKET).upload(path, file).then(function(res){
-      if(res.error) throw res.error;
-      var pub = client.storage.from(BUCKET).getPublicUrl(path);
-      return pub.data.publicUrl;
+    return comprimirImagem(file).then(function(arquivo){
+      var ext = (arquivo.name.split('.').pop() || 'jpg').toLowerCase();
+      var path = currentUser.id + '/' + prefixo + '-' + Date.now() + '.' + ext;
+      return client.storage.from(BUCKET).upload(path, arquivo).then(function(res){
+        if(res.error) throw res.error;
+        var pub = client.storage.from(BUCKET).getPublicUrl(path);
+        return pub.data.publicUrl;
+      });
     });
   }
 
@@ -177,10 +233,19 @@
     authError.textContent = '';
     var email = document.getElementById('loginEmail').value.trim();
     var senha = document.getElementById('loginSenha').value;
-    client.auth.signInWithPassword({ email: email, password: senha }).then(function(res){
+    var submitBtn = formLogin.querySelector('button[type="submit"]');
+    var textoOriginal = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Entrando...';
+    comTimeout(client.auth.signInWithPassword({ email: email, password: senha }), 15000).then(function(res){
       if(res.error){ authError.textContent = 'Não foi possível entrar: ' + traduzErro(res.error.message); return; }
       salvarCredencial(email, senha);
-      init();
+      return init();
+    }).catch(function(){
+      authError.textContent = 'A conexão demorou demais. Verifique sua internet e tente novamente.';
+    }).finally(function(){
+      submitBtn.disabled = false;
+      submitBtn.textContent = textoOriginal;
     });
   });
 
@@ -463,42 +528,72 @@
     });
   });
 
-  function carregarFeed(){
-    return Promise.all([
-      client.from('posts').select('id, autor_id, foto_url, legenda, criado_em, profiles!posts_autor_id_fkey(nome_exibicao, foto_url, faixa, escolas(nome))').order('criado_em', { ascending: false }),
-      client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, escolas(nome))').order('criado_em', { ascending: true }),
-      client.from('curtidas').select('post_id, autor_id')
-    ]).then(function(results){
-      var postsRes = results[0], comentariosRes = results[1], curtidasRes = results[2];
-      if(postsRes.error){
-        feedList.innerHTML = '<p class="feed-error">Não foi possível carregar o feed.</p>';
-        return;
+  /* Busca só uma página de posts por vez (mais os comentários/curtidas
+     desses posts) em vez da tabela inteira — evita que o feed fique cada
+     vez mais pesado conforme a comunidade publica mais fotos.
+     Passe reset=false para acrescentar a próxima página (botão "carregar mais"). */
+  function carregarFeed(reset){
+    if(reset !== false){
+      feedOffset = 0;
+      feedTemMais = true;
+      ultimoPosts = [];
+      ultimoComentarios = [];
+      ultimasCurtidas = [];
+    }
+    if(feedCarregando || !feedTemMais) return Promise.resolve();
+    feedCarregando = true;
+    if(feedLoadMoreBtn){ feedLoadMoreBtn.disabled = true; feedLoadMoreBtn.textContent = 'Carregando...'; }
+
+    var query = client.from('posts')
+      .select('id, autor_id, foto_url, legenda, criado_em, profiles!posts_autor_id_fkey(nome_exibicao, foto_url, faixa, escolas(nome))')
+      .order('criado_em', { ascending: false })
+      .range(feedOffset, feedOffset + FEED_PAGE_SIZE - 1);
+    if(feedMode === 'meus') query = query.eq('autor_id', currentUser.id);
+
+    return comTimeout(query, 15000).then(function(postsRes){
+      if(postsRes.error) throw postsRes.error;
+      var pagina = postsRes.data || [];
+      feedTemMais = pagina.length === FEED_PAGE_SIZE;
+      feedOffset += pagina.length;
+      ultimoPosts = ultimoPosts.concat(pagina);
+      if(pagina.length === 0) return null;
+      var ids = pagina.map(function(p){ return p.id; });
+      return comTimeout(Promise.all([
+        client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, escolas(nome))').in('post_id', ids).order('criado_em', { ascending: true }),
+        client.from('curtidas').select('post_id, autor_id').in('post_id', ids)
+      ]), 15000);
+    }).then(function(results){
+      if(results){
+        ultimoComentarios = ultimoComentarios.concat(results[0].data || []);
+        ultimasCurtidas = ultimasCurtidas.concat(results[1].data || []);
       }
-      ultimoPosts = postsRes.data || [];
-      ultimoComentarios = comentariosRes.data || [];
-      ultimasCurtidas = curtidasRes.data || [];
       aplicarFiltroFeed();
+    }).catch(function(){
+      feedList.innerHTML = '<p class="feed-error">Não foi possível carregar o feed.</p>';
+    }).finally(function(){
+      feedCarregando = false;
+      if(feedLoadMoreBtn){ feedLoadMoreBtn.disabled = false; feedLoadMoreBtn.textContent = 'Carregar mais'; }
     });
   }
 
   function aplicarFiltroFeed(){
-    var posts = feedMode === 'meus'
-      ? ultimoPosts.filter(function(p){ return p.autor_id === currentUser.id; })
-      : ultimoPosts;
     feedEmpty.textContent = feedMode === 'meus'
       ? 'Você ainda não publicou nada. Que tal compartilhar seu primeiro momento?'
       : 'Ainda não há publicações. Seja o primeiro a postar!';
-    renderFeed(posts, ultimoComentarios, ultimasCurtidas);
+    renderFeed(ultimoPosts, ultimoComentarios, ultimasCurtidas);
+    if(feedLoadMoreBtn) feedLoadMoreBtn.hidden = !feedTemMais || ultimoPosts.length === 0;
+    feedEnd.hidden = feedTemMais || ultimoPosts.length === 0;
   }
 
   function setFeedMode(mode){
     feedMode = mode;
     feedTabTodos.classList.toggle('active', mode === 'todos');
     feedTabMeus.classList.toggle('active', mode === 'meus');
-    aplicarFiltroFeed();
+    carregarFeed(true);
   }
   feedTabTodos.addEventListener('click', function(){ setFeedMode('todos'); });
   feedTabMeus.addEventListener('click', function(){ setFeedMode('meus'); });
+  if(feedLoadMoreBtn) feedLoadMoreBtn.addEventListener('click', function(){ carregarFeed(false); });
 
   function renderFeed(posts, comentarios, curtidas){
     feedList.innerHTML = '';
@@ -588,6 +683,25 @@
     document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !userModal.hidden) closeUserModal(); });
   }
 
+  /* Curtir/comentar não muda a lista de posts em si — só recarrega
+     curtidas/comentários dos posts já visíveis, sem voltar a paginação
+     pro início (o que atrapalharia quem já rolou o feed pra baixo). */
+  function idsCarregados(){ return ultimoPosts.map(function(p){ return p.id; }); }
+
+  function atualizarCurtidas(){
+    return client.from('curtidas').select('post_id, autor_id').in('post_id', idsCarregados()).then(function(res){
+      ultimasCurtidas = res.data || [];
+      aplicarFiltroFeed();
+    });
+  }
+
+  function atualizarComentarios(){
+    return client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, escolas(nome))').in('post_id', idsCarregados()).order('criado_em', { ascending: true }).then(function(res){
+      ultimoComentarios = res.data || [];
+      aplicarFiltroFeed();
+    });
+  }
+
   feedList.addEventListener('click', function(e){
     var userTrigger = e.target.closest('.user-trigger');
     if(userTrigger){ openUserModal(userTrigger); return; }
@@ -599,7 +713,7 @@
       var acao = jaCurti
         ? client.from('curtidas').delete().eq('post_id', postId).eq('autor_id', currentUser.id)
         : client.from('curtidas').insert({ post_id: postId, autor_id: currentUser.id });
-      acao.then(function(){ return carregarFeed(); });
+      acao.then(function(){ return atualizarCurtidas(); });
       return;
     }
     var delBtn = e.target.closest('.delete-btn');
@@ -611,7 +725,7 @@
     var delComment = e.target.closest('.comment-delete');
     if(delComment){
       if(!window.confirm('Apagar este comentário?')) return;
-      client.from('comentarios').delete().eq('id', delComment.dataset.commentId).then(function(){ return carregarFeed(); });
+      client.from('comentarios').delete().eq('id', delComment.dataset.commentId).then(function(){ return atualizarComentarios(); });
       return;
     }
   });
@@ -628,7 +742,7 @@
     btn.disabled = true;
     client.from('comentarios').insert({ post_id: postId, autor_id: currentUser.id, texto: texto }).then(function(res){
       btn.disabled = false;
-      if(!res.error){ input.value = ''; return carregarFeed(); }
+      if(!res.error){ input.value = ''; return atualizarComentarios(); }
     });
   });
 
@@ -636,8 +750,12 @@
 
   function entrarComSessao(session){
     currentUser = session.user;
-    return client.from('profiles').select('*').eq('id', currentUser.id).single().then(function(profileRes){
-      if(profileRes.error || !profileRes.data){ showOnly(secAuth); return; }
+    return comTimeout(client.from('profiles').select('*').eq('id', currentUser.id).single(), 15000).then(function(profileRes){
+      if(profileRes.error || !profileRes.data){
+        authError.textContent = 'Não foi possível carregar seu perfil. Tente novamente.';
+        showOnly(secAuth);
+        return;
+      }
       currentProfile = profileRes.data;
       if(currentProfile.status !== 'aprovado'){ renderPending(); return; }
       meNome.textContent = currentProfile.nome_exibicao;
@@ -645,6 +763,9 @@
       showOnly(secFeed);
       atualizaNotifBtn();
       return carregarFeed();
+    }).catch(function(){
+      authError.textContent = 'A conexão demorou demais ao carregar seu perfil. Tente novamente.';
+      showOnly(secAuth);
     });
   }
 

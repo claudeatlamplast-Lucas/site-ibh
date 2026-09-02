@@ -351,14 +351,25 @@ if(factCard && factBody && FACTS.length){
 }
 
 /* ---------- Mural do Dojang (home) ----------
-   Para adicionar um novo item, inserir um objeto no INÍCIO do array MURAL:
-   { tipo: 'evento' | 'aviso', titulo: '...', texto: '...', data: '...' } */
+   Para adicionar um novo item, inserir um objeto no array MURAL (ordem não importa,
+   a lista é reordenada sozinha pela data):
+   { tipo: 'evento' | 'aviso', titulo: '...', texto: '...', data: '...', dataISO: 'AAAA-MM-DD' }
+   dataISO é opcional e serve só para ordenar e gerar o carimbo curto (ex: "12 SET") na
+   nota fechada — quem não tem dataISO cai automaticamente pro fim do mural, como "sem data". */
 const MURAL = [
+  {
+    tipo: 'evento',
+    titulo: 'Exame de Faixa',
+    texto: 'Exame de faixa para os alunos das faixas Branca à Ponta Vermelha, na Escola de Arte Marcial - Piracaia. Os alunos selecionados para o exame serão notificados pessoalmente. Contamos com a presença e o empenho de todos!',
+    data: 'Sábado, 12/09/2026 · 09h às 12h (previsão) · Escola de Arte Marcial, Piracaia-SP',
+    dataISO: '2026-09-12'
+  },
   {
     tipo: 'evento',
     titulo: 'Apresentação no EMPREPIRA',
     texto: 'O Instituto fará uma apresentação no EMPREPIRA. Contamos com a presença de todos! HAPKI!',
-    data: 'Domingo, 13/09/2026 às 17h · Gruta de Nossa Senhora Aparecida, Piracaia-SP'
+    data: 'Domingo, 13/09/2026 às 17h · Gruta de Nossa Senhora Aparecida, Piracaia-SP',
+    dataISO: '2026-09-13'
   },
   {
     tipo: 'aviso',
@@ -379,15 +390,71 @@ if(muralBoard){
   if(!MURAL.length){
     muralBoard.innerHTML = '<p class="mural-empty">Nenhum aviso no momento.</p>';
   } else {
-    MURAL.forEach((item)=>{
-      const note = document.createElement('div');
-      note.className = 'mural-note mural-note--' + (item.tipo === 'evento' ? 'evento' : 'aviso');
-      note.innerHTML =
-        '<span class="mural-note-tag">' + (item.tipo === 'evento' ? 'Evento' : 'Aviso') + '</span>' +
-        '<h4>' + item.titulo + '</h4>' +
-        '<p>' + item.texto + '</p>' +
-        (item.data ? '<span class="mural-note-date">' + item.data + '</span>' : '');
-      muralBoard.appendChild(note);
+    const MESES_ABREV = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+    const stampFromISO = (iso)=>{
+      const [, m, d] = iso.split('-');
+      return d + ' ' + MESES_ABREV[Number(m) - 1];
+    };
+    const rotClasses = ['rot-a','rot-b','rot-c','rot-d'];
+
+    const ordenado = MURAL
+      .map((item, i) => ({ item, i }))
+      .sort((a, b)=>{
+        if(a.item.dataISO && b.item.dataISO) return a.item.dataISO < b.item.dataISO ? -1 : a.item.dataISO > b.item.dataISO ? 1 : a.i - b.i;
+        if(a.item.dataISO && !b.item.dataISO) return -1;
+        if(!a.item.dataISO && b.item.dataISO) return 1;
+        return a.i - b.i;
+      })
+      .map(x => x.item);
+
+    const primeiroSemData = ordenado.findIndex(item => !item.dataISO);
+
+    ordenado.forEach((item, idx)=>{
+      if(idx === primeiroSemData){
+        const divisor = document.createElement('div');
+        divisor.className = 'mural-divider';
+        divisor.textContent = 'Sem data marcada';
+        muralBoard.appendChild(divisor);
+      }
+
+      const uid = 'mural-item-' + idx;
+      const rot = rotClasses[idx % rotClasses.length];
+
+      const nota = document.createElement('button');
+      nota.type = 'button';
+      nota.className = 'mural-note ' + rot + (item.dataISO ? '' : ' mural-note--undated');
+      nota.setAttribute('aria-expanded', 'false');
+      nota.innerHTML =
+        '<span class="mural-note-title">' + item.titulo + '</span>' +
+        '<span class="mural-note-meta">' +
+          (item.dataISO
+            ? '<span class="mural-stamp">' + stampFromISO(item.dataISO) + '</span>'
+            : '<span class="mural-nodate">Contínuo</span>') +
+          '<span class="mural-chevron"></span>' +
+        '</span>';
+      muralBoard.appendChild(nota);
+
+      const wrap = document.createElement('div');
+      wrap.className = 'mural-scroll-wrap';
+      wrap.innerHTML =
+        '<div class="mural-scroll-inner"><div class="mural-scroll">' +
+          '<span class="mural-scroll-tag">' + (item.tipo === 'evento' ? 'Evento' : 'Aviso') + '</span>' +
+          '<h4>' + item.titulo + '</h4>' +
+          '<p>' + item.texto + '</p>' +
+          (item.data ? '<span class="mural-scroll-date">' + item.data + '</span>' : '') +
+        '</div></div>';
+      muralBoard.appendChild(wrap);
+
+      nota.addEventListener('click', ()=>{
+        const abrindo = !wrap.classList.contains('is-open');
+        muralBoard.querySelectorAll('.mural-scroll-wrap.is-open').forEach(w => w.classList.remove('is-open'));
+        muralBoard.querySelectorAll('.mural-note.is-open').forEach(n => { n.classList.remove('is-open'); n.setAttribute('aria-expanded', 'false'); });
+        if(abrindo){
+          wrap.classList.add('is-open');
+          nota.classList.add('is-open');
+          nota.setAttribute('aria-expanded', 'true');
+        }
+      });
     });
   }
 }
