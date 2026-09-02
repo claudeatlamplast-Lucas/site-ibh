@@ -350,6 +350,48 @@ if(factCard && factBody && FACTS.length){
   }
 }
 
+/* ---------- Mural do Dojang (home) ----------
+   Para adicionar um novo item, inserir um objeto no INÍCIO do array MURAL:
+   { tipo: 'evento' | 'aviso', titulo: '...', texto: '...', data: '...' } */
+const MURAL = [
+  {
+    tipo: 'evento',
+    titulo: 'Apresentação no EMPREPIRA',
+    texto: 'O Instituto fará uma apresentação no EMPREPIRA. Contamos com a presença de todos! HAPKI!',
+    data: 'Domingo, 13/09/2026 às 17h · Gruta de Nossa Senhora Aparecida, Piracaia-SP'
+  },
+  {
+    tipo: 'aviso',
+    titulo: 'Campanha de arrecadação',
+    texto: 'A Escola de Hapkido de Piracaia — IBH está arrecadando doações para as famílias atingidas pelas fortes chuvas na região. Toda ajuda é bem-vinda: alimentos e mantimentos, roupas para adultos e crianças, cobertores, fraldas e produtos de higiene e limpeza. As doações podem ser entregues na Academia — a equipe se encarrega de separar e levar ao Centro Esportivo, de onde serão destinadas às famílias que precisam. Se puder contribuir, contribua. Se não puder, ajude compartilhando.',
+    data: 'Entregas na Academia · Piracaia-SP'
+  },
+  {
+    tipo: 'aviso',
+    titulo: 'Aula exclusiva para faixas-pretas',
+    texto: 'Turma especial com o Chong Kwanjangnim Raul Braga Freire — aulas quinzenais aos domingos, revezando entre a sede do IBH em Piracaia e a escola do Sabonim Júnior Silva (Equipe Alfa), em Atibaia. Vagas limitadas.',
+    data: 'Piracaia-SP e Atibaia-SP · desde janeiro de 2026'
+  }
+];
+
+const muralBoard = document.getElementById('muralBoard');
+if(muralBoard){
+  if(!MURAL.length){
+    muralBoard.innerHTML = '<p class="mural-empty">Nenhum aviso no momento.</p>';
+  } else {
+    MURAL.forEach((item)=>{
+      const note = document.createElement('div');
+      note.className = 'mural-note mural-note--' + (item.tipo === 'evento' ? 'evento' : 'aviso');
+      note.innerHTML =
+        '<span class="mural-note-tag">' + (item.tipo === 'evento' ? 'Evento' : 'Aviso') + '</span>' +
+        '<h4>' + item.titulo + '</h4>' +
+        '<p>' + item.texto + '</p>' +
+        (item.data ? '<span class="mural-note-date">' + item.data + '</span>' : '');
+      muralBoard.appendChild(note);
+    });
+  }
+}
+
 /* ---------- Card "Entrevistas" (página do Mestre) ---------- */
 const INTERVIEWS = [
   {

@@ -1040,6 +1040,52 @@ body.intro-active{overflow:hidden;height:100vh;}
 .fact-dots span{width:6px;height:6px;border-radius:50%;background:rgba(232,185,35,0.25);transition:background .3s ease;}
 .fact-dots span.active{background:var(--gold);}
 
+/* ---------- Mural do Dojang (quadro de avisos, home) ---------- */
+.mural-card{border:1px solid var(--gold-dim);padding:2.4rem clamp(1.5rem,4vw,3rem);position:relative;text-align:left;}
+.mural-card .news-tag{display:inline-block;background:var(--gold);color:var(--black);font-family:'Cinzel',serif;font-size:0.66rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.35rem 0.8rem;margin-bottom:1.2rem;}
+.mural-card h3{font-size:clamp(1.3rem,2.6vw,1.7rem);font-weight:500;margin-bottom:1.4rem;}
+.mural-board{
+  display:flex;flex-direction:column;gap:1.4rem;
+  padding:1.6rem clamp(1rem,3vw,1.8rem) 1.2rem;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(0,0,0,0.16) 0, transparent 2.5%),
+    radial-gradient(circle at 70% 65%, rgba(0,0,0,0.14) 0, transparent 2%),
+    radial-gradient(circle at 45% 85%, rgba(0,0,0,0.12) 0, transparent 2%),
+    radial-gradient(circle at 85% 15%, rgba(0,0,0,0.14) 0, transparent 2%),
+    radial-gradient(circle at 30% 55%, rgba(0,0,0,0.1) 0, transparent 2%),
+    linear-gradient(155deg,#4a3320,#3a2717 60%,#33210f);
+  border:10px solid #2a1c10;
+  box-shadow:inset 0 0 24px rgba(0,0,0,0.55);
+  max-height:420px;overflow-y:auto;
+}
+.mural-empty{color:var(--bone);opacity:0.7;font-style:italic;padding:0.6rem 0.2rem;}
+.mural-note{
+  position:relative;background:var(--bone);color:var(--black);
+  padding:1.2rem 1.3rem 1rem;box-shadow:0 6px 14px rgba(0,0,0,0.4);
+  transform:rotate(-1.2deg);
+}
+.mural-note:nth-child(even){transform:rotate(1deg);}
+.mural-note:nth-child(3n){transform:rotate(-0.5deg);}
+.mural-note::before{
+  content:'';position:absolute;top:-9px;left:50%;transform:translateX(-50%);
+  width:14px;height:14px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #ffdd7a, var(--terracotta) 70%);
+  box-shadow:0 2px 3px rgba(0,0,0,0.5);
+}
+.mural-note-tag{display:inline-block;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.2rem 0.6rem;margin-bottom:0.6rem;border:1px solid var(--terracotta);color:var(--terracotta);}
+.mural-note--evento .mural-note-tag{background:var(--terracotta);color:var(--bone);}
+.mural-note h4{font-family:'Cinzel',serif;font-size:1rem;font-weight:600;margin-bottom:0.5rem;}
+.mural-note p{font-size:0.85rem;line-height:1.6;color:rgba(10,10,10,0.8);}
+.mural-note-date{display:block;margin-top:0.7rem;font-size:0.66rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--terracotta);}
+@media (max-width:640px){
+  .mural-card{padding:1rem 0.9rem;}
+  .mural-card .news-tag{font-size:0.56rem;padding:0.25rem 0.55rem;margin-bottom:0.7rem;}
+  .mural-card h3{font-size:0.82rem;margin-bottom:0.8rem;}
+  .mural-board{max-height:320px;padding:1.2rem 0.8rem 1rem;gap:1rem;}
+  .mural-note h4{font-size:0.85rem;}
+  .mural-note p{font-size:0.72rem;}
+}
+
 /* ---------- Entrevistas (card rotativo, mesmo padrão do "Você sabia?") ---------- */
 .interviews-section{border-top:1px solid rgba(232,185,35,0.15);}
 .interviews-card{max-width:640px;margin:0 auto;}
