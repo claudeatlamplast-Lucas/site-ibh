@@ -134,6 +134,29 @@
 
   /* ---------- Auth: login / cadastro ---------- */
 
+  /* Usa o gerenciador de senhas nativo do navegador (Chrome/Edge/Android) para
+     oferecer "Salvar senha?" após o login — não guardamos a senha em lugar
+     nenhum do nosso código, quem armazena é o próprio navegador. */
+  function salvarCredencial(email, senha, nome){
+    if(!window.PasswordCredential || !navigator.credentials) return;
+    try{
+      var cred = new PasswordCredential({ id: email, password: senha, name: nome || email });
+      navigator.credentials.store(cred).catch(function(){});
+    }catch(e){}
+  }
+
+  /* Se o navegador já tem uma credencial salva para este site, tenta entrar
+     sozinho (sem precisar digitar e-mail/senha de novo). */
+  function tentarLoginAutomatico(){
+    if(!window.PasswordCredential || !navigator.credentials) return Promise.resolve(false);
+    return navigator.credentials.get({ password: true, mediation: 'optional' }).then(function(cred){
+      if(!cred || cred.type !== 'password' || !cred.password) return false;
+      return client.auth.signInWithPassword({ email: cred.id, password: cred.password }).then(function(res){
+        return !res.error;
+      });
+    }).catch(function(){ return false; });
+  }
+
   tabLogin.addEventListener('click', function(){
     tabLogin.classList.add('active'); tabCadastro.classList.remove('active');
     formLogin.hidden = false; formCadastro.hidden = true;
@@ -145,6 +168,10 @@
     authError.textContent = '';
   });
 
+  if(/[?&#]cadastro=1/.test(window.location.href)){
+    tabCadastro.click();
+  }
+
   formLogin.addEventListener('submit', function(e){
     e.preventDefault();
     authError.textContent = '';
@@ -152,6 +179,7 @@
     var senha = document.getElementById('loginSenha').value;
     client.auth.signInWithPassword({ email: email, password: senha }).then(function(res){
       if(res.error){ authError.textContent = 'Não foi possível entrar: ' + traduzErro(res.error.message); return; }
+      salvarCredencial(email, senha);
       init();
     });
   });
@@ -183,6 +211,7 @@
         return null;
       }
       currentUser = res.data.user;
+      salvarCredencial(email, senha, nome);
       var fotoPromise = fotoFile
         ? uploadFoto(fotoFile, 'perfil').catch(function(){
             authError.textContent = 'Cadastro criado, mas houve um erro ao enviar a foto. Você pode adicionar depois.';
@@ -218,6 +247,9 @@
       formLogin.reset(); formCadastro.reset();
       profilePanel.hidden = true;
       showOnly(secAuth);
+      if(navigator.credentials && navigator.credentials.preventSilentAccess){
+        navigator.credentials.preventSilentAccess().catch(function(){});
+      }
     });
   }
 
@@ -602,20 +634,30 @@
 
   /* ---------- Inicialização ---------- */
 
+  function entrarComSessao(session){
+    currentUser = session.user;
+    return client.from('profiles').select('*').eq('id', currentUser.id).single().then(function(profileRes){
+      if(profileRes.error || !profileRes.data){ showOnly(secAuth); return; }
+      currentProfile = profileRes.data;
+      if(currentProfile.status !== 'aprovado'){ renderPending(); return; }
+      meNome.textContent = currentProfile.nome_exibicao;
+      meAvatar.src = currentProfile.foto_url || 'assets/ibh-logo.png';
+      showOnly(secFeed);
+      atualizaNotifBtn();
+      return carregarFeed();
+    });
+  }
+
   function init(){
     return client.auth.getSession().then(function(res){
       var session = res.data.session;
-      if(!session){ showOnly(secAuth); return; }
-      currentUser = session.user;
-      return client.from('profiles').select('*').eq('id', currentUser.id).single().then(function(profileRes){
-        if(profileRes.error || !profileRes.data){ showOnly(secAuth); return; }
-        currentProfile = profileRes.data;
-        if(currentProfile.status !== 'aprovado'){ renderPending(); return; }
-        meNome.textContent = currentProfile.nome_exibicao;
-        meAvatar.src = currentProfile.foto_url || 'assets/ibh-logo.png';
-        showOnly(secFeed);
-        atualizaNotifBtn();
-        return carregarFeed();
+      if(session) return entrarComSessao(session);
+      return tentarLoginAutomatico().then(function(entrou){
+        if(!entrou){ showOnly(secAuth); return; }
+        return client.auth.getSession().then(function(res2){
+          if(!res2.data.session){ showOnly(secAuth); return; }
+          return entrarComSessao(res2.data.session);
+        });
       });
     });
   }

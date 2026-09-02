@@ -44,9 +44,13 @@ create trigger trg_notificar_novo_post
 --
 -- 1. A Edge Function "notificar-novo-post" já precisa estar publicada
 --    (Edge Functions > notificar-novo-post), com os secrets:
---      VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT, WEBHOOK_SECRET
+--      VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT, WEBHOOK_SECRET,
+--      RESEND_API_KEY (opcional, ativa o envio de email), RESEND_FROM_EMAIL,
+--      SITE_URL
 --    WEBHOOK_SECRET tem que ser IGUAL ao valor colado no x-webhook-secret
---    aqui em cima: 4be550e7a2e30a6b1bd2608c3e5d109eab19de41a2ae9d78024f7650538543ac
+--    aqui em cima. NÃO cole o valor real neste arquivo (ele é versionado no
+--    git) — gere um novo valor aleatório e cole só nas Secrets da função e
+--    no bloco acima, direto no SQL Editor antes de rodar.
 --
 -- 2. Em Edge Functions > notificar-novo-post > Settings, desative
 --    "Enforce JWT Verification" — quem chama é o Postgres do próprio

@@ -1,7 +1,8 @@
 // Edge Function: notificar-novo-post
 // Disparada por um trigger do Postgres (via pg_net) a cada INSERT em "posts"
 // — ver supabase/migration-005-trigger-notificacoes.sql.
-// Envia uma notificação push pra todo aluno inscrito (exceto quem postou).
+// Envia push notification pra todo aluno inscrito e um email pra todo aluno
+// aprovado (exceto quem postou, em ambos os casos).
 // Deploy: cole este arquivo em Edge Functions > notificar-novo-post no painel,
 // e desative "Enforce JWT Verification" nas configurações da função (quem
 // chama é o próprio Postgres do projeto, não um usuário logado — a proteção
@@ -16,8 +17,32 @@ const vapidPublicKey = Deno.env.get("VAPID_PUBLIC_KEY")!;
 const vapidPrivateKey = Deno.env.get("VAPID_PRIVATE_KEY")!;
 const vapidSubject = Deno.env.get("VAPID_SUBJECT") ?? "mailto:ibhapkido@outlook.com";
 const webhookSecret = Deno.env.get("WEBHOOK_SECRET")!;
+const resendApiKey = Deno.env.get("RESEND_API_KEY");
+const resendFromEmail = Deno.env.get("RESEND_FROM_EMAIL") ?? "IBH Comunidade <comunidade@ibhapkido.com.br>";
+const siteUrl = Deno.env.get("SITE_URL") ?? "https://ibhapkido.com.br";
 
 webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
+
+async function enviarEmail(destinatario: string, nomeAutor: string, corpo: string) {
+  const resp = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + resendApiKey,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: resendFromEmail,
+      to: destinatario,
+      subject: "Novo post na Comunidade IBH",
+      html:
+        "<p>" + corpo + "</p>" +
+        '<p><a href="' + siteUrl + '/comunidade.html">Ver na comunidade</a></p>',
+    }),
+  });
+  if (!resp.ok) {
+    console.error("Falha ao enviar email para", destinatario, await resp.text());
+  }
+}
 
 Deno.serve(async (req: Request) => {
   try {
@@ -48,9 +73,6 @@ Deno.serve(async (req: Request) => {
       .neq("user_id", post.autor_id);
 
     if (erroInscricoes) throw erroInscricoes;
-    if (!inscricoes || inscricoes.length === 0) {
-      return new Response("sem inscritos", { status: 200 });
-    }
 
     const notificacao = JSON.stringify({
       title: "Comunidade IBH",
@@ -58,7 +80,7 @@ Deno.serve(async (req: Request) => {
       url: "/comunidade.html",
     });
 
-    await Promise.all(
+    const enviosPush = Promise.all(
       inscricoes.map(async (s: { id: string; endpoint: string; p256dh: string; auth: string }) => {
         try {
           await webpush.sendNotification(
@@ -76,6 +98,34 @@ Deno.serve(async (req: Request) => {
         }
       }),
     );
+
+    let enviosEmail: Promise<unknown> = Promise.resolve();
+    if (resendApiKey) {
+      enviosEmail = (async () => {
+        const { data: alunos, error: erroAlunos } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("status", "aprovado")
+          .neq("id", post.autor_id);
+
+        if (erroAlunos) throw erroAlunos;
+        if (!alunos || alunos.length === 0) return;
+
+        const { data: usuarios, error: erroUsuarios } = await supabase.auth.admin.listUsers({
+          perPage: 1000,
+        });
+        if (erroUsuarios) throw erroUsuarios;
+
+        const idsAprovados = new Set(alunos.map((a: { id: string }) => a.id));
+        const emails = usuarios.users
+          .filter((u) => idsAprovados.has(u.id) && u.email)
+          .map((u) => u.email as string);
+
+        await Promise.all(emails.map((email) => enviarEmail(email, nomeAutor, corpo)));
+      })();
+    }
+
+    await Promise.all([enviosPush, enviosEmail]);
 
     return new Response("ok", { status: 200 });
   } catch (err) {
