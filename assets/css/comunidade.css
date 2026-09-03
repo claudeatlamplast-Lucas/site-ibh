@@ -50,6 +50,33 @@ body.comunidade-page{background:var(--black-deep);}
 .comunidade-form .hint{font-size:0.76rem;color:rgba(242,240,234,0.45);}
 .form-error{color:#e07a5f;font-size:0.85rem;min-height:1.2em;}
 
+/* ---------- Tipo de cadastro (atleta / pai) e parentesco ---------- */
+.tipo-toggle{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
+.tipo-opt{position:relative;}
+.tipo-opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer;}
+.tipo-opt span{
+  display:flex;flex-direction:column;align-items:center;gap:0.5rem;
+  border:1px solid var(--gold-dim);padding:1rem 0.6rem;
+  font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:rgba(242,240,234,0.6);text-align:center;
+  transition:border-color .15s ease,color .15s ease,background .15s ease;
+}
+.tipo-opt svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.4;}
+.tipo-opt input:checked + span{border-color:var(--gold);color:var(--gold);background:rgba(232,185,35,0.08);}
+.tipo-opt input:focus-visible + span{outline:2px solid var(--gold);outline-offset:2px;}
+
+.parent-toggle{display:flex;gap:0.5rem;flex-wrap:wrap;}
+.parent-opt{position:relative;flex:1;min-width:70px;}
+.parent-opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer;}
+.parent-opt span{
+  display:block;text-align:center;border:1px solid var(--gold-dim);padding:0.55rem 0.4rem;
+  font-family:'Work Sans',sans-serif;font-size:0.82rem;color:rgba(242,240,234,0.6);
+  transition:border-color .15s ease,color .15s ease,background .15s ease;
+}
+.parent-opt input:checked + span{border-color:var(--gold);color:var(--gold);background:rgba(232,185,35,0.08);}
+
+#cadPaiFields,#compPaiFields{display:flex;flex-direction:column;gap:1.4rem;}
+
 .feed-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:2.5rem;flex-wrap:wrap;}
 .feed-header .welcome{font-family:'Playfair Display',serif;font-size:1.1rem;display:flex;align-items:center;}
 .feed-header .welcome b{color:var(--gold);font-weight:500;}
@@ -72,6 +99,11 @@ body.comunidade-page{background:var(--black-deep);}
 .profile-faixa-atual{font-size:0.9rem;color:rgba(242,240,234,0.8);margin-bottom:1rem;}
 .profile-faixa-atual b{color:var(--gold);}
 .profile-pendente{font-size:0.85rem;color:var(--gold);background:rgba(232,185,35,0.08);padding:0.8rem 1rem;border:1px solid rgba(232,185,35,0.2);}
+.profile-resp{
+  font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--gold);display:flex;align-items:center;gap:0.5rem;margin-bottom:1.2rem;
+}
+.profile-resp svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:1.6;flex-shrink:0;}
 
 .new-post-form{max-width:520px;margin:0 auto 2.5rem;display:flex;flex-direction:column;gap:1rem;background:rgba(10,10,10,0.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:1.8rem;border:1px solid rgba(232,185,35,0.15);}
 .post-form-hint{font-size:0.8rem;color:rgba(242,240,234,0.55);line-height:1.5;margin:-0.3rem 0 0;}
@@ -136,11 +168,21 @@ body.comunidade-page{background:var(--black-deep);}
 .post-author{display:flex;flex-direction:column;flex:1;}
 .post-author-nome{font-size:0.88rem;color:var(--bone);}
 .post-author-faixa{font-size:0.7rem;color:var(--gold);}
+.post-author-resp{font-size:0.7rem;color:var(--gold);display:flex;align-items:center;gap:0.3rem;}
+.post-author-resp svg{width:11px;height:11px;stroke:var(--gold);fill:none;stroke-width:1.6;flex-shrink:0;}
 .post-author-escola{font-size:0.68rem;color:rgba(242,240,234,0.5);}
 .delete-btn,.comment-delete{background:none;border:none;color:rgba(242,240,234,0.4);font-size:1.1rem;cursor:pointer;line-height:1;padding:0 0.2rem;flex-shrink:0;touch-action:manipulation;}
 .delete-btn:hover,.comment-delete:hover{color:#e07a5f;}
 
+.post-photo-wrap{position:relative;}
 .post-photo{width:100%;display:block;max-height:560px;object-fit:cover;}
+.school-badge{
+  position:absolute;top:0.7rem;right:0.7rem;width:34px;height:34px;border-radius:50%;
+  background:rgba(10,10,10,0.75);border:1.5px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+}
+.school-badge img{width:24px;height:24px;object-fit:contain;}
 .post-legenda{padding:1rem 1.2rem 0;font-size:0.9rem;color:rgba(242,240,234,0.85);line-height:1.5;}
 
 /* ---------- Mural do Dojang, largura cheia acima do feed ---------- */
@@ -225,3 +267,19 @@ body.comunidade-page{background:var(--black-deep);}
   letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);
   border:1px solid var(--gold-dim);padding:0.35rem 0.9rem;
 }
+
+/* ---------- Completar cadastro (alunos aprovados sem tipo definido) ---------- */
+#feedSection.feed-blur{filter:blur(7px);pointer-events:none;user-select:none;}
+.complete-overlay{
+  position:fixed;inset:0;z-index:900;
+  display:flex;align-items:center;justify-content:center;padding:1.5rem;
+  background:rgba(0,0,0,0.55);
+}
+.complete-card{
+  max-width:420px;width:100%;text-align:center;
+  background:rgba(10,10,10,0.92);border:1px solid var(--gold);
+  padding:2.4rem 2rem;
+}
+.complete-card h3{font-family:'Playfair Display',serif;font-weight:500;font-size:1.2rem;margin:0 0 0.6rem;}
+.complete-card p{font-size:0.85rem;color:rgba(242,240,234,0.65);line-height:1.5;margin:0 0 1.6rem;}
+.complete-card form{text-align:left;display:flex;flex-direction:column;gap:1.4rem;}

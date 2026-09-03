@@ -31,6 +31,52 @@
   var formCadastro = document.getElementById('cadastroForm');
   var authError = document.getElementById('authError');
 
+  var cadNomeLabel = document.getElementById('cadNomeLabel');
+  var cadAtletaFields = document.getElementById('cadAtletaFields');
+  var cadPaiFields = document.getElementById('cadPaiFields');
+  var cadFaixaSelect = document.getElementById('cadFaixa');
+  var cadParentescoOutroField = document.getElementById('cadParentescoOutroField');
+  var cadParentescoOutroInput = document.getElementById('cadParentescoOutro');
+  var cadNomeAtletaInput = document.getElementById('cadNomeAtleta');
+
+  document.querySelectorAll('input[name="cadTipo"]').forEach(function(r){
+    r.addEventListener('change', function(){
+      var isPai = this.value === 'pai';
+      cadAtletaFields.hidden = isPai;
+      cadPaiFields.hidden = !isPai;
+      cadFaixaSelect.required = !isPai;
+      cadNomeLabel.textContent = isPai ? 'Seu nome (responsável)' : 'Seu nome';
+    });
+  });
+  document.querySelectorAll('input[name="cadParentesco"]').forEach(function(r){
+    r.addEventListener('change', function(){
+      cadParentescoOutroField.hidden = this.value !== 'outro';
+    });
+  });
+
+  var completeOverlay = document.getElementById('completeOverlay');
+  var completeForm = document.getElementById('completeForm');
+  var completeError = document.getElementById('completeError');
+  var compPaiFields = document.getElementById('compPaiFields');
+  var compParentescoOutroField = document.getElementById('compParentescoOutroField');
+  var compParentescoOutroInput = document.getElementById('compParentescoOutro');
+  var compNomeAtletaInput = document.getElementById('compNomeAtleta');
+
+  document.querySelectorAll('input[name="compTipo"]').forEach(function(r){
+    r.addEventListener('change', function(){ compPaiFields.hidden = this.value !== 'pai'; });
+  });
+  document.querySelectorAll('input[name="compParentesco"]').forEach(function(r){
+    r.addEventListener('change', function(){
+      compParentescoOutroField.hidden = this.value !== 'outro';
+    });
+  });
+
+  function labelParentesco(parentesco, parentescoOutro){
+    if(parentesco === 'pai') return 'Pai';
+    if(parentesco === 'mae') return 'Mãe';
+    return parentescoOutro || 'Responsável';
+  }
+
   var pendingTitle = document.getElementById('pendingTitle');
   var pendingText = document.getElementById('pendingText');
   var pendingLogoutBtn = document.getElementById('pendingLogoutBtn');
@@ -65,6 +111,9 @@
   var profileFaixaForm = document.getElementById('profileFaixaForm');
   var profileFaixaSelect = document.getElementById('profileFaixaSelect');
   var profileError = document.getElementById('profileError');
+  var profileResp = document.getElementById('profileResp');
+  var profileRespTexto = document.getElementById('profileRespTexto');
+  var profileAtletaBlock = document.getElementById('profileAtletaBlock');
 
   var currentUser = null;
   var currentProfile = null;
@@ -255,13 +304,26 @@
     var email = document.getElementById('cadEmail').value.trim();
     var senha = document.getElementById('cadSenha').value;
     var nome = document.getElementById('cadNome').value.trim();
-    var faixa = document.getElementById('cadFaixa').value.trim();
     var escolaId = cadEscolaSelect.value;
     var fotoFile = document.getElementById('cadFoto').files[0];
+
+    var tipo = (document.querySelector('input[name="cadTipo"]:checked') || {}).value || 'atleta';
+    var isPai = tipo === 'pai';
+    var faixa = isPai ? null : cadFaixaSelect.value.trim();
+    var parentesco = null, parentescoOutro = null, atletaNome = null;
 
     if(senha.length < 6){ authError.textContent = 'A senha precisa ter pelo menos 6 caracteres.'; return; }
     if(!nome){ authError.textContent = 'Informe seu nome.'; return; }
     if(!escolaId){ authError.textContent = 'Selecione sua escola.'; return; }
+    if(isPai){
+      parentesco = (document.querySelector('input[name="cadParentesco"]:checked') || {}).value || 'pai';
+      if(parentesco === 'outro'){
+        parentescoOutro = cadParentescoOutroInput.value.trim();
+        if(!parentescoOutro){ authError.textContent = 'Informe seu grau de parentesco.'; return; }
+      }
+      atletaNome = cadNomeAtletaInput.value.trim();
+      if(!atletaNome){ authError.textContent = 'Informe o nome do(a) atleta.'; return; }
+    }
     var erroFoto = fotoFile ? validaFoto(fotoFile) : null;
     if(erroFoto){ authError.textContent = erroFoto; return; }
 
@@ -290,7 +352,11 @@
           nome_exibicao: nome,
           foto_url: fotoUrl,
           faixa: faixa || null,
-          escola_id: escolaId
+          escola_id: escolaId,
+          tipo: tipo,
+          parentesco: parentesco,
+          parentesco_outro: parentescoOutro,
+          atleta_nome: atletaNome
         });
       }).then(function(perfilRes){
         if(perfilRes.error){ throw perfilRes.error; }
@@ -303,6 +369,43 @@
     });
   });
 
+  completeForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    completeError.textContent = '';
+    var tipo = (document.querySelector('input[name="compTipo"]:checked') || {}).value || 'atleta';
+    var isPai = tipo === 'pai';
+    var parentesco = null, parentescoOutro = null, atletaNome = null;
+
+    if(isPai){
+      parentesco = (document.querySelector('input[name="compParentesco"]:checked') || {}).value || 'pai';
+      if(parentesco === 'outro'){
+        parentescoOutro = compParentescoOutroInput.value.trim();
+        if(!parentescoOutro){ completeError.textContent = 'Informe seu grau de parentesco.'; return; }
+      }
+      atletaNome = compNomeAtletaInput.value.trim();
+      if(!atletaNome){ completeError.textContent = 'Informe o nome do(a) atleta.'; return; }
+    }
+
+    var submitBtn = completeForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    client.from('profiles').update({
+      tipo: tipo,
+      parentesco: parentesco,
+      parentesco_outro: parentescoOutro,
+      atleta_nome: atletaNome
+    }).eq('id', currentUser.id).then(function(res){
+      if(res.error){ completeError.textContent = 'Não foi possível salvar: ' + traduzErro(res.error.message); return; }
+      currentProfile.tipo = tipo;
+      currentProfile.parentesco = parentesco;
+      currentProfile.parentesco_outro = parentescoOutro;
+      currentProfile.atleta_nome = atletaNome;
+      completeOverlay.hidden = true;
+      secFeed.classList.remove('feed-blur');
+    }).finally(function(){
+      submitBtn.disabled = false;
+    });
+  });
+
   pendingLogoutBtn.addEventListener('click', logout);
   feedLogoutBtn.addEventListener('click', logout);
 
@@ -310,7 +413,11 @@
     client.auth.signOut().then(function(){
       currentUser = null; currentProfile = null;
       formLogin.reset(); formCadastro.reset();
+      cadAtletaFields.hidden = false; cadPaiFields.hidden = true; cadFaixaSelect.required = true;
+      cadNomeLabel.textContent = 'Seu nome';
       profilePanel.hidden = true;
+      completeOverlay.hidden = true;
+      secFeed.classList.remove('feed-blur');
       showOnly(secAuth);
       if(navigator.credentials && navigator.credentials.preventSilentAccess){
         navigator.credentials.preventSilentAccess().catch(function(){});
@@ -420,6 +527,16 @@
     profileError.textContent = '';
     profileFotoStatus.textContent = '';
     profileFotoPreview.src = currentProfile.foto_url || 'assets/ibh-logo.png';
+
+    if(currentProfile.tipo === 'pai' && currentProfile.atleta_nome){
+      profileResp.hidden = false;
+      profileRespTexto.textContent = labelParentesco(currentProfile.parentesco, currentProfile.parentesco_outro) + ' de ' + currentProfile.atleta_nome;
+      profileAtletaBlock.hidden = true;
+      return;
+    }
+    profileResp.hidden = true;
+    profileAtletaBlock.hidden = false;
+
     profileFaixaAtual.textContent = currentProfile.faixa || 'Não informada';
     if(currentProfile.faixa_pendente){
       profilePendenteMsg.hidden = false;
@@ -545,7 +662,7 @@
     if(feedLoadMoreBtn){ feedLoadMoreBtn.disabled = true; feedLoadMoreBtn.textContent = 'Carregando...'; }
 
     var query = client.from('posts')
-      .select('id, autor_id, foto_url, legenda, criado_em, profiles!posts_autor_id_fkey(nome_exibicao, foto_url, faixa, escolas(nome))')
+      .select('id, autor_id, foto_url, legenda, criado_em, profiles!posts_autor_id_fkey(nome_exibicao, foto_url, faixa, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))')
       .order('criado_em', { ascending: false })
       .range(feedOffset, feedOffset + FEED_PAGE_SIZE - 1);
     if(feedMode === 'meus') query = query.eq('autor_id', currentUser.id);
@@ -559,7 +676,7 @@
       if(pagina.length === 0) return null;
       var ids = pagina.map(function(p){ return p.id; });
       return comTimeout(Promise.all([
-        client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, escolas(nome))').in('post_id', ids).order('criado_em', { ascending: true }),
+        client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').in('post_id', ids).order('criado_em', { ascending: true }),
         client.from('curtidas').select('post_id, autor_id').in('post_id', ids)
       ]), 15000);
     }).then(function(results){
@@ -610,22 +727,37 @@
       var autorFoto = (post.profiles && post.profiles.foto_url) || 'assets/ibh-logo.png';
       var autorNome = (post.profiles && post.profiles.nome_exibicao) || 'Aluno';
       var autorFaixa = post.profiles && post.profiles.faixa;
+      var autorTipo = post.profiles && post.profiles.tipo;
+      var autorParentesco = post.profiles && post.profiles.parentesco;
+      var autorParentescoOutro = post.profiles && post.profiles.parentesco_outro;
+      var autorAtletaNome = post.profiles && post.profiles.atleta_nome;
       var autorEscola = post.profiles && post.profiles.escolas && post.profiles.escolas.nome;
+      var autorEscolaLogo = (post.profiles && post.profiles.escolas && post.profiles.escolas.logo_url) || 'assets/ibh-logo.png';
+      var autorRespLabel = autorTipo === 'pai' && autorAtletaNome
+        ? labelParentesco(autorParentesco, autorParentescoOutro) + ' de ' + autorAtletaNome
+        : null;
 
       var card = document.createElement('article');
       card.className = 'post-card';
-      var autorAttrs = 'data-user-nome="' + escapeHtml(autorNome) + '" data-user-foto="' + escapeHtml(autorFoto) + '" data-user-faixa="' + escapeHtml(autorFaixa || '') + '" data-user-escola="' + escapeHtml(autorEscola || '') + '"';
+      var autorAttrs = 'data-user-nome="' + escapeHtml(autorNome) + '" data-user-foto="' + escapeHtml(autorFoto) +
+        '" data-user-faixa="' + escapeHtml(autorFaixa || '') + '" data-user-escola="' + escapeHtml(autorEscola || '') +
+        '" data-user-resp="' + escapeHtml(autorRespLabel || '') + '"';
 
       card.innerHTML =
         '<div class="post-header">' +
           '<img class="post-avatar user-trigger" ' + autorAttrs + ' src="' + escapeHtml(autorFoto) + '" alt="">' +
           '<div class="post-author">' +
             '<span class="post-author-nome user-trigger" ' + autorAttrs + '>' + escapeHtml(autorNome) + (autorEscola ? ' <span class="post-author-escola">· ' + escapeHtml(autorEscola) + '</span>' : '') + '</span>' +
-            (autorFaixa ? '<span class="post-author-faixa">' + escapeHtml(autorFaixa) + '</span>' : '') +
+            (autorRespLabel
+              ? '<span class="post-author-resp"><svg viewBox="0 0 24 24"><circle cx="8" cy="6.5" r="2.6"/><path d="M2.5 19c0-3.4 2.5-5.8 5.5-5.8s5.5 2.4 5.5 5.8"/></svg>' + escapeHtml(autorRespLabel) + '</span>'
+              : (autorFaixa ? '<span class="post-author-faixa">' + escapeHtml(autorFaixa) + '</span>' : '')) +
           '</div>' +
           (podeApagarPost ? '<button type="button" class="delete-btn" data-post-id="' + post.id + '" title="Apagar publicação">&times;</button>' : '') +
         '</div>' +
-        '<img class="post-photo" src="' + escapeHtml(post.foto_url) + '" alt="Foto da publicação" loading="lazy">' +
+        '<div class="post-photo-wrap">' +
+          '<img class="post-photo" src="' + escapeHtml(post.foto_url) + '" alt="Foto da publicação" loading="lazy">' +
+          '<span class="school-badge"><img src="' + escapeHtml(autorEscolaLogo) + '" alt="' + escapeHtml(autorEscola || 'Escola') + '"></span>' +
+        '</div>' +
         (post.legenda ? '<p class="post-legenda">' + escapeHtml(post.legenda) + '</p>' : '') +
         '<div class="post-actions">' +
           '<button type="button" class="like-btn' + (jaCurti ? ' liked' : '') + '" data-post-id="' + post.id + '">&#9733; <span>' + minhasCurtidas.length + '</span></button>' +
@@ -637,7 +769,12 @@
             var comentarioFoto = (c.profiles && c.profiles.foto_url) || 'assets/ibh-logo.png';
             var comentarioFaixa = (c.profiles && c.profiles.faixa) || '';
             var comentarioEscola = (c.profiles && c.profiles.escolas && c.profiles.escolas.nome) || '';
-            var comentarioAttrs = 'data-user-nome="' + escapeHtml(comentarioNome) + '" data-user-foto="' + escapeHtml(comentarioFoto) + '" data-user-faixa="' + escapeHtml(comentarioFaixa) + '" data-user-escola="' + escapeHtml(comentarioEscola) + '"';
+            var comentarioResp = (c.profiles && c.profiles.tipo === 'pai' && c.profiles.atleta_nome)
+              ? labelParentesco(c.profiles.parentesco, c.profiles.parentesco_outro) + ' de ' + c.profiles.atleta_nome
+              : '';
+            var comentarioAttrs = 'data-user-nome="' + escapeHtml(comentarioNome) + '" data-user-foto="' + escapeHtml(comentarioFoto) +
+              '" data-user-faixa="' + escapeHtml(comentarioFaixa) + '" data-user-escola="' + escapeHtml(comentarioEscola) +
+              '" data-user-resp="' + escapeHtml(comentarioResp) + '"';
             return '<div class="comment">' +
               '<img class="comment-avatar user-trigger" ' + comentarioAttrs + ' src="' + escapeHtml(comentarioFoto) + '" alt="">' +
               '<div class="comment-body">' +
@@ -671,9 +808,10 @@
     var escola = trigger.dataset.userEscola;
     userModalEscola.textContent = escola || '';
     userModalEscola.hidden = !escola;
+    var resp = trigger.dataset.userResp;
     var faixa = trigger.dataset.userFaixa;
-    userModalFaixa.textContent = faixa || '';
-    userModalFaixa.hidden = !faixa;
+    userModalFaixa.textContent = resp || faixa || '';
+    userModalFaixa.hidden = !resp && !faixa;
     userModal.hidden = false;
   }
   function closeUserModal(){ userModal.hidden = true; }
@@ -696,7 +834,7 @@
   }
 
   function atualizarComentarios(){
-    return client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, escolas(nome))').in('post_id', idsCarregados()).order('criado_em', { ascending: true }).then(function(res){
+    return client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').in('post_id', idsCarregados()).order('criado_em', { ascending: true }).then(function(res){
       ultimoComentarios = res.data || [];
       aplicarFiltroFeed();
     });
@@ -762,6 +900,10 @@
       meAvatar.src = currentProfile.foto_url || 'assets/ibh-logo.png';
       showOnly(secFeed);
       atualizaNotifBtn();
+      if(!currentProfile.tipo){
+        secFeed.classList.add('feed-blur');
+        completeOverlay.hidden = false;
+      }
       return carregarFeed();
     }).catch(function(){
       authError.textContent = 'A conexão demorou demais ao carregar seu perfil. Tente novamente.';

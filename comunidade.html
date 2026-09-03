@@ -112,16 +112,53 @@
 
     <form class="comunidade-form" id="cadastroForm" hidden>
       <div class="field">
-        <label for="cadNome">Seu nome</label>
+        <label>Você é</label>
+        <div class="tipo-toggle">
+          <label class="tipo-opt">
+            <input type="radio" name="cadTipo" value="atleta" checked>
+            <span>
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2"/><path d="M5 20c0-4 3-6.5 7-6.5S19 16 19 20"/></svg>
+              Atleta
+            </span>
+          </label>
+          <label class="tipo-opt">
+            <input type="radio" name="cadTipo" value="pai">
+            <span>
+              <svg viewBox="0 0 24 24"><circle cx="8" cy="6.5" r="2.6"/><circle cx="17" cy="8" r="2"/><path d="M2.5 19c0-3.4 2.5-5.8 5.5-5.8s5.5 2.4 5.5 5.8"/><path d="M14.3 13.6c2.3.2 4.2 2.3 4.2 5.1"/></svg>
+              Pai / responsável
+            </span>
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="cadNome" id="cadNomeLabel">Seu nome</label>
         <input type="text" id="cadNome" required autocomplete="name">
       </div>
       <div class="field">
-        <label for="cadEscola">Sua escola</label>
+        <label for="cadEscola" id="cadEscolaLabel">Sua escola</label>
         <select id="cadEscola" required></select>
       </div>
-      <div class="field">
+      <div id="cadAtletaFields" class="field">
         <label for="cadFaixa">Faixa / graduação</label>
         <select id="cadFaixa" required></select>
+      </div>
+      <div id="cadPaiFields" hidden>
+        <div class="field">
+          <label>Grau de parentesco</label>
+          <div class="parent-toggle">
+            <label class="parent-opt"><input type="radio" name="cadParentesco" value="pai" checked><span>Pai</span></label>
+            <label class="parent-opt"><input type="radio" name="cadParentesco" value="mae"><span>Mãe</span></label>
+            <label class="parent-opt"><input type="radio" name="cadParentesco" value="outro"><span>Outro</span></label>
+          </div>
+        </div>
+        <div class="field" id="cadParentescoOutroField" hidden>
+          <label for="cadParentescoOutro">Qual?</label>
+          <input type="text" id="cadParentescoOutro" placeholder="Ex.: Avó, tio, responsável legal...">
+        </div>
+        <div class="field">
+          <label for="cadNomeAtleta">Nome do(a) atleta</label>
+          <input type="text" id="cadNomeAtleta" placeholder="Nome do filho(a) matriculado(a)">
+        </div>
       </div>
       <div class="field">
         <label for="cadFoto">Foto de perfil (opcional)</label>
@@ -172,16 +209,22 @@
         <span class="hint" id="profileFotoStatus"></span>
       </div>
     </div>
-    <p class="profile-faixa-atual">Faixa atual: <b id="profileFaixaAtual"></b></p>
-    <p class="profile-pendente" id="profilePendenteMsg" hidden></p>
-    <form class="comunidade-form profile-faixa-form" id="profileFaixaForm">
-      <div class="field">
-        <label for="profileFaixaSelect">Solicitar troca para</label>
-        <select id="profileFaixaSelect"></select>
-      </div>
-      <p class="form-error" id="profileError"></p>
-      <button type="submit" class="btn-gold">Solicitar troca de faixa</button>
-    </form>
+    <p class="profile-resp" id="profileResp" hidden>
+      <svg viewBox="0 0 24 24"><circle cx="8" cy="6.5" r="2.6"/><path d="M2.5 19c0-3.4 2.5-5.8 5.5-5.8s5.5 2.4 5.5 5.8"/></svg>
+      <span id="profileRespTexto"></span>
+    </p>
+    <div id="profileAtletaBlock">
+      <p class="profile-faixa-atual">Faixa atual: <b id="profileFaixaAtual"></b></p>
+      <p class="profile-pendente" id="profilePendenteMsg" hidden></p>
+      <form class="comunidade-form profile-faixa-form" id="profileFaixaForm">
+        <div class="field">
+          <label for="profileFaixaSelect">Solicitar troca para</label>
+          <select id="profileFaixaSelect"></select>
+        </div>
+        <p class="form-error" id="profileError"></p>
+        <button type="submit" class="btn-gold">Solicitar troca de faixa</button>
+      </form>
+    </div>
   </div>
 
   <form class="new-post-form" id="postForm">
@@ -251,6 +294,55 @@
     <h3 id="userModalNome"></h3>
     <span class="user-modal-escola" id="userModalEscola"></span>
     <span class="user-modal-faixa" id="userModalFaixa"></span>
+  </div>
+</div>
+
+<!-- ============ COMPLETAR CADASTRO (alunos já aprovados sem tipo definido) ============ -->
+<div class="complete-overlay" id="completeOverlay" hidden>
+  <div class="complete-card">
+    <h3>Complete seu cadastro</h3>
+    <p>Atualizamos o cadastro da Comunidade. Diga se você é atleta ou pai/responsável para continuar vendo as publicações.</p>
+    <form id="completeForm">
+      <div class="field">
+        <label>Você é</label>
+        <div class="tipo-toggle">
+          <label class="tipo-opt">
+            <input type="radio" name="compTipo" value="atleta" checked>
+            <span>
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2"/><path d="M5 20c0-4 3-6.5 7-6.5S19 16 19 20"/></svg>
+              Atleta
+            </span>
+          </label>
+          <label class="tipo-opt">
+            <input type="radio" name="compTipo" value="pai">
+            <span>
+              <svg viewBox="0 0 24 24"><circle cx="8" cy="6.5" r="2.6"/><circle cx="17" cy="8" r="2"/><path d="M2.5 19c0-3.4 2.5-5.8 5.5-5.8s5.5 2.4 5.5 5.8"/><path d="M14.3 13.6c2.3.2 4.2 2.3 4.2 5.1"/></svg>
+              Pai / responsável
+            </span>
+          </label>
+        </div>
+      </div>
+      <div id="compPaiFields" hidden>
+        <div class="field">
+          <label>Grau de parentesco</label>
+          <div class="parent-toggle">
+            <label class="parent-opt"><input type="radio" name="compParentesco" value="pai" checked><span>Pai</span></label>
+            <label class="parent-opt"><input type="radio" name="compParentesco" value="mae"><span>Mãe</span></label>
+            <label class="parent-opt"><input type="radio" name="compParentesco" value="outro"><span>Outro</span></label>
+          </div>
+        </div>
+        <div class="field" id="compParentescoOutroField" hidden>
+          <label for="compParentescoOutro">Qual?</label>
+          <input type="text" id="compParentescoOutro" placeholder="Ex.: Avó, tio, responsável legal...">
+        </div>
+        <div class="field">
+          <label for="compNomeAtleta">Nome do(a) atleta</label>
+          <input type="text" id="compNomeAtleta" placeholder="Nome do filho(a) matriculado(a)">
+        </div>
+      </div>
+      <p class="form-error" id="completeError"></p>
+      <button type="submit" class="btn-gold">Salvar e entrar</button>
+    </form>
   </div>
 </div>
 
