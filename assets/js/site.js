@@ -373,12 +373,6 @@ const MURAL = [
   },
   {
     tipo: 'aviso',
-    titulo: 'Campanha de arrecadação',
-    texto: 'A Escola de Hapkido de Piracaia — IBH está arrecadando doações para as famílias atingidas pelas fortes chuvas na região. Toda ajuda é bem-vinda: alimentos e mantimentos, roupas para adultos e crianças, cobertores, fraldas e produtos de higiene e limpeza. As doações podem ser entregues na Academia — a equipe se encarrega de separar e levar ao Centro Esportivo, de onde serão destinadas às famílias que precisam. Se puder contribuir, contribua. Se não puder, ajude compartilhando.',
-    data: 'Entregas na Academia · Piracaia-SP'
-  },
-  {
-    tipo: 'aviso',
     titulo: 'Aula exclusiva para faixas-pretas',
     texto: 'Turma especial com o Chong Kwanjangnim Raul Braga Freire — aulas quinzenais aos domingos, revezando entre a sede do IBH em Piracaia e a escola do Sabonim Júnior Silva (Equipe Alfa), em Atibaia. Vagas limitadas.',
     data: 'Piracaia-SP e Atibaia-SP · desde janeiro de 2026'
