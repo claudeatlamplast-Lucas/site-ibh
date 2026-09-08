@@ -18,8 +18,6 @@
   --belt-amarela:#d9ac1f;
   --belt-verde:#57794a;
   --belt-azul:#3a6289;
-  --belt-roxa:#6a4770;
-  --belt-azul-roxa:#52557c;
   --belt-vermelha:var(--seal);
   --belt-preta:#171310;
 }
@@ -1174,18 +1172,6 @@ body.intro-active{overflow:hidden;height:100vh;}
 @media (max-width:560px){.acervo-carousel{gap:0.6rem;}}
 
 /* ---------- A Lenda das Faixas (Formação) ---------- */
-.legend-section{overflow:hidden;}
-.legend-bg{position:absolute;inset:0;z-index:0;}
-.legend-bg img{
-  width:100%;height:100%;object-fit:cover;object-position:50% 30%;
-  filter:grayscale(0.38) sepia(0.16) brightness(0.4) contrast(1.08);
-}
-.legend-bg-overlay{
-  position:absolute;inset:0;z-index:0;
-  background:
-    radial-gradient(ellipse 70% 40% at 50% 18%, rgba(10,9,7,0.4), rgba(10,9,7,0.9) 65%),
-    linear-gradient(180deg, var(--black) 0%, rgba(10,9,7,0.5) 10%, rgba(10,9,7,0.72) 55%, var(--black) 100%);
-}
 .legend-inner{position:relative;z-index:2;max-width:720px;margin:0 auto;}
 .legend-lead{
   font-family:'Playfair Display',serif;font-style:italic;font-weight:400;
@@ -1194,16 +1180,30 @@ body.intro-active{overflow:hidden;height:100vh;}
 }
 .legend-lead strong{color:var(--bone);font-weight:500;font-style:normal;}
 
+/* Foto inteira (sem corte), com vinheta se dissolvendo no fundo e fumaça de
+   incenso ao redor — mesmo recurso do topo das páginas (.smoke-wrap). */
+.legend-photo{position:relative;max-width:640px;margin:2.6rem auto 0;text-align:center;}
+.legend-photo img{
+  position:relative;z-index:1;width:100%;display:block;
+  filter:grayscale(0.28) sepia(0.14) contrast(1.05) brightness(0.94);
+  -webkit-mask-image:radial-gradient(ellipse at center, black 58%, transparent 96%);
+  mask-image:radial-gradient(ellipse at center, black 58%, transparent 96%);
+}
+.legend-photo figcaption{
+  position:relative;z-index:1;margin-top:0.3rem;
+  font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:rgba(242,240,234,0.4);
+}
+
 .legend-thread{position:relative;margin-top:4rem;padding-left:56px;}
 .legend-thread-track{
   position:absolute;left:5px;top:6px;bottom:6px;width:2px;
   background:linear-gradient(180deg,
     var(--belt-branca) 0%, var(--belt-branca) 8%,
-    var(--belt-amarela) 24%,
-    var(--belt-verde) 42%,
-    var(--belt-azul) 54%,
-    var(--belt-roxa) 70%,
-    var(--belt-vermelha) 86%,
+    var(--belt-amarela) 26%,
+    var(--belt-verde) 46%,
+    var(--belt-azul) 66%,
+    var(--belt-vermelha) 84%,
     var(--belt-preta) 100%);
   opacity:0.9;transform:scaleY(0);transform-origin:top;
   transition:transform 1.3s cubic-bezier(.65,0,.35,1);
@@ -1237,8 +1237,6 @@ body.intro-active{overflow:hidden;height:100vh;}
 .legend-stage.active .legend-stage-label,
 .legend-stage.active .legend-stage-text{opacity:1;transform:translateY(0);}
 .legend-aside{display:block;margin-top:0.6rem;font-style:italic;color:rgba(242,240,234,0.5);font-size:0.92rem;}
-
-.legend-coda{max-width:44ch;margin:3rem auto 0;text-align:center;}
 
 @media (max-width:520px){
   .legend-thread{padding-left:44px;}
