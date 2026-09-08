@@ -1238,6 +1238,16 @@ body.intro-active{overflow:hidden;height:100vh;}
 .legend-stage.active .legend-stage-label,
 .legend-stage.active .legend-stage-text{opacity:1;transform:translateY(0);}
 
+.legend-note{
+  margin:3rem auto 0;padding-top:1.8rem;border-top:1px solid rgba(232,185,35,0.15);
+  max-width:56ch;font-size:0.88rem;line-height:1.75;color:rgba(242,240,234,0.6);
+}
+.legend-note-tag{
+  display:block;margin-bottom:0.5rem;
+  font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:0.16em;
+  font-size:0.66rem;color:var(--gold);
+}
+
 @media (max-width:520px){
   .legend-thread{padding-left:44px;}
   .legend-thread-track{left:4px;}
