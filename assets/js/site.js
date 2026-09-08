@@ -365,13 +365,6 @@ const MURAL = [
     dataISO: '2026-09-12'
   },
   {
-    tipo: 'evento',
-    titulo: 'Apresentação no EMPREPIRA',
-    texto: 'O Instituto fará uma apresentação no EMPREPIRA. Contamos com a presença de todos! HAPKI!',
-    data: 'Domingo, 13/09/2026 às 17h · Gruta de Nossa Senhora Aparecida, Piracaia-SP',
-    dataISO: '2026-09-13'
-  },
-  {
     tipo: 'aviso',
     titulo: 'Aula exclusiva para faixas-pretas',
     texto: 'Turma especial com o Chong Kwanjangnim Raul Braga Freire — aulas quinzenais aos domingos, revezando entre a sede do IBH em Piracaia e a escola do Sabonim Júnior Silva (Equipe Alfa), em Atibaia. Vagas limitadas.',
