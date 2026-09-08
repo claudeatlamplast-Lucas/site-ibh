@@ -350,6 +350,25 @@ if(factCard && factBody && FACTS.length){
   }
 }
 
+/* ---------- A Lenda das Faixas (revelação progressiva no scroll) ---------- */
+const legendThread = document.querySelector('.legend-thread-track');
+if(legendThread){
+  requestAnimationFrame(()=>{ setTimeout(()=>legendThread.classList.add('drawn'), 60); });
+}
+const legendStages = document.querySelectorAll('.legend-stage');
+if(legendStages.length){
+  if(prefersReducedMotion){
+    legendStages.forEach(s=>s.classList.add('active'));
+  } else {
+    const legendIO = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting) entry.target.classList.add('active');
+      });
+    }, {threshold:0.3, rootMargin:'0px 0px -8% 0px'});
+    legendStages.forEach(s=>legendIO.observe(s));
+  }
+}
+
 /* ---------- Mural do Dojang (home) ----------
    Para adicionar um novo item, inserir um objeto no array MURAL (ordem não importa,
    a lista é reordenada sozinha pela data):

@@ -13,6 +13,15 @@
   --gold-dim: rgba(232,185,35,0.35);
   --seal:#c22a1f;
   --parchment-shadow:#8a6f3f;
+
+  --belt-branca:#efe9da;
+  --belt-amarela:#d9ac1f;
+  --belt-verde:#57794a;
+  --belt-azul:#3a6289;
+  --belt-roxa:#6a4770;
+  --belt-azul-roxa:#52557c;
+  --belt-vermelha:var(--seal);
+  --belt-preta:#171310;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html.lenis{height:auto;}
@@ -1163,6 +1172,85 @@ body.intro-active{overflow:hidden;height:100vh;}
 }
 .acervo-hint{display:block;text-align:center;margin-top:1rem;font-size:0.7rem;color:rgba(242,240,234,0.4);}
 @media (max-width:560px){.acervo-carousel{gap:0.6rem;}}
+
+/* ---------- A Lenda das Faixas (Formação) ---------- */
+.legend-section{overflow:hidden;}
+.legend-bg{position:absolute;inset:0;z-index:0;}
+.legend-bg img{
+  width:100%;height:100%;object-fit:cover;object-position:50% 30%;
+  filter:grayscale(0.38) sepia(0.16) brightness(0.4) contrast(1.08);
+}
+.legend-bg-overlay{
+  position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 40% at 50% 18%, rgba(10,9,7,0.4), rgba(10,9,7,0.9) 65%),
+    linear-gradient(180deg, var(--black) 0%, rgba(10,9,7,0.5) 10%, rgba(10,9,7,0.72) 55%, var(--black) 100%);
+}
+.legend-inner{position:relative;z-index:2;max-width:720px;margin:0 auto;}
+.legend-lead{
+  font-family:'Playfair Display',serif;font-style:italic;font-weight:400;
+  font-size:clamp(1.05rem,2vw,1.24rem);line-height:1.7;color:rgba(242,240,234,0.8);
+  max-width:60ch;
+}
+.legend-lead strong{color:var(--bone);font-weight:500;font-style:normal;}
+
+.legend-thread{position:relative;margin-top:4rem;padding-left:56px;}
+.legend-thread-track{
+  position:absolute;left:5px;top:6px;bottom:6px;width:2px;
+  background:linear-gradient(180deg,
+    var(--belt-branca) 0%, var(--belt-branca) 8%,
+    var(--belt-amarela) 24%,
+    var(--belt-verde) 42%,
+    var(--belt-azul) 54%,
+    var(--belt-roxa) 70%,
+    var(--belt-vermelha) 86%,
+    var(--belt-preta) 100%);
+  opacity:0.9;transform:scaleY(0);transform-origin:top;
+  transition:transform 1.3s cubic-bezier(.65,0,.35,1);
+}
+.legend-thread-track.drawn{transform:scaleY(1);}
+
+.legend-stage{position:relative;padding-bottom:3.4rem;}
+.legend-stage:last-child{padding-bottom:0;}
+.legend-marker{
+  position:absolute;left:-56px;top:2px;width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;color:var(--tone);
+  opacity:0.55;transform:scale(0.82);
+  transition:opacity 0.6s ease, transform 0.6s ease;
+}
+.legend-marker::before{
+  content:'';position:absolute;inset:-6px;border-radius:50%;
+  background:var(--tone);opacity:0;filter:blur(6px);transition:opacity 0.6s ease;
+}
+.legend-stage.active .legend-marker{opacity:1;transform:scale(1);}
+.legend-stage.active .legend-marker::before{opacity:0.35;}
+.legend-icon{width:20px;height:20px;position:relative;z-index:1;}
+.legend-stage-label{
+  font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:0.16em;
+  font-size:0.72rem;color:var(--tone);margin-bottom:0.6rem;opacity:0.85;
+  transform:translateY(6px);transition:opacity 0.6s ease, transform 0.6s ease;
+}
+.legend-stage-text{
+  font-size:1rem;line-height:1.75;color:rgba(242,240,234,0.78);max-width:56ch;
+  opacity:0.8;transform:translateY(10px);transition:opacity 0.6s ease, transform 0.6s ease;
+}
+.legend-stage.active .legend-stage-label,
+.legend-stage.active .legend-stage-text{opacity:1;transform:translateY(0);}
+.legend-aside{display:block;margin-top:0.6rem;font-style:italic;color:rgba(242,240,234,0.5);font-size:0.92rem;}
+
+.legend-coda{max-width:44ch;margin:3rem auto 0;text-align:center;}
+
+@media (max-width:520px){
+  .legend-thread{padding-left:44px;}
+  .legend-thread-track{left:4px;}
+  .legend-marker{left:-44px;width:20px;height:20px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .legend-thread-track,.legend-marker,.legend-marker::before,.legend-stage-label,.legend-stage-text{
+    transition:none !important;transform:none !important;opacity:1 !important;
+  }
+  .legend-thread-track{transform:scaleY(1) !important;}
+}
 
 /* ======================================================================
    Ajustes mobile — realces dourados, toque e hero em tela cheia
