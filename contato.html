@@ -101,9 +101,29 @@
   <p class="network-note reveal">Equipe Alfa Atibaia — horários combinados diretamente com o professor Junior pelo WhatsApp.</p>
 </section>
 
-<!-- ============ SIMULADOR DE MATRÍCULA ============ -->
+<!-- ============ VALORES ============ -->
+<section id="valores" data-nav="Valores">
+  <div class="section-heading reveal"><span class="num">02</span><span class="line"></span><span class="label">Valores</span></div>
+  <div class="price-panel reveal" id="pricePanel">
+    <div class="price-grid">
+      <div class="price-card">
+        <span class="label">3x por semana</span>
+        <b>R$ 110<small>/mês</small></b>
+        <span class="fee">+ matrícula R$ 30</span>
+      </div>
+      <div class="price-card">
+        <span class="label">5x por semana</span>
+        <b>R$ 150<small>/mês</small></b>
+        <span class="fee">+ matrícula R$ 30</span>
+      </div>
+    </div>
+    <p class="price-note">Aula experimental gratuita, em qualquer dia e horário. Idade mínima indicada: 4 anos.</p>
+  </div>
+</section>
+
+<!-- ============ SIMULADOR DE MATRÍCULA (gera a mensagem do WhatsApp) ============ -->
 <section id="simulador" data-nav="Simulador">
-  <div class="section-heading reveal"><span class="num">02</span><span class="line"></span><span class="label">Monte sua aula experimental</span></div>
+  <div class="section-heading reveal"><span class="num">03</span><span class="line"></span><span class="label">Fale com a gente pelo WhatsApp</span></div>
   <form class="enroll-form reveal" id="enrollForm">
     <div class="field">
       <label for="nome">Seu nome</label>
@@ -135,33 +155,9 @@
       </select>
     </div>
 
-    <p class="enroll-hint" id="enrollHint">Preencha seu nome e perfil para liberar os valores e enviar sua mensagem.</p>
+    <p class="enroll-hint" id="enrollHint">Preencha seu nome e perfil para gerar sua mensagem personalizada no WhatsApp.</p>
     <a href="#" class="btn-gold disabled" id="whatsappBtn" target="_blank" rel="noopener">Chamar no WhatsApp</a>
   </form>
-</section>
-
-<!-- ============ VALORES ============ -->
-<section id="valores" data-nav="Valores">
-  <div class="section-heading reveal"><span class="num">03</span><span class="line"></span><span class="label">Valores</span></div>
-  <div class="price-panel locked reveal" id="pricePanel">
-    <div class="price-lock">
-      <span>&#128274;</span>
-      <p>Preencha seus dados no formulário acima para ver os valores.</p>
-    </div>
-    <div class="price-grid">
-      <div class="price-card">
-        <span class="label">3x por semana</span>
-        <b>R$ 110<small>/mês</small></b>
-        <span class="fee">+ matrícula R$ 30</span>
-      </div>
-      <div class="price-card">
-        <span class="label">5x por semana</span>
-        <b>R$ 150<small>/mês</small></b>
-        <span class="fee">+ matrícula R$ 30</span>
-      </div>
-    </div>
-    <p class="price-note">Aula experimental gratuita, em qualquer dia e horário. Idade mínima indicada: 4 anos.</p>
-  </div>
 </section>
 
 <!-- ============ CONTATO / UNIDADES ============ -->
@@ -240,6 +236,10 @@
   </div>
 </footer>
 
+<a class="whatsapp-fab" href="https://wa.me/5511971347259" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24" fill="#0b0b0c" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.01 2C6.475 2 2 6.475 2 12.01c0 1.99.583 3.845 1.587 5.401L2 22l4.688-1.535A9.96 9.96 0 0012.01 22C17.545 22 22 17.545 22 12.01 22 6.475 17.545 2 12.01 2zm0 18.13a8.09 8.09 0 01-4.135-1.13l-.297-.176-2.782.911.919-2.71-.193-.279A8.09 8.09 0 013.9 12.01c0-4.477 3.634-8.111 8.11-8.111 4.478 0 8.112 3.634 8.112 8.111 0 4.478-3.634 8.12-8.112 8.12z"/></svg>
+</a>
+
 <script src="https://unpkg.com/lenis@1/dist/lenis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -255,7 +255,6 @@
   const horarioSelect = document.getElementById('horario');
   const hint = document.getElementById('enrollHint');
   const waBtn = document.getElementById('whatsappBtn');
-  const pricePanel = document.getElementById('pricePanel');
 
   const NUM_PIRACAIA = '5511971347259';
   const NUM_ATIBAIA = '5511964158211';
@@ -277,11 +276,10 @@
     const perfil = perfilAtual();
     const valido = isPiracaia ? Boolean(nome && perfil) : Boolean(nome);
 
-    pricePanel.classList.toggle('locked', !valido);
     waBtn.classList.toggle('disabled', !valido);
     hint.textContent = valido
       ? 'Tudo pronto! Envie sua mensagem pelo WhatsApp.'
-      : 'Preencha seu nome' + (isPiracaia ? ' e perfil' : '') + ' para liberar os valores e enviar sua mensagem.';
+      : 'Preencha seu nome' + (isPiracaia ? ' e perfil' : '') + ' para gerar sua mensagem personalizada no WhatsApp.';
 
     if(valido){
       let numero, texto;
