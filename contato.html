@@ -101,23 +101,23 @@
   <p class="network-note reveal">Equipe Alfa Atibaia — horários combinados diretamente com o professor Junior pelo WhatsApp.</p>
 </section>
 
-<!-- ============ VALORES ============ -->
-<section id="valores" data-nav="Valores">
-  <div class="section-heading reveal"><span class="num">02</span><span class="line"></span><span class="label">Valores</span></div>
+<!-- ============ PLANOS ============ -->
+<section id="valores" data-nav="Planos">
+  <div class="section-heading reveal"><span class="num">02</span><span class="line"></span><span class="label">Planos</span></div>
   <div class="price-panel reveal" id="pricePanel">
     <div class="price-grid">
-      <div class="price-card">
+      <label class="price-card plan-card">
+        <input type="radio" name="plano" value="3x" data-label="3x por semana" form="enrollForm">
         <span class="label">3x por semana</span>
-        <b>R$ 110<small>/mês</small></b>
-        <span class="fee">+ matrícula R$ 30</span>
-      </div>
-      <div class="price-card">
+        <span class="plan-cta">Escolher esse plano</span>
+      </label>
+      <label class="price-card plan-card">
+        <input type="radio" name="plano" value="5x" data-label="5x por semana" form="enrollForm">
         <span class="label">5x por semana</span>
-        <b>R$ 150<small>/mês</small></b>
-        <span class="fee">+ matrícula R$ 30</span>
-      </div>
+        <span class="plan-cta">Escolher esse plano</span>
+      </label>
     </div>
-    <p class="price-note">Aula experimental gratuita, em qualquer dia e horário. Idade mínima indicada: 4 anos.</p>
+    <p class="price-note">Aula experimental gratuita, em qualquer dia e horário. Valores e matrícula a Renata passa direto no WhatsApp.</p>
   </div>
 </section>
 
@@ -125,6 +125,8 @@
 <section id="simulador" data-nav="Simulador">
   <div class="section-heading reveal"><span class="num">03</span><span class="line"></span><span class="label">Fale com a gente pelo WhatsApp</span></div>
   <form class="enroll-form reveal" id="enrollForm">
+    <p class="enroll-plan-indicator" id="planoIndicator" hidden>Plano selecionado: <strong id="planoIndicadorTexto"></strong></p>
+
     <div class="field">
       <label for="nome">Seu nome</label>
       <input type="text" id="nome" placeholder="Como podemos te chamar?" autocomplete="name">
@@ -255,6 +257,10 @@
   const horarioSelect = document.getElementById('horario');
   const hint = document.getElementById('enrollHint');
   const waBtn = document.getElementById('whatsappBtn');
+  const planoIndicator = document.getElementById('planoIndicator');
+  const planoIndicadorTexto = document.getElementById('planoIndicadorTexto');
+  const planRadios = document.querySelectorAll('input[name="plano"]');
+  const piracaiaRadio = form.querySelector('input[name="unidade"][value="piracaia"]');
 
   const NUM_PIRACAIA = '5511971347259';
   const NUM_ATIBAIA = '5511964158211';
@@ -266,6 +272,10 @@
     const el = form.querySelector('input[name="perfil"]:checked');
     return el ? el.value : '';
   }
+  function planoAtual(){
+    const el = document.querySelector('input[name="plano"]:checked');
+    return el ? { valor: el.value, texto: el.dataset.label } : null;
+  }
 
   function atualizar(){
     const isPiracaia = unidadeAtual() === 'piracaia';
@@ -274,12 +284,23 @@
 
     const nome = nomeInput.value.trim();
     const perfil = perfilAtual();
-    const valido = isPiracaia ? Boolean(nome && perfil) : Boolean(nome);
+    const plano = planoAtual();
+    const valido = isPiracaia ? Boolean(nome && perfil && plano) : Boolean(nome);
+
+    planoIndicator.hidden = !plano;
+    if(plano) planoIndicadorTexto.textContent = plano.texto;
 
     waBtn.classList.toggle('disabled', !valido);
-    hint.textContent = valido
-      ? 'Tudo pronto! Envie sua mensagem pelo WhatsApp.'
-      : 'Preencha seu nome' + (isPiracaia ? ' e perfil' : '') + ' para gerar sua mensagem personalizada no WhatsApp.';
+
+    if(valido){
+      hint.textContent = 'Tudo pronto! Envie sua mensagem pelo WhatsApp.';
+    } else if(isPiracaia){
+      hint.textContent = !plano
+        ? 'Escolha um plano acima e preencha seu nome e perfil para gerar sua mensagem personalizada no WhatsApp.'
+        : 'Preencha seu nome e perfil para gerar sua mensagem personalizada no WhatsApp.';
+    } else {
+      hint.textContent = 'Preencha seu nome para gerar sua mensagem personalizada no WhatsApp.';
+    }
 
     if(valido){
       let numero, texto;
@@ -288,6 +309,7 @@
         const horarioTexto = horarioSelect.options[horarioSelect.selectedIndex].text;
         numero = NUM_PIRACAIA;
         texto = 'Olá Renata! Me chamo ' + nome + ' e tenho interesse em uma aula experimental de Hapkido no IBH Piracaia.\n'
+              + 'Plano de interesse: ' + plano.texto + '\n'
               + 'Perfil: ' + perfilTexto + '\n'
               + 'Horário de preferência: ' + horarioTexto;
       } else {
@@ -299,6 +321,17 @@
       waBtn.href = '#';
     }
   }
+
+  planRadios.forEach(function(radio){
+    radio.addEventListener('change', function(){
+      if(piracaiaRadio && !piracaiaRadio.checked){
+        piracaiaRadio.checked = true;
+      }
+      atualizar();
+      document.getElementById('simulador').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(function(){ nomeInput.focus(); }, 450);
+    });
+  });
 
   form.addEventListener('input', atualizar);
   form.addEventListener('change', atualizar);

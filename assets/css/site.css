@@ -933,21 +933,25 @@ body.intro-active{overflow:hidden;height:100vh;}
 .radio-row label{display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;color:rgba(242,240,234,0.85);cursor:pointer;}
 .enroll-hint{font-size:0.8rem;color:rgba(242,240,234,0.5);}
 .btn-gold.disabled{opacity:0.35;pointer-events:none;}
+.enroll-plan-indicator{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.08em;color:rgba(242,240,234,0.6);}
+.enroll-plan-indicator strong{color:var(--gold);}
 
-/* ---------- Contato — valores (painel bloqueado) ---------- */
+/* ---------- Contato — planos ---------- */
 .price-panel{position:relative;max-width:700px;margin:0 auto;text-align:center;}
-.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;transition:filter .4s ease, opacity .4s ease;}
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;}
 .price-card{border:1px solid rgba(232,185,35,0.2);padding:2rem 1.4rem;}
 .price-card .label{display:block;margin-bottom:0.8rem;}
-.price-card b{display:block;font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold);}
-.price-card b small{font-size:0.9rem;color:rgba(242,240,234,0.5);font-family:'Work Sans',sans-serif;}
-.price-card .fee{display:block;margin-top:0.6rem;font-size:0.78rem;color:rgba(242,240,234,0.5);}
 .price-note{margin-top:1.6rem;font-size:0.8rem;color:rgba(242,240,234,0.5);}
-.price-panel.locked .price-grid{filter:blur(8px);opacity:0.4;pointer-events:none;}
-.price-lock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.8rem;opacity:0;visibility:hidden;transition:opacity .3s ease;z-index:2;}
-.price-panel.locked .price-lock{opacity:1;visibility:visible;}
-.price-lock span{font-size:1.6rem;}
-.price-lock p{max-width:30ch;font-size:0.85rem;color:rgba(242,240,234,0.7);}
+
+/* cartões de plano clicáveis — o <input type="radio"> fica visualmente oculto,
+   mas continua acessível por teclado/leitor de tela dentro do <label> */
+.plan-card{cursor:pointer;transition:border-color .25s ease, background .25s ease;}
+.plan-card input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;}
+.plan-card:hover{border-color:var(--gold);}
+.plan-card:has(input:focus-visible){outline:2px solid var(--gold);outline-offset:3px;}
+.plan-card:has(input:checked){border-color:var(--gold);background:rgba(232,185,35,0.08);}
+.plan-cta{display:inline-block;margin-top:1rem;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);padding:0.5rem 1.1rem;border-radius:999px;transition:background .2s ease,color .2s ease;}
+.plan-card:has(input:checked) .plan-cta{background:var(--gold);color:var(--black);}
 
 /* ---------- Contato — unidades ---------- */
 .units-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:rgba(232,185,35,0.15);max-width:1000px;margin:0 auto;}
