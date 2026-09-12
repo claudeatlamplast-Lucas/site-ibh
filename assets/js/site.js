@@ -186,6 +186,12 @@ if(window.gsap && window.ScrollTrigger && !prefersReducedMotion && !isTouchDevic
 /* ---------- Card "Você sabia?" (curiosidades rotativas) ---------- */
 const FACTS = [
   {
+    title: 'Exame dia 12/09 — Parabéns a todos!',
+    text: 'Realizamos neste sábado, 12/09, o Exame de Faixa na Escola de Arte Marcial, em Piracaia. Parabéns a todos os alunos que participaram pelo empenho e pela dedicação demonstrados!',
+    photo: 'assets/ig/exame-faixa-12-09-2026.jpeg',
+    link: 'comunidade.html', linkLabel: 'Ver a Comunidade'
+  },
+  {
     title: 'Contando em coreano',
     text: 'No dojang, as repetições dos exercícios são contadas em coreano:\nhana (1) · dul (2) · set (3) · net (4) · daseot (5)\nyeoseot (6) · ilgop (7) · yeodeol (8) · ahop (9) · yeol (10)',
     photo: 'assets/ig/dojang-treino.jpg',
@@ -381,7 +387,8 @@ const MURAL = [
     titulo: 'Exame de Faixa',
     texto: 'Exame de faixa para os alunos das faixas Branca à Ponta Vermelha, na Escola de Arte Marcial - Piracaia. Os alunos selecionados para o exame serão notificados pessoalmente. Contamos com a presença e o empenho de todos!',
     data: 'Sábado, 12/09/2026 · 09h às 12h (previsão) · Escola de Arte Marcial, Piracaia-SP',
-    dataISO: '2026-09-12'
+    dataISO: '2026-09-12',
+    realizado: true
   },
   {
     tipo: 'aviso',
@@ -431,6 +438,7 @@ if(muralBoard){
       nota.className = 'mural-note ' + rot + (item.dataISO ? '' : ' mural-note--undated');
       nota.setAttribute('aria-expanded', 'false');
       nota.innerHTML =
+        (item.realizado ? '<span class="mural-done-stamp">Realizado</span>' : '') +
         '<span class="mural-note-title">' + item.titulo + '</span>' +
         '<span class="mural-note-meta">' +
           (item.dataISO

@@ -909,10 +909,27 @@ body.intro-active{overflow:hidden;height:100vh;}
 @keyframes eagleFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
 .hero-eagle--float img{animation:eagleFadeIn 1.6s ease forwards, eagleFloat 6s ease-in-out 1.8s infinite;}
 
-/* ---------- Contato — horários ---------- */
-.schedule-unit-label{display:block;text-align:center;margin:0 0 1.2rem;}
-.schedule-grid + .schedule-unit-label{margin-top:2.8rem;}
-.schedule-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:rgba(232,185,35,0.15);max-width:900px;margin:0 auto;}
+/* ---------- Contato — horários e planos, por escola ---------- */
+.school-block{margin-bottom:3.5rem;}
+.school-block:last-child{margin-bottom:0;}
+.school-block-head{display:flex;align-items:center;gap:0.9rem;margin-bottom:1.6rem;justify-content:center;}
+.school-logo{width:44px;height:44px;flex:none;position:relative;}
+.school-logo::before{
+  content:'';position:absolute;inset:-8px;border-radius:50%;
+  background:radial-gradient(circle, rgba(232,185,35,0.35) 0%, transparent 70%);
+  filter:blur(4px);
+}
+.school-logo img{
+  position:relative;width:100%;height:100%;display:block;
+  opacity:0;transform:scale(0.85);
+  animation:eagleFadeIn 1.2s ease forwards, eagleFloat 5s ease-in-out 1.4s infinite;
+}
+.school-block-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:2.2rem;align-items:start;max-width:1200px;margin:0 auto;padding:0 clamp(1.2rem,6vw,6rem);}
+@media (max-width:900px){.school-block-grid{grid-template-columns:1fr;}}
+.school-block-grid .price-panel{max-width:none;margin:0;text-align:left;}
+.school-block-grid .price-grid{grid-template-columns:1fr;}
+
+.schedule-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:rgba(232,185,35,0.15);}
 .schedule-card{background:var(--black);padding:1.8rem 1.6rem;}
 .schedule-card .days{display:block;font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
 .schedule-card ul{list-style:none;display:flex;flex-direction:column;gap:0.6rem;}
@@ -1158,6 +1175,13 @@ body.intro-active{overflow:hidden;height:100vh;}
   box-shadow:0 2px 3px rgba(0,0,0,0.5);
 }
 .mural-note--undated::before{background:radial-gradient(circle at 35% 30%, #e7ddc4, var(--parchment-shadow) 70%);}
+.mural-done-stamp{
+  position:absolute;top:-14px;right:10px;z-index:1;
+  font-family:'Marcellus SC',serif;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;
+  color:#2e7d32;border:2px solid #2e7d32;border-radius:4px;padding:0.2rem 0.6rem;
+  background:rgba(242,240,234,0.85);transform:rotate(-9deg);
+  mix-blend-mode:multiply;opacity:0.85;pointer-events:none;
+}
 .mural-note-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:clamp(1.3rem,3vw,1.55rem);color:#241a0d;line-height:1.15;}
 .mural-note-meta{display:flex;align-items:center;gap:0.8rem;flex:none;}
 .mural-stamp{font-family:'Marcellus SC',serif;font-size:0.62rem;letter-spacing:0.08em;color:var(--seal);border:1.5px solid var(--seal);padding:0.3rem 0.55rem;transform:rotate(-4deg);white-space:nowrap;}
