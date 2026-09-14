@@ -168,6 +168,10 @@ body.comunidade-page{background:var(--black-deep);}
 .post-author{display:flex;flex-direction:column;flex:1;}
 .post-author-nome{font-size:0.88rem;color:var(--bone);}
 .post-author-faixa{font-size:0.7rem;color:var(--gold);}
+.post-author-titulo{font-family:'Cinzel',serif;font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);}
+.comment-titulo{font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.06em;text-transform:uppercase;color:rgba(232,185,35,0.75);}
+.post-avatar.is-destaque{border-color:var(--gold);box-shadow:0 0 0 2px rgba(232,185,35,0.4);}
+.comment-avatar.is-destaque{border:1.5px solid var(--gold);box-shadow:0 0 0 2px rgba(232,185,35,0.35);}
 .post-author-resp{font-size:0.7rem;color:var(--gold);display:flex;align-items:center;gap:0.3rem;}
 .post-author-resp svg{width:11px;height:11px;stroke:var(--gold);fill:none;stroke-width:1.6;flex-shrink:0;}
 .post-author-escola{font-size:0.68rem;color:rgba(242,240,234,0.5);}
@@ -266,6 +270,13 @@ body.comunidade-page{background:var(--black-deep);}
   display:inline-block;margin-top:0.6rem;font-family:'Cinzel',serif;font-size:0.68rem;
   letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);
   border:1px solid var(--gold-dim);padding:0.35rem 0.9rem;
+}
+.user-modal-titulo{
+  display:block;margin-top:0.5rem;font-family:'Cinzel',serif;font-size:0.72rem;
+  letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);
+}
+.user-modal-photo.is-destaque{
+  border-width:3px;box-shadow:0 0 34px rgba(232,185,35,0.45),0 0 0 4px rgba(232,185,35,0.15);
 }
 
 /* ---------- Completar cadastro (alunos aprovados sem tipo definido) ---------- */
