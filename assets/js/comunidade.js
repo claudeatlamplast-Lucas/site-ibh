@@ -2,6 +2,23 @@
   var client = window.supabaseClient;
   if(!client){ console.error('Supabase client não inicializado'); return; }
 
+  /* Selo de título (Sabonim, Kyosanim, etc.) — mostrado ao lado do nome
+     de quem tem profiles.titulo preenchido, como um "patch" de patente.
+     A cor do selo muda por título (ver classes titulo-* no CSS); o
+     mapeamento faixa->titulo em si é automático, via trigger no banco
+     (migration-009). */
+  var TITULO_BADGE_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l7 3v5c0 5-3.5 9-7 10-3.5-1-7-5-7-10V5l7-3z"/><path fill="#0a0a0a" d="M12 7.3l1.2 2.6 2.8.3-2.1 2 .6 2.8-2.5-1.4-2.5 1.4.6-2.8-2.1-2 2.8-.3L12 7.3z"/></svg>';
+  var TITULO_CLASSES = {
+    'Jokwanim': 'titulo-jokwanim',
+    'Kyosanim': 'titulo-kyosanim',
+    'Bukwanim': 'titulo-bukwanim',
+    'Sabonim': 'titulo-sabonim',
+    'Kwandjangnim': 'titulo-kwandjangnim',
+    'Dae-sabonim': 'titulo-dae-sabonim',
+    'Chong Kwandjangnim': 'titulo-chong-kwandjangnim'
+  };
+  function tituloClass(titulo){ return TITULO_CLASSES[titulo] || ''; }
+
   var BUCKET = 'comunidade-fotos';
   var MAX_FOTO_MB = 5;
   var TIPOS_ACEITOS = ['image/jpeg','image/png','image/webp'];
@@ -18,7 +35,10 @@
     'Preta Honorário',
     'Preta 1º Dan',
     'Preta 2º Dan',
-    'Preta 3º Dan'
+    'Preta 3º Dan',
+    'Preta 4º Dan',
+    'Preta 5º Dan',
+    'Preta 6º Dan'
   ];
 
   var secAuth = document.getElementById('authSection');
@@ -662,7 +682,7 @@
     if(feedLoadMoreBtn){ feedLoadMoreBtn.disabled = true; feedLoadMoreBtn.textContent = 'Carregando...'; }
 
     var query = client.from('posts')
-      .select('id, autor_id, foto_url, legenda, criado_em, profiles!posts_autor_id_fkey(nome_exibicao, foto_url, faixa, role, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))')
+      .select('id, autor_id, foto_url, legenda, criado_em, profiles!posts_autor_id_fkey(nome_exibicao, foto_url, faixa, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))')
       .order('criado_em', { ascending: false })
       .range(feedOffset, feedOffset + FEED_PAGE_SIZE - 1);
     if(feedMode === 'meus') query = query.eq('autor_id', currentUser.id);
@@ -676,7 +696,7 @@
       if(pagina.length === 0) return null;
       var ids = pagina.map(function(p){ return p.id; });
       return comTimeout(Promise.all([
-        client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, role, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').in('post_id', ids).order('criado_em', { ascending: true }),
+        client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').in('post_id', ids).order('criado_em', { ascending: true }),
         client.from('curtidas').select('post_id, autor_id').in('post_id', ids)
       ]), 15000);
     }).then(function(results){
@@ -727,9 +747,7 @@
       var autorFoto = (post.profiles && post.profiles.foto_url) || 'assets/ibh-logo.png';
       var autorNome = (post.profiles && post.profiles.nome_exibicao) || 'Aluno';
       var autorFaixa = post.profiles && post.profiles.faixa;
-      var autorRole = post.profiles && post.profiles.role;
       var autorTitulo = post.profiles && post.profiles.titulo;
-      var autorDestaque = autorRole === 'instrutor' || autorRole === 'admin';
       var autorTipo = post.profiles && post.profiles.tipo;
       var autorParentesco = post.profiles && post.profiles.parentesco;
       var autorParentescoOutro = post.profiles && post.profiles.parentesco_outro;
@@ -744,15 +762,14 @@
       card.className = 'post-card';
       var autorAttrs = 'data-user-nome="' + escapeHtml(autorNome) + '" data-user-foto="' + escapeHtml(autorFoto) +
         '" data-user-faixa="' + escapeHtml(autorFaixa || '') + '" data-user-escola="' + escapeHtml(autorEscola || '') +
-        '" data-user-resp="' + escapeHtml(autorRespLabel || '') + '" data-user-titulo="' + escapeHtml(autorTitulo || '') +
-        '" data-user-destaque="' + (autorDestaque ? '1' : '') + '"';
+        '" data-user-resp="' + escapeHtml(autorRespLabel || '') + '" data-user-titulo="' + escapeHtml(autorTitulo || '') + '"';
 
       card.innerHTML =
         '<div class="post-header">' +
-          '<img class="post-avatar user-trigger' + (autorDestaque ? ' is-destaque' : '') + '" ' + autorAttrs + ' src="' + escapeHtml(autorFoto) + '" alt="">' +
+          '<img class="post-avatar user-trigger" ' + autorAttrs + ' src="' + escapeHtml(autorFoto) + '" alt="">' +
           '<div class="post-author">' +
             '<span class="post-author-nome user-trigger" ' + autorAttrs + '>' + escapeHtml(autorNome) + (autorEscola ? ' <span class="post-author-escola">· ' + escapeHtml(autorEscola) + '</span>' : '') + '</span>' +
-            (autorTitulo ? '<span class="post-author-titulo">' + escapeHtml(autorTitulo) + '</span>' : '') +
+            (autorTitulo ? '<span class="post-author-titulo ' + tituloClass(autorTitulo) + '">' + TITULO_BADGE_SVG + escapeHtml(autorTitulo) + '</span>' : '') +
             (autorRespLabel
               ? '<span class="post-author-resp"><svg viewBox="0 0 24 24"><circle cx="8" cy="6.5" r="2.6"/><path d="M2.5 19c0-3.4 2.5-5.8 5.5-5.8s5.5 2.4 5.5 5.8"/></svg>' + escapeHtml(autorRespLabel) + '</span>'
               : (autorFaixa ? '<span class="post-author-faixa">' + escapeHtml(autorFaixa) + '</span>' : '')) +
@@ -774,20 +791,17 @@
             var comentarioFoto = (c.profiles && c.profiles.foto_url) || 'assets/ibh-logo.png';
             var comentarioFaixa = (c.profiles && c.profiles.faixa) || '';
             var comentarioEscola = (c.profiles && c.profiles.escolas && c.profiles.escolas.nome) || '';
-            var comentarioRole = c.profiles && c.profiles.role;
             var comentarioTitulo = (c.profiles && c.profiles.titulo) || '';
-            var comentarioDestaque = comentarioRole === 'instrutor' || comentarioRole === 'admin';
             var comentarioResp = (c.profiles && c.profiles.tipo === 'pai' && c.profiles.atleta_nome)
               ? labelParentesco(c.profiles.parentesco, c.profiles.parentesco_outro) + ' de ' + c.profiles.atleta_nome
               : '';
             var comentarioAttrs = 'data-user-nome="' + escapeHtml(comentarioNome) + '" data-user-foto="' + escapeHtml(comentarioFoto) +
               '" data-user-faixa="' + escapeHtml(comentarioFaixa) + '" data-user-escola="' + escapeHtml(comentarioEscola) +
-              '" data-user-resp="' + escapeHtml(comentarioResp) + '" data-user-titulo="' + escapeHtml(comentarioTitulo) +
-              '" data-user-destaque="' + (comentarioDestaque ? '1' : '') + '"';
+              '" data-user-resp="' + escapeHtml(comentarioResp) + '" data-user-titulo="' + escapeHtml(comentarioTitulo) + '"';
             return '<div class="comment">' +
-              '<img class="comment-avatar user-trigger' + (comentarioDestaque ? ' is-destaque' : '') + '" ' + comentarioAttrs + ' src="' + escapeHtml(comentarioFoto) + '" alt="">' +
+              '<img class="comment-avatar user-trigger" ' + comentarioAttrs + ' src="' + escapeHtml(comentarioFoto) + '" alt="">' +
               '<div class="comment-body">' +
-                '<span class="comment-autor user-trigger" ' + comentarioAttrs + '>' + escapeHtml(comentarioNome) + (comentarioTitulo ? ' <span class="comment-titulo">· ' + escapeHtml(comentarioTitulo) + '</span>' : '') + '</span>' +
+                '<span class="comment-autor user-trigger" ' + comentarioAttrs + '>' + escapeHtml(comentarioNome) + (comentarioTitulo ? ' <span class="comment-titulo ' + tituloClass(comentarioTitulo) + '">' + TITULO_BADGE_SVG + escapeHtml(comentarioTitulo) + '</span>' : '') + '</span>' +
                 '<span class="comment-texto">' + escapeHtml(c.texto) + '</span>' +
               '</div>' +
               (podeApagarComentario ? '<button type="button" class="comment-delete" data-comment-id="' + c.id + '">&times;</button>' : '') +
@@ -814,14 +828,14 @@
 
   function openUserModal(trigger){
     userModalPhoto.src = trigger.dataset.userFoto || 'assets/ibh-logo.png';
-    userModalPhoto.classList.toggle('is-destaque', !!trigger.dataset.userDestaque);
     userModalNome.textContent = trigger.dataset.userNome || 'Aluno';
     var escola = trigger.dataset.userEscola;
     userModalEscola.textContent = escola || '';
     userModalEscola.hidden = !escola;
     var titulo = trigger.dataset.userTitulo;
     if(userModalTitulo){
-      userModalTitulo.textContent = titulo || '';
+      userModalTitulo.className = 'user-modal-titulo' + (titulo ? ' ' + tituloClass(titulo) : '');
+      userModalTitulo.innerHTML = titulo ? TITULO_BADGE_SVG + escapeHtml(titulo) : '';
       userModalTitulo.hidden = !titulo;
     }
     var resp = trigger.dataset.userResp;
@@ -850,7 +864,7 @@
   }
 
   function atualizarComentarios(){
-    return client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, role, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').in('post_id', idsCarregados()).order('criado_em', { ascending: true }).then(function(res){
+    return client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').in('post_id', idsCarregados()).order('criado_em', { ascending: true }).then(function(res){
       ultimoComentarios = res.data || [];
       aplicarFiltroFeed();
     });

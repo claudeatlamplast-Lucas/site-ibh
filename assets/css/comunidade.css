@@ -168,10 +168,29 @@ body.comunidade-page{background:var(--black-deep);}
 .post-author{display:flex;flex-direction:column;flex:1;}
 .post-author-nome{font-size:0.88rem;color:var(--bone);}
 .post-author-faixa{font-size:0.7rem;color:var(--gold);}
-.post-author-titulo{font-family:'Cinzel',serif;font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);}
-.comment-titulo{font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.06em;text-transform:uppercase;color:rgba(232,185,35,0.75);}
-.post-avatar.is-destaque{border-color:var(--gold);box-shadow:0 0 0 2px rgba(232,185,35,0.4);}
-.comment-avatar.is-destaque{border:1.5px solid var(--gold);box-shadow:0 0 0 2px rgba(232,185,35,0.35);}
+.post-author-titulo,.comment-titulo,.user-modal-titulo{
+  --titulo-color:var(--gold); --titulo-bg:rgba(232,185,35,0.08); --titulo-border:var(--gold-dim);
+}
+.post-author-titulo{
+  display:inline-flex;align-items:center;gap:0.3rem;margin-top:0.2rem;width:fit-content;
+  font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--titulo-color);
+  border:1px solid var(--titulo-border);background:var(--titulo-bg);padding:0.15rem 0.5rem;
+}
+.post-author-titulo svg{width:11px;height:11px;flex-shrink:0;color:var(--titulo-color);}
+.comment-titulo{
+  display:inline-flex;align-items:center;gap:0.25rem;margin-left:0.35rem;
+  font-family:'Cinzel',serif;font-size:0.66rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--titulo-color);
+}
+.comment-titulo svg{width:9px;height:9px;flex-shrink:0;color:var(--titulo-color);}
+
+/* Cor por patente — da mais júnior (Jokwanim) à mais sênior (Chong Kwandjangnim) */
+.titulo-jokwanim{ --titulo-color:#c9885a; --titulo-bg:rgba(201,136,90,0.1); --titulo-border:rgba(201,136,90,0.45); }
+.titulo-kyosanim{ --titulo-color:#b9c4cf; --titulo-bg:rgba(185,196,207,0.1); --titulo-border:rgba(185,196,207,0.4); }
+.titulo-bukwanim{ --titulo-color:#6fb7b0; --titulo-bg:rgba(111,183,176,0.1); --titulo-border:rgba(111,183,176,0.4); }
+.titulo-sabonim{ --titulo-color:var(--gold); --titulo-bg:rgba(232,185,35,0.08); --titulo-border:var(--gold-dim); }
+.titulo-kwandjangnim{ --titulo-color:#e0a52a; --titulo-bg:rgba(224,165,42,0.16); --titulo-border:rgba(224,165,42,0.55); }
+.titulo-dae-sabonim{ --titulo-color:#c1443c; --titulo-bg:rgba(193,68,60,0.12); --titulo-border:rgba(193,68,60,0.5); }
+.titulo-chong-kwandjangnim{ --titulo-color:#d94f45; --titulo-bg:rgba(217,79,69,0.18); --titulo-border:rgba(217,79,69,0.6); }
 .post-author-resp{font-size:0.7rem;color:var(--gold);display:flex;align-items:center;gap:0.3rem;}
 .post-author-resp svg{width:11px;height:11px;stroke:var(--gold);fill:none;stroke-width:1.6;flex-shrink:0;}
 .post-author-escola{font-size:0.68rem;color:rgba(242,240,234,0.5);}
@@ -272,12 +291,11 @@ body.comunidade-page{background:var(--black-deep);}
   border:1px solid var(--gold-dim);padding:0.35rem 0.9rem;
 }
 .user-modal-titulo{
-  display:block;margin-top:0.5rem;font-family:'Cinzel',serif;font-size:0.72rem;
-  letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);
+  display:inline-flex;align-items:center;gap:0.35rem;margin-top:0.6rem;
+  font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--titulo-color);
+  border:1px solid var(--titulo-border);background:var(--titulo-bg);padding:0.3rem 0.8rem;
 }
-.user-modal-photo.is-destaque{
-  border-width:3px;box-shadow:0 0 34px rgba(232,185,35,0.45),0 0 0 4px rgba(232,185,35,0.15);
-}
+.user-modal-titulo svg{width:13px;height:13px;flex-shrink:0;color:var(--titulo-color);}
 
 /* ---------- Completar cadastro (alunos aprovados sem tipo definido) ---------- */
 #feedSection.feed-blur{filter:blur(7px);pointer-events:none;user-select:none;}
