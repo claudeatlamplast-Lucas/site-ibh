@@ -393,7 +393,7 @@ const MURAL = [
   {
     tipo: 'aviso',
     titulo: 'Aula exclusiva para faixas-pretas',
-    texto: 'Turma especial com o Chong Kwanjangnim Raul Braga Freire — aulas quinzenais aos domingos, revezando entre a sede do IBH em Piracaia e a escola do Sabonim Júnior Silva (Equipe Alfa), em Atibaia. Vagas limitadas.',
+    texto: 'Turma especial com o Chong Kwanjangnim Raul Braga Freire — aulas quinzenais aos domingos, revezando entre a sede do IBH em Piracaia e a escola do Kyosanim Júnior Silva (Equipe Alfa), em Atibaia. Vagas limitadas.',
     data: 'Piracaia-SP e Atibaia-SP · desde janeiro de 2026'
   }
 ];
