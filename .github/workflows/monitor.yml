@@ -1,0 +1,79 @@
+name: Monitor IBH
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - name: Checar site e banco
+        id: check
+        run: |
+          set +e
+          problemas=""
+
+          home_status=$(curl -s -o /dev/null -w "%{http_code}" -L --max-time 15 https://hapkidobrasil.com/)
+          if [ "$home_status" != "200" ]; then
+            problemas="${problemas}- https://hapkidobrasil.com/ respondeu HTTP ${home_status} (esperado 200)\n"
+          fi
+
+          com_status=$(curl -s -o /dev/null -w "%{http_code}" -L --max-time 15 https://hapkidobrasil.com/comunidade.html)
+          if [ "$com_status" != "200" ]; then
+            problemas="${problemas}- https://hapkidobrasil.com/comunidade.html respondeu HTTP ${com_status} (esperado 200)\n"
+          fi
+
+          health_json=$(curl -s --max-time 15 "https://iishtrwbbvlbwlgdcysd.supabase.co/rest/v1/rpc/monitor_healthcheck?apikey=sb_publishable_nldSMV_0YKWk2FyzgJ7KNg_5k4ozTkR")
+          ok=$(echo "$health_json" | grep -o '"ok"[[:space:]]*:[[:space:]]*true')
+          if [ -z "$ok" ]; then
+            problemas="${problemas}- monitor_healthcheck() do Supabase nao retornou ok:true. Resposta: ${health_json}\n"
+          fi
+
+          if [ -n "$problemas" ]; then
+            echo "status=problema" >> "$GITHUB_OUTPUT"
+            {
+              echo "detalhes<<MONITOR_EOF"
+              echo -e "$problemas"
+              echo "MONITOR_EOF"
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "status=ok" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Abrir ou atualizar issue de falha
+        if: steps.check.outputs.status == 'problema'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DETALHES: ${{ steps.check.outputs.detalhes }}
+        run: |
+          TITULO="Monitor IBH: falha detectada"
+          NUM=$(gh issue list --repo "$GITHUB_REPOSITORY" --search "$TITULO in:title" --state open --json number --jq '.[0].number')
+          CORPO="Checagem automática (GitHub Actions) encontrou um problema em $(date -u +"%Y-%m-%d %H:%M UTC"):
+
+          ${DETALHES}
+
+          Causa provável mais comum: se algum campo de \`colunas_profiles\` ou \`tabelas\` estiver faltando no healthcheck, provavelmente falta rodar uma migração pendente em \`supabase/*.sql\` no SQL Editor do Supabase (confira os arquivos migration-00X mais recentes).
+
+          Próximo passo: abra o Supabase SQL Editor e confira, ou peça pro Claude investigar esta issue."
+          if [ -n "$NUM" ] && [ "$NUM" != "null" ]; then
+            gh issue comment "$NUM" --repo "$GITHUB_REPOSITORY" --body "$CORPO"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITULO" --body "$CORPO"
+          fi
+
+      - name: Fechar issue se voltou ao normal
+        if: steps.check.outputs.status == 'ok'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITULO="Monitor IBH: falha detectada"
+          NUM=$(gh issue list --repo "$GITHUB_REPOSITORY" --search "$TITULO in:title" --state open --json number --jq '.[0].number')
+          if [ -n "$NUM" ] && [ "$NUM" != "null" ]; then
+            gh issue comment "$NUM" --repo "$GITHUB_REPOSITORY" --body "Voltou ao normal na checagem de $(date -u +"%Y-%m-%d %H:%M UTC")."
+            gh issue close "$NUM" --repo "$GITHUB_REPOSITORY"
+          fi
