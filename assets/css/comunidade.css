@@ -78,7 +78,7 @@ body.comunidade-page{background:var(--black-deep);}
 #cadPaiFields,#compPaiFields{display:flex;flex-direction:column;gap:1.4rem;}
 
 .feed-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:2.5rem;flex-wrap:wrap;}
-.feed-header .welcome{font-family:'Playfair Display',serif;font-size:1.1rem;display:flex;align-items:center;}
+.feed-header .welcome{font-family:'Playfair Display',serif;font-size:1.1rem;display:flex;align-items:center;flex-wrap:wrap;overflow-wrap:break-word;}
 .feed-header .welcome b{color:var(--gold);font-weight:500;}
 .feed-header-actions{display:flex;gap:1.2rem;}
 .link-btn{background:none;border:none;color:rgba(242,240,234,0.55);font-size:0.78rem;cursor:pointer;text-decoration:underline;}
@@ -101,7 +101,7 @@ body.comunidade-page{background:var(--black-deep);}
 .profile-pendente{font-size:0.85rem;color:var(--gold);background:rgba(232,185,35,0.08);padding:0.8rem 1rem;border:1px solid rgba(232,185,35,0.2);}
 .profile-resp{
   font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;
-  color:var(--gold);display:flex;align-items:center;gap:0.5rem;margin-bottom:1.2rem;
+  color:var(--gold);display:flex;align-items:center;gap:0.5rem;margin-bottom:1.2rem;flex-wrap:wrap;overflow-wrap:break-word;
 }
 .profile-resp svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:1.6;flex-shrink:0;}
 
@@ -165,8 +165,8 @@ body.comunidade-page{background:var(--black-deep);}
 }
 .post-header{display:flex;align-items:center;gap:0.8rem;padding:1rem 1.2rem;}
 .post-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#1a1a1a;border:1.5px solid rgba(232,185,35,0.3);}
-.post-author{display:flex;flex-direction:column;flex:1;}
-.post-author-nome{font-size:0.88rem;color:var(--bone);}
+.post-author{display:flex;flex-direction:column;flex:1;min-width:0;}
+.post-author-nome{font-size:0.88rem;color:var(--bone);overflow-wrap:break-word;}
 .post-author-faixa{font-size:0.7rem;color:var(--gold);}
 .post-author-titulo,.comment-titulo,.user-modal-titulo{
   --titulo-color:var(--gold); --titulo-bg:rgba(232,185,35,0.08); --titulo-border:var(--gold-dim);
@@ -193,7 +193,7 @@ body.comunidade-page{background:var(--black-deep);}
 .titulo-chong-kwandjangnim{ --titulo-color:#d94f45; --titulo-bg:rgba(217,79,69,0.18); --titulo-border:rgba(217,79,69,0.6); }
 .post-author-resp{font-size:0.7rem;color:var(--gold);display:flex;align-items:center;gap:0.3rem;}
 .post-author-resp svg{width:11px;height:11px;stroke:var(--gold);fill:none;stroke-width:1.6;flex-shrink:0;}
-.post-author-escola{font-size:0.68rem;color:rgba(242,240,234,0.5);}
+.post-author-escola{font-size:0.68rem;color:rgba(242,240,234,0.5);overflow-wrap:break-word;}
 .delete-btn,.comment-delete{background:none;border:none;color:rgba(242,240,234,0.4);font-size:1.1rem;cursor:pointer;line-height:1;padding:0 0.2rem;flex-shrink:0;touch-action:manipulation;}
 .delete-btn:hover,.comment-delete:hover{color:#e07a5f;}
 
@@ -206,7 +206,7 @@ body.comunidade-page{background:var(--black-deep);}
   backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
 }
 .school-badge img{width:24px;height:24px;object-fit:contain;}
-.post-legenda{padding:1rem 1.2rem 0;font-size:0.9rem;color:rgba(242,240,234,0.85);line-height:1.5;}
+.post-legenda{padding:1rem 1.2rem 0;font-size:0.9rem;color:rgba(242,240,234,0.85);line-height:1.5;overflow-wrap:break-word;}
 
 /* ---------- Mural do Dojang, largura cheia acima do feed ---------- */
 .mural-section{max-width:700px;margin:0 auto 2.2rem;padding:0 0.3rem;}
@@ -225,7 +225,7 @@ body.comunidade-page{background:var(--black-deep);}
 .comment-list{display:flex;flex-direction:column;gap:0.7rem;padding:0 1.2rem;}
 .comment{font-size:0.85rem;color:rgba(242,240,234,0.8);display:flex;align-items:flex-start;gap:0.55rem;}
 .comment-avatar{width:26px;height:26px;border-radius:50%;object-fit:cover;flex-shrink:0;margin-top:0.1rem;background:#1a1a1a;}
-.comment-body{flex:1;line-height:1.5;}
+.comment-body{flex:1;min-width:0;line-height:1.5;overflow-wrap:break-word;}
 .comment-autor{color:var(--gold);font-size:0.8rem;margin-right:0.35rem;}
 
 .comment-form{display:flex;align-items:center;gap:0.6rem;padding:1rem 1.2rem 1.4rem;}
@@ -287,9 +287,9 @@ body.comunidade-page{background:var(--black-deep);}
   border:2px solid var(--gold);margin:0 auto 1.4rem;background:#1a1a1a;
   box-shadow:0 0 30px rgba(232,185,35,0.25);
 }
-.user-modal-card h3{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:500;}
+.user-modal-card h3{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:500;overflow-wrap:break-word;}
 .user-modal-escola{
-  display:block;margin-top:0.4rem;font-size:0.8rem;color:rgba(242,240,234,0.6);
+  display:block;margin-top:0.4rem;font-size:0.8rem;color:rgba(242,240,234,0.6);overflow-wrap:break-word;
 }
 .user-modal-faixa{
   display:inline-block;margin-top:0.6rem;font-family:'Cinzel',serif;font-size:0.68rem;
@@ -326,7 +326,7 @@ body.comunidade-page{background:var(--black-deep);}
 .photo-modal-likes-list{display:flex;flex-direction:column;gap:0.6rem;}
 .photo-modal-like-user{display:flex;align-items:center;gap:0.6rem;background:none;border:none;padding:0;cursor:pointer;text-align:left;touch-action:manipulation;}
 .photo-modal-like-user img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;background:#1a1a1a;}
-.photo-modal-like-user span{font-size:0.85rem;color:rgba(242,240,234,0.85);transition:color .2s ease;}
+.photo-modal-like-user span{flex:1;min-width:0;font-size:0.85rem;color:rgba(242,240,234,0.85);transition:color .2s ease;overflow-wrap:break-word;}
 .photo-modal-like-user:hover span{color:var(--gold);}
 
 /* ---------- Completar cadastro (alunos aprovados sem tipo definido) ---------- */
