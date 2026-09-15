@@ -652,12 +652,12 @@
         autor_id: currentUser.id,
         foto_url: fotoUrl,
         legenda: legenda || null
-      });
+      }).select('id, autor_id, foto_url, legenda, criado_em, profiles!posts_autor_id_fkey(nome_exibicao, foto_url, faixa, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').single();
     }).then(function(res){
       if(res.error) throw res.error;
       postForm.reset();
       setPostFotoPreview(null);
-      return carregarFeed();
+      adicionarPostNoTopo(res.data);
     }).catch(function(err){
       postError.textContent = 'Erro ao publicar: ' + traduzErro(err.message);
     }).finally(function(){
@@ -732,40 +732,35 @@
   feedTabMeus.addEventListener('click', function(){ setFeedMode('meus'); });
   if(feedLoadMoreBtn) feedLoadMoreBtn.addEventListener('click', function(){ carregarFeed(false); });
 
-  function renderFeed(posts, comentarios, curtidas){
-    feedList.innerHTML = '';
-    feedEmpty.hidden = posts.length > 0;
-    feedEnd.hidden = posts.length === 0;
+  function criarPostCard(post, comentarios, curtidas){
     var isAdmin = currentProfile.role === 'admin';
     var meFoto = currentProfile.foto_url || 'assets/ibh-logo.png';
+    var meusComentarios = comentarios.filter(function(c){ return c.post_id === post.id; });
+    var minhasCurtidas = curtidas.filter(function(c){ return c.post_id === post.id; });
+    var jaCurti = minhasCurtidas.some(function(c){ return c.autor_id === currentUser.id; });
+    var podeApagarPost = isAdmin || post.autor_id === currentUser.id;
+    var autorFoto = (post.profiles && post.profiles.foto_url) || 'assets/ibh-logo.png';
+    var autorNome = (post.profiles && post.profiles.nome_exibicao) || 'Aluno';
+    var autorFaixa = post.profiles && post.profiles.faixa;
+    var autorTitulo = post.profiles && post.profiles.titulo;
+    var autorTipo = post.profiles && post.profiles.tipo;
+    var autorParentesco = post.profiles && post.profiles.parentesco;
+    var autorParentescoOutro = post.profiles && post.profiles.parentesco_outro;
+    var autorAtletaNome = post.profiles && post.profiles.atleta_nome;
+    var autorEscola = post.profiles && post.profiles.escolas && post.profiles.escolas.nome;
+    var autorEscolaLogo = (post.profiles && post.profiles.escolas && post.profiles.escolas.logo_url) || 'assets/ibh-logo.png';
+    var autorRespLabel = autorTipo === 'pai' && autorAtletaNome
+      ? labelParentesco(autorParentesco, autorParentescoOutro) + ' de ' + autorAtletaNome
+      : null;
 
-    posts.forEach(function(post){
-      var meusComentarios = comentarios.filter(function(c){ return c.post_id === post.id; });
-      var minhasCurtidas = curtidas.filter(function(c){ return c.post_id === post.id; });
-      var jaCurti = minhasCurtidas.some(function(c){ return c.autor_id === currentUser.id; });
-      var podeApagarPost = isAdmin || post.autor_id === currentUser.id;
-      var autorFoto = (post.profiles && post.profiles.foto_url) || 'assets/ibh-logo.png';
-      var autorNome = (post.profiles && post.profiles.nome_exibicao) || 'Aluno';
-      var autorFaixa = post.profiles && post.profiles.faixa;
-      var autorTitulo = post.profiles && post.profiles.titulo;
-      var autorTipo = post.profiles && post.profiles.tipo;
-      var autorParentesco = post.profiles && post.profiles.parentesco;
-      var autorParentescoOutro = post.profiles && post.profiles.parentesco_outro;
-      var autorAtletaNome = post.profiles && post.profiles.atleta_nome;
-      var autorEscola = post.profiles && post.profiles.escolas && post.profiles.escolas.nome;
-      var autorEscolaLogo = (post.profiles && post.profiles.escolas && post.profiles.escolas.logo_url) || 'assets/ibh-logo.png';
-      var autorRespLabel = autorTipo === 'pai' && autorAtletaNome
-        ? labelParentesco(autorParentesco, autorParentescoOutro) + ' de ' + autorAtletaNome
-        : null;
+    var card = document.createElement('article');
+    card.className = 'post-card';
+    card.dataset.postId = post.id;
+    var autorAttrs = 'data-user-nome="' + escapeHtml(autorNome) + '" data-user-foto="' + escapeHtml(autorFoto) +
+      '" data-user-faixa="' + escapeHtml(autorFaixa || '') + '" data-user-escola="' + escapeHtml(autorEscola || '') +
+      '" data-user-resp="' + escapeHtml(autorRespLabel || '') + '" data-user-titulo="' + escapeHtml(autorTitulo || '') + '"';
 
-      var card = document.createElement('article');
-      card.className = 'post-card';
-      card.dataset.postId = post.id;
-      var autorAttrs = 'data-user-nome="' + escapeHtml(autorNome) + '" data-user-foto="' + escapeHtml(autorFoto) +
-        '" data-user-faixa="' + escapeHtml(autorFaixa || '') + '" data-user-escola="' + escapeHtml(autorEscola || '') +
-        '" data-user-resp="' + escapeHtml(autorRespLabel || '') + '" data-user-titulo="' + escapeHtml(autorTitulo || '') + '"';
-
-      card.innerHTML =
+    card.innerHTML =
         '<div class="post-header">' +
           '<img class="post-avatar user-trigger" ' + autorAttrs + ' src="' + escapeHtml(autorFoto) + '" alt="">' +
           '<div class="post-author">' +
@@ -815,8 +810,36 @@
           '<button type="submit" class="btn-gold">Enviar</button>' +
         '</form>';
 
-      feedList.appendChild(card);
+    return card;
+  }
+
+  function renderFeed(posts, comentarios, curtidas){
+    feedList.innerHTML = '';
+    feedEmpty.hidden = posts.length > 0;
+    feedEnd.hidden = posts.length === 0;
+    posts.forEach(function(post){
+      feedList.appendChild(criarPostCard(post, comentarios, curtidas));
     });
+  }
+
+  /* Substitui só o card de um post no DOM, sem recriar o resto do feed
+     (evita o "pulo" de curtir/comentar recarregando a tela toda). */
+  function atualizarCardDoPost(postId){
+    var post = ultimoPosts.filter(function(p){ return p.id === postId; })[0];
+    if(!post) return;
+    var antigoCard = feedList.querySelector('.post-card[data-post-id="' + postId + '"]');
+    var novoCard = criarPostCard(post, ultimoComentarios, ultimasCurtidas);
+    if(antigoCard) antigoCard.replaceWith(novoCard);
+  }
+
+  /* Insere uma publicação nova no topo do feed sem recarregar o resto. */
+  function adicionarPostNoTopo(post){
+    ultimoPosts.unshift(post);
+    feedOffset += 1;
+    feedEmpty.hidden = true;
+    var card = criarPostCard(post, ultimoComentarios, ultimasCurtidas);
+    feedList.insertBefore(card, feedList.firstChild);
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   var userModal = document.getElementById('userModal');
@@ -903,21 +926,20 @@
   }
 
   /* Curtir/comentar não muda a lista de posts em si — só recarrega
-     curtidas/comentários dos posts já visíveis, sem voltar a paginação
-     pro início (o que atrapalharia quem já rolou o feed pra baixo). */
-  function idsCarregados(){ return ultimoPosts.map(function(p){ return p.id; }); }
-
-  function atualizarCurtidas(){
-    return client.from('curtidas').select('post_id, autor_id, profiles(nome_exibicao, foto_url, faixa, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').in('post_id', idsCarregados()).then(function(res){
-      ultimasCurtidas = res.data || [];
-      aplicarFiltroFeed();
+     curtidas/comentários do post afetado e troca apenas o card dele
+     no DOM, sem recriar o feed inteiro (o que causava o "pulo" pro
+     usuário ao curtir/comentar). */
+  function atualizarCurtidas(postId){
+    return client.from('curtidas').select('post_id, autor_id, profiles(nome_exibicao, foto_url, faixa, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').eq('post_id', postId).then(function(res){
+      ultimasCurtidas = ultimasCurtidas.filter(function(c){ return c.post_id !== postId; }).concat(res.data || []);
+      atualizarCardDoPost(postId);
     });
   }
 
-  function atualizarComentarios(){
-    return client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').in('post_id', idsCarregados()).order('criado_em', { ascending: true }).then(function(res){
-      ultimoComentarios = res.data || [];
-      aplicarFiltroFeed();
+  function atualizarComentarios(postId){
+    return client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').eq('post_id', postId).order('criado_em', { ascending: true }).then(function(res){
+      ultimoComentarios = ultimoComentarios.filter(function(c){ return c.post_id !== postId; }).concat(res.data || []);
+      atualizarCardDoPost(postId);
     });
   }
 
@@ -938,7 +960,7 @@
       var acao = jaCurti
         ? client.from('curtidas').delete().eq('post_id', postId).eq('autor_id', currentUser.id)
         : client.from('curtidas').insert({ post_id: postId, autor_id: currentUser.id });
-      acao.then(function(){ return atualizarCurtidas(); });
+      acao.then(function(){ return atualizarCurtidas(postId); });
       return;
     }
     var delBtn = e.target.closest('.delete-btn');
@@ -950,7 +972,8 @@
     var delComment = e.target.closest('.comment-delete');
     if(delComment){
       if(!window.confirm('Apagar este comentário?')) return;
-      client.from('comentarios').delete().eq('id', delComment.dataset.commentId).then(function(){ return atualizarComentarios(); });
+      var comentPostId = delComment.closest('.post-card').dataset.postId;
+      client.from('comentarios').delete().eq('id', delComment.dataset.commentId).then(function(){ return atualizarComentarios(comentPostId); });
       return;
     }
   });
@@ -976,7 +999,7 @@
     btn.disabled = true;
     client.from('comentarios').insert({ post_id: postId, autor_id: currentUser.id, texto: texto }).then(function(res){
       btn.disabled = false;
-      if(!res.error){ input.value = ''; return atualizarComentarios(); }
+      if(!res.error){ input.value = ''; return atualizarComentarios(postId); }
     });
   });
 
