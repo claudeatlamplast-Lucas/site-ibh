@@ -234,6 +234,12 @@ body.comunidade-page{background:var(--black-deep);}
 .comment-form input:focus{outline:none;border-color:var(--gold);}
 .comment-form button{padding:0.6rem 1.1rem;font-size:0.7rem;touch-action:manipulation;}
 
+/* aproxima o título do menu de acesso no celular, pra caber tudo sem rolar */
+@media (max-width: 700px){
+  .comunidade-page .page-hero{min-height:auto;padding:6.5rem 1.2rem 1.4rem;}
+  #authSection{padding:1rem clamp(1.2rem,6vw,3rem) 3rem;}
+}
+
 @media (max-width: 560px){
   .new-post-form,.feed-list,.feed-scroll,.profile-panel,.auth-card,.pending-card{max-width:100%;}
   .auth-card,.pending-card{padding:2rem 1.4rem;}
