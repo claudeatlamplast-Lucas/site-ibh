@@ -208,6 +208,21 @@
     return d.innerHTML;
   }
 
+  /* Aviso rápido no canto da tela (ex.: "Publicado!") — some sozinho,
+     não exige clique. Reaproveita um único elemento entre chamadas. */
+  var toastEl = null, toastTimer = null;
+  function mostrarToast(msg){
+    if(!toastEl){
+      toastEl = document.createElement('div');
+      toastEl.className = 'comunidade-toast';
+      document.body.appendChild(toastEl);
+    }
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2600);
+  }
+
   function validaFoto(file){
     if(!file) return null;
     if(TIPOS_ACEITOS.indexOf(file.type) === -1) return 'Formato de imagem não aceito. Use JPG, PNG ou WEBP.';
@@ -645,7 +660,9 @@
     if(erroFoto){ postError.textContent = erroFoto; return; }
 
     var submitBtn = postForm.querySelector('button[type="submit"]');
+    var textoOriginalPost = submitBtn.textContent;
     submitBtn.disabled = true;
+    submitBtn.textContent = 'Publicando...';
 
     uploadFoto(fotoFile, 'post').then(function(fotoUrl){
       return client.from('posts').insert({
@@ -658,10 +675,12 @@
       postForm.reset();
       setPostFotoPreview(null);
       adicionarPostNoTopo(res.data);
+      mostrarToast('Publicado!');
     }).catch(function(err){
       postError.textContent = 'Erro ao publicar: ' + traduzErro(err.message);
     }).finally(function(){
       submitBtn.disabled = false;
+      submitBtn.textContent = textoOriginalPost;
     });
   });
 
@@ -801,7 +820,7 @@
         '</div>' +
         (post.legenda ? '<p class="post-legenda">' + escapeHtml(post.legenda) + '</p>' : '') +
         '<div class="post-actions">' +
-          '<button type="button" class="like-btn' + (jaCurti ? ' liked' : '') + '" data-post-id="' + post.id + '">&#9733; <span>' + minhasCurtidas.length + '</span></button>' +
+          '<button type="button" class="like-btn' + (jaCurti ? ' liked' : '') + '" data-post-id="' + post.id + '" aria-pressed="' + (jaCurti ? 'true' : 'false') + '" aria-label="' + (jaCurti ? 'Descurtir' : 'Curtir') + '" title="' + (jaCurti ? 'Descurtir' : 'Curtir') + '">&#9733; <span>' + minhasCurtidas.length + '</span></button>' +
         '</div>' +
         '<div class="comment-list">' +
           meusComentarios.map(function(c){ return comentarioHTML(c, isAdmin); }).join('') +
