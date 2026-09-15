@@ -732,6 +732,29 @@
   feedTabMeus.addEventListener('click', function(){ setFeedMode('meus'); });
   if(feedLoadMoreBtn) feedLoadMoreBtn.addEventListener('click', function(){ carregarFeed(false); });
 
+  function comentarioHTML(c, isAdmin){
+    var podeApagarComentario = isAdmin || c.autor_id === currentUser.id;
+    var comentarioNome = (c.profiles && c.profiles.nome_exibicao) || 'Aluno';
+    var comentarioFoto = (c.profiles && c.profiles.foto_url) || 'assets/ibh-logo.png';
+    var comentarioFaixa = (c.profiles && c.profiles.faixa) || '';
+    var comentarioEscola = (c.profiles && c.profiles.escolas && c.profiles.escolas.nome) || '';
+    var comentarioTitulo = (c.profiles && c.profiles.titulo) || '';
+    var comentarioResp = (c.profiles && c.profiles.tipo === 'pai' && c.profiles.atleta_nome)
+      ? labelParentesco(c.profiles.parentesco, c.profiles.parentesco_outro) + ' de ' + c.profiles.atleta_nome
+      : '';
+    var comentarioAttrs = 'data-user-nome="' + escapeHtml(comentarioNome) + '" data-user-foto="' + escapeHtml(comentarioFoto) +
+      '" data-user-faixa="' + escapeHtml(comentarioFaixa) + '" data-user-escola="' + escapeHtml(comentarioEscola) +
+      '" data-user-resp="' + escapeHtml(comentarioResp) + '" data-user-titulo="' + escapeHtml(comentarioTitulo) + '"';
+    return '<div class="comment" data-comment-id="' + (c.id || '') + '">' +
+      '<img class="comment-avatar user-trigger" ' + comentarioAttrs + ' src="' + escapeHtml(comentarioFoto) + '" alt="">' +
+      '<div class="comment-body">' +
+        '<span class="comment-autor user-trigger" ' + comentarioAttrs + '>' + escapeHtml(comentarioNome) + (comentarioTitulo ? ' <span class="comment-titulo ' + tituloClass(comentarioTitulo) + '">' + TITULO_BADGE_SVG + escapeHtml(comentarioTitulo) + '</span>' : '') + '</span>' +
+        '<span class="comment-texto">' + escapeHtml(c.texto) + '</span>' +
+      '</div>' +
+      (podeApagarComentario ? '<button type="button" class="comment-delete" data-comment-id="' + (c.id || '') + '"' + (c.id ? '' : ' disabled') + '>&times;</button>' : '') +
+    '</div>';
+  }
+
   function criarPostCard(post, comentarios, curtidas){
     var isAdmin = currentProfile.role === 'admin';
     var meFoto = currentProfile.foto_url || 'assets/ibh-logo.png';
@@ -781,28 +804,7 @@
           '<button type="button" class="like-btn' + (jaCurti ? ' liked' : '') + '" data-post-id="' + post.id + '">&#9733; <span>' + minhasCurtidas.length + '</span></button>' +
         '</div>' +
         '<div class="comment-list">' +
-          meusComentarios.map(function(c){
-            var podeApagarComentario = isAdmin || c.autor_id === currentUser.id;
-            var comentarioNome = (c.profiles && c.profiles.nome_exibicao) || 'Aluno';
-            var comentarioFoto = (c.profiles && c.profiles.foto_url) || 'assets/ibh-logo.png';
-            var comentarioFaixa = (c.profiles && c.profiles.faixa) || '';
-            var comentarioEscola = (c.profiles && c.profiles.escolas && c.profiles.escolas.nome) || '';
-            var comentarioTitulo = (c.profiles && c.profiles.titulo) || '';
-            var comentarioResp = (c.profiles && c.profiles.tipo === 'pai' && c.profiles.atleta_nome)
-              ? labelParentesco(c.profiles.parentesco, c.profiles.parentesco_outro) + ' de ' + c.profiles.atleta_nome
-              : '';
-            var comentarioAttrs = 'data-user-nome="' + escapeHtml(comentarioNome) + '" data-user-foto="' + escapeHtml(comentarioFoto) +
-              '" data-user-faixa="' + escapeHtml(comentarioFaixa) + '" data-user-escola="' + escapeHtml(comentarioEscola) +
-              '" data-user-resp="' + escapeHtml(comentarioResp) + '" data-user-titulo="' + escapeHtml(comentarioTitulo) + '"';
-            return '<div class="comment">' +
-              '<img class="comment-avatar user-trigger" ' + comentarioAttrs + ' src="' + escapeHtml(comentarioFoto) + '" alt="">' +
-              '<div class="comment-body">' +
-                '<span class="comment-autor user-trigger" ' + comentarioAttrs + '>' + escapeHtml(comentarioNome) + (comentarioTitulo ? ' <span class="comment-titulo ' + tituloClass(comentarioTitulo) + '">' + TITULO_BADGE_SVG + escapeHtml(comentarioTitulo) + '</span>' : '') + '</span>' +
-                '<span class="comment-texto">' + escapeHtml(c.texto) + '</span>' +
-              '</div>' +
-              (podeApagarComentario ? '<button type="button" class="comment-delete" data-comment-id="' + c.id + '">&times;</button>' : '') +
-            '</div>';
-          }).join('') +
+          meusComentarios.map(function(c){ return comentarioHTML(c, isAdmin); }).join('') +
         '</div>' +
         '<form class="comment-form" data-post-id="' + post.id + '">' +
           '<img class="comment-form-avatar" src="' + escapeHtml(meFoto) + '" alt="">' +
@@ -925,17 +927,9 @@
     document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !photoModal.hidden) closePhotoModal(); });
   }
 
-  /* Curtir/comentar não muda a lista de posts em si — só recarrega
-     curtidas/comentários do post afetado e troca apenas o card dele
-     no DOM, sem recriar o feed inteiro (o que causava o "pulo" pro
-     usuário ao curtir/comentar). */
-  function atualizarCurtidas(postId){
-    return client.from('curtidas').select('post_id, autor_id, profiles(nome_exibicao, foto_url, faixa, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').eq('post_id', postId).then(function(res){
-      ultimasCurtidas = ultimasCurtidas.filter(function(c){ return c.post_id !== postId; }).concat(res.data || []);
-      atualizarCardDoPost(postId);
-    });
-  }
-
+  /* Apagar comentário ainda troca o card inteiro do post (evento raro).
+     Curtir e comentar, por serem os casos comuns, são otimistas — ver
+     os handlers de click/submit do feed mais abaixo. */
   function atualizarComentarios(postId){
     return client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').eq('post_id', postId).order('criado_em', { ascending: true }).then(function(res){
       ultimoComentarios = ultimoComentarios.filter(function(c){ return c.post_id !== postId; }).concat(res.data || []);
@@ -956,11 +950,37 @@
     if(likeBtn){
       var postId = likeBtn.dataset.postId;
       var jaCurti = likeBtn.classList.contains('liked');
+      var countEl = likeBtn.querySelector('span');
+      var contagemAntes = parseInt(countEl.textContent, 10) || 0;
+
+      /* Atualiza a curtida na hora (otimista), sem esperar o servidor
+         nem reconstruir o card — é o que faz o clique parecer instantâneo. */
+      likeBtn.classList.toggle('liked', !jaCurti);
+      countEl.textContent = String(jaCurti ? Math.max(0, contagemAntes - 1) : contagemAntes + 1);
+      if(jaCurti){
+        ultimasCurtidas = ultimasCurtidas.filter(function(c){ return !(c.post_id === postId && c.autor_id === currentUser.id); });
+      } else {
+        ultimasCurtidas.push({ post_id: postId, autor_id: currentUser.id, profiles: currentProfile });
+      }
+
       likeBtn.disabled = true;
       var acao = jaCurti
         ? client.from('curtidas').delete().eq('post_id', postId).eq('autor_id', currentUser.id)
         : client.from('curtidas').insert({ post_id: postId, autor_id: currentUser.id });
-      acao.then(function(){ return atualizarCurtidas(postId); });
+      acao.then(function(res){
+        if(res && res.error) throw res.error;
+      }).catch(function(){
+        /* Desfaz se o servidor recusar a curtida. */
+        likeBtn.classList.toggle('liked', jaCurti);
+        countEl.textContent = String(contagemAntes);
+        if(jaCurti){
+          ultimasCurtidas.push({ post_id: postId, autor_id: currentUser.id, profiles: currentProfile });
+        } else {
+          ultimasCurtidas = ultimasCurtidas.filter(function(c){ return !(c.post_id === postId && c.autor_id === currentUser.id); });
+        }
+      }).finally(function(){
+        likeBtn.disabled = false;
+      });
       return;
     }
     var delBtn = e.target.closest('.delete-btn');
@@ -995,11 +1015,29 @@
     var input = form.querySelector('input');
     var texto = input.value.trim();
     if(!texto) return;
-    var btn = form.querySelector('button');
-    btn.disabled = true;
-    client.from('comentarios').insert({ post_id: postId, autor_id: currentUser.id, texto: texto }).then(function(res){
-      btn.disabled = false;
-      if(!res.error){ input.value = ''; return atualizarComentarios(postId); }
+    input.value = '';
+
+    /* Mostra o comentário na hora (otimista) em vez de esperar o
+       servidor e reconstruir o card — evita a sensação de travada. */
+    var isAdmin = currentProfile.role === 'admin';
+    var comentarioOtimista = { id: null, post_id: postId, autor_id: currentUser.id, texto: texto, profiles: currentProfile };
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML = comentarioHTML(comentarioOtimista, isAdmin);
+    var commentEl = wrapper.firstElementChild;
+    form.closest('.post-card').querySelector('.comment-list').appendChild(commentEl);
+
+    client.from('comentarios').insert({ post_id: postId, autor_id: currentUser.id, texto: texto }).select('id, criado_em').single().then(function(res){
+      if(res.error) throw res.error;
+      comentarioOtimista.id = res.data.id;
+      comentarioOtimista.criado_em = res.data.criado_em;
+      commentEl.dataset.commentId = res.data.id;
+      var delBtn = commentEl.querySelector('.comment-delete');
+      if(delBtn){ delBtn.dataset.commentId = res.data.id; delBtn.disabled = false; }
+      ultimoComentarios.push(comentarioOtimista);
+    }).catch(function(){
+      commentEl.remove();
+      input.value = texto;
+      window.alert('Não foi possível enviar o comentário. Tente novamente.');
     });
   });
 
