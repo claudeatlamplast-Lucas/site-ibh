@@ -81,15 +81,6 @@
   <p class="page-lede">Compartilhe fotos e momentos com a comunidade — do treino a seminários, campeonatos e viagens — comente e interaja com os outros alunos do Instituto.</p>
 </section>
 
-<!-- ============ INSTALAR APP ============ -->
-<section class="instalar-callout">
-  <span class="label">Instale nosso app</span>
-  <a href="instalar.html" class="instalar-badge" title="Instalar a Comunidade como app no celular" aria-label="Instalar a Comunidade como app no celular">
-    <img src="assets/icons/icon-192.png" alt="" width="28" height="28">
-    <span>Comunidade IBH</span>
-  </a>
-</section>
-
 <!-- ============ AUTENTICAÇÃO ============ -->
 <section id="authSection">
   <div class="auth-card">
@@ -297,6 +288,18 @@
     <span class="user-modal-escola" id="userModalEscola"></span>
     <span class="user-modal-titulo" id="userModalTitulo"></span>
     <span class="user-modal-faixa" id="userModalFaixa"></span>
+  </div>
+</div>
+
+<!-- ============ MODAL DE FOTO (ampliar + ver quem curtiu) ============ -->
+<div class="photo-modal" id="photoModal" hidden>
+  <button type="button" class="photo-modal-close" id="photoModalClose" aria-label="Fechar">&times;</button>
+  <div class="photo-modal-inner">
+    <img loading="lazy" class="photo-modal-img" id="photoModalImg" src="" alt="Foto ampliada">
+    <div class="photo-modal-likes" id="photoModalLikes" hidden>
+      <span class="photo-modal-likes-label">Curtido por</span>
+      <div class="photo-modal-likes-list" id="photoModalLikesList"></div>
+    </div>
   </div>
 </div>
 

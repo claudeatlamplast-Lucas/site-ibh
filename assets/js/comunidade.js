@@ -697,7 +697,7 @@
       var ids = pagina.map(function(p){ return p.id; });
       return comTimeout(Promise.all([
         client.from('comentarios').select('id, post_id, autor_id, texto, criado_em, profiles(nome_exibicao, foto_url, faixa, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').in('post_id', ids).order('criado_em', { ascending: true }),
-        client.from('curtidas').select('post_id, autor_id').in('post_id', ids)
+        client.from('curtidas').select('post_id, autor_id, profiles(nome_exibicao, foto_url, faixa, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').in('post_id', ids)
       ]), 15000);
     }).then(function(results){
       if(results){
@@ -760,6 +760,7 @@
 
       var card = document.createElement('article');
       card.className = 'post-card';
+      card.dataset.postId = post.id;
       var autorAttrs = 'data-user-nome="' + escapeHtml(autorNome) + '" data-user-foto="' + escapeHtml(autorFoto) +
         '" data-user-faixa="' + escapeHtml(autorFaixa || '') + '" data-user-escola="' + escapeHtml(autorEscola || '') +
         '" data-user-resp="' + escapeHtml(autorRespLabel || '') + '" data-user-titulo="' + escapeHtml(autorTitulo || '') + '"';
@@ -777,7 +778,7 @@
           (podeApagarPost ? '<button type="button" class="delete-btn" data-post-id="' + post.id + '" title="Apagar publicação">&times;</button>' : '') +
         '</div>' +
         '<div class="post-photo-wrap">' +
-          '<img class="post-photo" src="' + escapeHtml(post.foto_url) + '" alt="Foto da publicação" loading="lazy">' +
+          '<img class="post-photo" src="' + escapeHtml(post.foto_url) + '" alt="Foto da publicação" loading="lazy" tabindex="0" role="button" aria-label="Ampliar foto">' +
           '<span class="school-badge"><img src="' + escapeHtml(autorEscolaLogo) + '" alt="' + escapeHtml(autorEscola || 'Escola') + '"></span>' +
         '</div>' +
         (post.legenda ? '<p class="post-legenda">' + escapeHtml(post.legenda) + '</p>' : '') +
@@ -851,13 +852,63 @@
     document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !userModal.hidden) closeUserModal(); });
   }
 
+  var photoModal = document.getElementById('photoModal');
+  var photoModalImg = document.getElementById('photoModalImg');
+  var photoModalLikes = document.getElementById('photoModalLikes');
+  var photoModalLikesList = document.getElementById('photoModalLikesList');
+  var photoModalClose = document.getElementById('photoModalClose');
+
+  function userTriggerAttrs(p){
+    var nome = (p && p.nome_exibicao) || 'Aluno';
+    var foto = (p && p.foto_url) || 'assets/ibh-logo.png';
+    var faixa = (p && p.faixa) || '';
+    var escola = (p && p.escolas && p.escolas.nome) || '';
+    var titulo = (p && p.titulo) || '';
+    var resp = (p && p.tipo === 'pai' && p.atleta_nome) ? labelParentesco(p.parentesco, p.parentesco_outro) + ' de ' + p.atleta_nome : '';
+    return {
+      nome: nome, foto: foto,
+      attrs: 'data-user-nome="' + escapeHtml(nome) + '" data-user-foto="' + escapeHtml(foto) +
+        '" data-user-faixa="' + escapeHtml(faixa) + '" data-user-escola="' + escapeHtml(escola) +
+        '" data-user-resp="' + escapeHtml(resp) + '" data-user-titulo="' + escapeHtml(titulo) + '"'
+    };
+  }
+
+  function openPhotoModal(src, postId){
+    photoModalImg.src = src;
+    var quemCurtiu = ultimasCurtidas.filter(function(c){ return c.post_id === postId; });
+    if(quemCurtiu.length){
+      photoModalLikes.hidden = false;
+      photoModalLikesList.innerHTML = quemCurtiu.map(function(c){
+        var u = userTriggerAttrs(c.profiles);
+        return '<button type="button" class="photo-modal-like-user user-trigger" ' + u.attrs + '>' +
+          '<img src="' + escapeHtml(u.foto) + '" alt="">' +
+          '<span>' + escapeHtml(u.nome) + '</span>' +
+        '</button>';
+      }).join('');
+    } else {
+      photoModalLikes.hidden = true;
+      photoModalLikesList.innerHTML = '';
+    }
+    photoModal.hidden = false;
+  }
+  function closePhotoModal(){ photoModal.hidden = true; }
+  if(photoModal){
+    photoModalClose.addEventListener('click', closePhotoModal);
+    photoModal.addEventListener('click', function(e){
+      if(e.target === photoModal) { closePhotoModal(); return; }
+      var userTrigger = e.target.closest('.user-trigger');
+      if(userTrigger) openUserModal(userTrigger);
+    });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !photoModal.hidden) closePhotoModal(); });
+  }
+
   /* Curtir/comentar não muda a lista de posts em si — só recarrega
      curtidas/comentários dos posts já visíveis, sem voltar a paginação
      pro início (o que atrapalharia quem já rolou o feed pra baixo). */
   function idsCarregados(){ return ultimoPosts.map(function(p){ return p.id; }); }
 
   function atualizarCurtidas(){
-    return client.from('curtidas').select('post_id, autor_id').in('post_id', idsCarregados()).then(function(res){
+    return client.from('curtidas').select('post_id, autor_id, profiles(nome_exibicao, foto_url, faixa, titulo, tipo, parentesco, parentesco_outro, atleta_nome, escolas(nome, logo_url))').in('post_id', idsCarregados()).then(function(res){
       ultimasCurtidas = res.data || [];
       aplicarFiltroFeed();
     });
@@ -873,6 +924,12 @@
   feedList.addEventListener('click', function(e){
     var userTrigger = e.target.closest('.user-trigger');
     if(userTrigger){ openUserModal(userTrigger); return; }
+    var photo = e.target.closest('.post-photo');
+    if(photo){
+      var postId = photo.closest('.post-card').dataset.postId;
+      openPhotoModal(photo.src, postId);
+      return;
+    }
     var likeBtn = e.target.closest('.like-btn');
     if(likeBtn){
       var postId = likeBtn.dataset.postId;
@@ -896,6 +953,15 @@
       client.from('comentarios').delete().eq('id', delComment.dataset.commentId).then(function(){ return atualizarComentarios(); });
       return;
     }
+  });
+
+  feedList.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter' && e.key !== ' ') return;
+    var photo = e.target.closest('.post-photo');
+    if(!photo) return;
+    e.preventDefault();
+    var postId = photo.closest('.post-card').dataset.postId;
+    openPhotoModal(photo.src, postId);
   });
 
   feedList.addEventListener('submit', function(e){
