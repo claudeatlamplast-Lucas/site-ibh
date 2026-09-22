@@ -18,15 +18,25 @@ jobs:
           set +e
           problemas=""
 
-          home_status=$(curl -s -o /dev/null -w "%{http_code}" -L --max-time 15 https://hapkidobrasil.com/)
-          if [ "$home_status" != "200" ]; then
-            problemas="${problemas}- https://hapkidobrasil.com/ respondeu HTTP ${home_status} (esperado 200)\n"
-          fi
-
-          com_status=$(curl -s -o /dev/null -w "%{http_code}" -L --max-time 15 https://hapkidobrasil.com/comunidade.html)
-          if [ "$com_status" != "200" ]; then
-            problemas="${problemas}- https://hapkidobrasil.com/comunidade.html respondeu HTTP ${com_status} (esperado 200)\n"
-          fi
+          paginas=(
+            "/"
+            "/sobre.html"
+            "/mestre.html"
+            "/formacao.html"
+            "/campeonatos.html"
+            "/rede.html"
+            "/faq.html"
+            "/comunidade.html"
+            "/contato.html"
+            "/instalar.html"
+          )
+          for caminho in "${paginas[@]}"; do
+            url="https://hapkidobrasil.com${caminho}"
+            status=$(curl -s -o /dev/null -w "%{http_code}" -L --max-time 15 "$url")
+            if [ "$status" != "200" ]; then
+              problemas="${problemas}- ${url} respondeu HTTP ${status} (esperado 200)\n"
+            fi
+          done
 
           health_json=$(curl -s --max-time 15 "https://iishtrwbbvlbwlgdcysd.supabase.co/rest/v1/rpc/monitor_healthcheck?apikey=sb_publishable_nldSMV_0YKWk2FyzgJ7KNg_5k4ozTkR")
           ok=$(echo "$health_json" | grep -o '"ok"[[:space:]]*:[[:space:]]*true')
