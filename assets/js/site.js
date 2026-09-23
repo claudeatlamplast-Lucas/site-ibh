@@ -229,7 +229,7 @@ const FACTS = [
   },
   {
     title: 'O Instituto nasceu em 2007',
-    text: 'O IBH é uma associação sem fins lucrativos fundada pelo Chong Kwanjangnim Raul Braga Freire em Piracaia-SP, em 2007. Hoje reúne cerca de 200 atletas em 5 escolas filiadas — mais de 70% deles crianças e jovens.',
+    text: 'O IBH é uma associação sem fins lucrativos fundada pelo Chong Kwanjangnim Raul Braga Freire em Piracaia-SP, em 2007. Hoje reúne cerca de 200 atletas em 4 escolas filiadas — mais de 70% deles crianças e jovens.',
     photo: 'assets/ig/dojang-alfa-atibaia.jpg',
     link: 'sobre.html', linkLabel: 'Sobre o Instituto'
   },
@@ -252,8 +252,8 @@ const FACTS = [
     link: 'mestre.html#mestre-raul', linkLabel: 'Conhecer o Mestre'
   },
   {
-    title: 'Uma rede com 5 escolas filiadas',
-    text: 'Equipe Alfa (Atibaia-SP), Escola Paekho (Batatuba, Piracaia-SP), Associação Koga de Hapkido (Lavras-MG), Escola Hyonmu (Atibaia-SP) e Escola Calza (São Paulo-SP) formam a rede de escolas filiadas ao Instituto.',
+    title: 'Uma rede com 4 escolas filiadas',
+    text: 'Equipe Alfa (Atibaia-SP), Associação Koga de Hapkido (Lavras-MG), Escola Hyonmu (Atibaia-SP) e Escola Calza (São Paulo-SP) formam a rede de escolas filiadas ao Instituto.',
     photo: 'assets/ig/aula-filiada-flags.jpg',
     link: 'rede.html#escolas', linkLabel: 'Ver a Rede'
   },

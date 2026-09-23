@@ -31,7 +31,6 @@ insert into public.escolas (nome, cidade, uf, logo_url)
 values
   ('Instituto Brasileiro de Hapkido', 'Piracaia', 'SP', null),
   ('Equipe Alfa', 'Atibaia', 'SP', 'assets/escolas/alfa.png'),
-  ('Escola Paekho', 'Batatuba, Piracaia', 'SP', 'assets/escolas/paekho.png'),
   ('Associação Koga de Hapkido', 'Lavras', 'MG', 'assets/escolas/koga.png'),
   ('Escola Hyonmu', 'Atibaia', 'SP', 'assets/escolas/hyonmu.png'),
   ('Escola Calza', 'São Paulo', 'SP', null)
