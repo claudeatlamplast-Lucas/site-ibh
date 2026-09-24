@@ -1,0 +1,71 @@
+name: Resumo diario IBH
+
+on:
+  schedule:
+    - cron: '0 11 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  resumo:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - name: Checar tudo e postar resumo
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          B=https://hapkidobrasil.com
+          falhas=0
+          linhas=""
+
+          checar() {
+            local url="$1" rotulo="$2"
+            local saida status tempo
+            saida=$(curl -s -o /dev/null -L --max-time 15 -w "%{http_code} %{time_total}" "$url")
+            status=${saida%% *}
+            tempo=${saida##* }
+            if [ "$status" = "200" ]; then
+              linhas="${linhas}| OK | ${rotulo} | ${tempo}s |\n"
+            else
+              linhas="${linhas}| FALHA | ${rotulo} | HTTP ${status} |\n"
+              falhas=$((falhas+1))
+            fi
+          }
+
+          for p in / /sobre.html /mestre.html /formacao.html /campeonatos.html /rede.html /faq.html /comunidade.html /contato.html /instalar.html; do
+            checar "$B$p" "$p"
+          done
+          for a in /assets/js/site.js /assets/js/comunidade.js /assets/js/supabase-config.js /manifest.json /service-worker.js /sitemap.xml /robots.txt /favicon.ico; do
+            checar "$B$a" "$a"
+          done
+
+          health=$(curl -s --max-time 15 "https://iishtrwbbvlbwlgdcysd.supabase.co/rest/v1/rpc/monitor_healthcheck?apikey=sb_publishable_nldSMV_0YKWk2FyzgJ7KNg_5k4ozTkR")
+          if echo "$health" | grep -q '"ok"[[:space:]]*:[[:space:]]*true'; then
+            linhas="${linhas}| OK | Banco da comunidade (Supabase) | saudavel |\n"
+          else
+            linhas="${linhas}| FALHA | Banco da comunidade (Supabase) | ${health} |\n"
+            falhas=$((falhas+1))
+          fi
+
+          if [ "$falhas" -eq 0 ]; then
+            titulo_status="Tudo certo"
+          else
+            titulo_status="${falhas} problema(s) encontrado(s)"
+          fi
+
+          CORPO="### ${titulo_status} - $(date -u +"%d/%m/%Y %H:%M UTC")
+
+          | Status | Item | Detalhe |
+          |---|---|---|
+          $(echo -e "$linhas")"
+
+          TITULO="Resumo diario IBH"
+          NUM=$(gh issue list --repo "$GITHUB_REPOSITORY" --search "$TITULO in:title" --state open --json number --jq '.[0].number')
+          if [ -z "$NUM" ] || [ "$NUM" = "null" ]; then
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITULO" --body "Um comentario por dia com o resultado da checagem do site. Nao feche esta issue."
+            NUM=$(gh issue list --repo "$GITHUB_REPOSITORY" --search "$TITULO in:title" --state open --json number --jq '.[0].number')
+          fi
+          gh issue comment "$NUM" --repo "$GITHUB_REPOSITORY" --body "$CORPO"
